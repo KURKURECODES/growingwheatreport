@@ -1,0 +1,26 @@
+{
+  "_comment": "TODO: replace with wheat programme data. Rough placeholder rectangles standing in for Punjab and the project district(s) - NOT accurate administrative boundaries. Swap for real GADM/state-boundary polygons (dissolved the same way ClearHarvestMap.jsx dissolves Telangana from its constituent districts) before this ships.",
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "id": "punjab", "name": "Punjab" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [73.9, 29.5], [76.9, 29.5], [76.9, 32.5], [73.9, 32.5], [73.9, 29.5]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "id": "project-district", "name": "Moga / Ludhiana project belt" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [74.6, 30.4], [76.1, 30.4], [76.1, 31.1], [74.6, 31.1], [74.6, 30.4]
+        ]]
+      }
+    }
+  ]
+}
