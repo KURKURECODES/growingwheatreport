@@ -569,9 +569,10 @@ function Hero() {
         <img
           src={heroCoverPhoto}
           alt=""
-          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 18%" }}
+          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 35%" }}
         />
         <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(32,24,11,.5) 0%, rgba(32,24,11,.58) 45%, rgba(32,24,11,.94) 100%)" }} />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, rgba(32,24,11,.85) 0%, rgba(32,24,11,.35) 42%, rgba(32,24,11,0) 68%)" }} />
       </div>
 
       <div className="hero-content relative px-5 md:px-10 pb-16 md:pb-24 pt-32 mx-auto w-full wh-scrub" style={{ maxWidth: 1180 }}>
