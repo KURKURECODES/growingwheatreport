@@ -58,23 +58,23 @@ gsap.registerPlugin(ScrollTrigger);
    1 · DESIGN TOKENS (unchanged system, wheat-toned palette)
 ---------------------------------------------------------------------------- */
 const C = {
-  ink: "#20180B",
-  inkSoft: "#2E2211",
-  field: "#8A6D1F",
-  leaf: "#7C9A3B",
-  water: "#3D6B8C",
-  waterDeep: "#274A61",
-  husk: "#C9A227",
-  clay: "#7A5230",
-  paper: "#F7F1E1",
-  paperDim: "#EDE3C8",
-  line: "#DCCB9C",
-  mute: "#6E624A",
+  ink: "#3B2F22",
+  inkSoft: "#5A4632",
+  field: "#B5541F",
+  leaf: "#7C8C4B",
+  water: "#33547A",
+  waterDeep: "#1F3A54",
+  husk: "#D98C3E",
+  clay: "#8B5A2B",
+  paper: "#FBF3E7",
+  paperDim: "#F0E2CC",
+  line: "#E0CFA9",
+  mute: "#7A6A54",
 };
 
-const FONT_DISPLAY = "'Times New Roman', Times, Georgia, 'Liberation Serif', serif";
-const FONT_BODY = "'Times New Roman', Times, Georgia, 'Liberation Serif', serif";
-const FONT_DATA = "'Times New Roman', Times, Georgia, 'Liberation Serif', serif";
+const FONT_DISPLAY = "'Archivo', 'Helvetica Neue', Arial, sans-serif";
+const FONT_BODY = "'Inter', 'Helvetica Neue', Arial, sans-serif";
+const FONT_DATA = "'Inter', 'Helvetica Neue', Arial, sans-serif";
 
 const EASE = [0.22, 0.61, 0.36, 1];
 const GSAP_EASE = "power3.out";
@@ -548,7 +548,11 @@ function Hero() {
   return (
     <div ref={scope} className="relative flex flex-col justify-end" style={{ minHeight: "100vh", background: C.ink }}>
       <div className="hero-photo absolute inset-0 w-full h-full wh-scrub" aria-hidden="true">
-        <img src={heroFarmerPhoto} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        <img
+          src={heroFarmerPhoto}
+          alt=""
+          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 22%" }}
+        />
         <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(32,24,11,.55) 0%, rgba(32,24,11,.55) 45%, rgba(32,24,11,.92) 100%)" }} />
       </div>
 
