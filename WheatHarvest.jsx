@@ -1,17 +1,17 @@
 /* ============================================================================
-   WheatHarvest - Decarbonizing Nestlé's Wheat Value Chain
-   Emission Quantification Report for Rabi Wheat 2025 · Grow Indigo
+   WheatHarvest - Low-Carbon Wheat Programme
+   Rabi Season 2025 · Grow Indigo / ClearHarvest
    ----------------------------------------------------------------------------
-   Content source: "Low-Carbon Wheat Programme 2025-2026" report PDF (Grow
-   Indigo, Rabi Season 2025) - restructured section-for-section to match that
-   document's own table of contents. Nothing in this file states a fact,
-   figure or claim that isn't drawn directly from that PDF. Anywhere the
-   source PDF itself never filled in a figure (its own "Xxxx"/"xx%"
-   placeholders), that block was removed entirely rather than shown empty.
+   Content source: "LC Wheat Programme.docx" - restructured section-for-section
+   to match that document's own table of contents (14 sections). Nothing in
+   this file states a fact, figure or claim that isn't drawn directly from
+   that document. Photographs and figures are the document's own field
+   evidence, extracted from it directly; a small number of scanned farmer-diary
+   / procurement-receipt images have had personally identifying fields
+   (names, phone numbers, addresses, bank details) redacted before use.
 
-   Design tokens, motion system and shared chrome are unchanged from
-   ClearHarvest.jsx (the rice report) - only content and section structure
-   were replaced, per the PDF restructure.
+   Design tokens, motion system and shared chrome are unchanged - only content
+   and section structure were replaced, per the document restructure.
    ========================================================================== */
 
 import React, { useState, useRef, useEffect, useLayoutEffect, useCallback } from "react";
@@ -28,29 +28,49 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 /* ----------------------------------------------------------------------------
-   PHOTO / MEDIA IMPORTS - WHEAT PROGRAMME ONLY, SOURCED FROM THE PDF
-   Every image below was extracted directly from the "Low-Carbon Wheat
-   Programme 2025-2026" report PDF and lives in src/assets/wheat/pdf/ and
-   src/assets/wheat/brand/. Nothing here is a placeholder image.
+   PHOTO / MEDIA IMPORTS - LOW-CARBON WHEAT PROGRAMME DOCX ONLY
+   Every image below was extracted directly from "LC Wheat Programme.docx" and
+   lives in src/assets/wheat/docx/ and src/assets/wheat/brand/. Nothing here is
+   a placeholder image.
 ---------------------------------------------------------------------------- */
 import wheatPartnerLogo from "./src/assets/wheat/brand/gilogo1.png";
 import wheatProgrammeLogo from "./src/assets/wheat/brand/chnlogo-removebg.png";
 
-import heroFarmerPhoto from "./src/assets/wheat/pdf/hero-farmer.png";
-import overviewInfographic from "./src/assets/wheat/pdf/overview-infographic.png";
-import enrolledFieldsMap from "./src/assets/wheat/pdf/enrolled-fields-map.png";
-import identityPreservationAerial from "./src/assets/wheat/pdf/identity-preservation-aerial.png";
-import cropCalendar from "./src/assets/wheat/pdf/crop-calendar.png";
-import appOtp from "./src/assets/wheat/pdf/app-otp.jpg";
-import appFieldTag from "./src/assets/wheat/pdf/app-field-tag.jpg";
-import appSampleSurvey from "./src/assets/wheat/pdf/app-sample-survey.jpg";
-import appAadhaarBank from "./src/assets/wheat/pdf/app-aadhaar-bank.jpg";
-import appAarhtiya from "./src/assets/wheat/pdf/app-aarhtiya.jpg";
-import lowCarbonJourney from "./src/assets/wheat/pdf/low-carbon-journey.png";
-import baggedWheatPhoto from "./src/assets/wheat/pdf/bagged-wheat.jpg";
-import stakeholderMeetingPhoto from "./src/assets/wheat/pdf/stakeholder-meeting-indoor.jpg";
-import villageMeetingPhoto from "./src/assets/wheat/pdf/village-meeting-outdoor.jpg";
-import glanceAerialPhoto from "./src/assets/wheat/pdf/glance-aerial.png";
+import heroCoverPhoto from "./src/assets/wheat/docx/hero-cover.jpeg";
+import enrolledFieldsMap from "./src/assets/wheat/docx/enrolled-fields-map.jpg";
+import identityPreservationAerial from "./src/assets/wheat/docx/identity-preservation-aerial.png";
+import governanceOrgChart from "./src/assets/wheat/docx/governance-org-chart.png";
+import monitoringApp1 from "./src/assets/wheat/docx/monitoring-app-1.jpeg";
+import monitoringApp2 from "./src/assets/wheat/docx/monitoring-app-2.jpeg";
+import monitoringApp3 from "./src/assets/wheat/docx/monitoring-app-3.jpeg";
+import monitoringApp4 from "./src/assets/wheat/docx/monitoring-app-4.jpeg";
+import monitoringApp5 from "./src/assets/wheat/docx/monitoring-app-5.png";
+import sixStepChain from "./src/assets/wheat/docx/six-step-chain.png";
+import traceabilityFlow from "./src/assets/wheat/docx/traceability-flow.jpeg";
+import journeyKickoff from "./src/assets/wheat/docx/journey-01-kickoff.jpeg";
+import journeyVlm1 from "./src/assets/wheat/docx/journey-02-vlm1-khasikalan.jpg";
+import journeyVlm2 from "./src/assets/wheat/docx/journey-03-vlm2-kotkapura.jpeg";
+import journeyVlm3 from "./src/assets/wheat/docx/journey-04-vlm3-bisafarm.jpeg";
+import journeyVlm4 from "./src/assets/wheat/docx/journey-05-vlm4-aulakh.jpeg";
+import journeyVlm5 from "./src/assets/wheat/docx/journey-06-vlm5-nurpurbet.jpeg";
+import journeyVlm6 from "./src/assets/wheat/docx/journey-07-vlm6-dhanansu.jpeg";
+import journeyLowCarbonWheat from "./src/assets/wheat/docx/journey-08-lowcarbon-wheat.jpeg";
+import journeyThirdPartyAudit from "./src/assets/wheat/docx/journey-09-thirdparty-audit.jpeg";
+import docVlmKhasiKalan from "./src/assets/wheat/docx/doc-vlm-khasikalan.jpg";
+import docStakeholderMeeting from "./src/assets/wheat/docx/doc-stakeholder-meeting.jpeg";
+import docZtDemoBisa from "./src/assets/wheat/docx/doc-zt-demo-bisa.jpeg";
+import docTeamNurpur from "./src/assets/wheat/docx/doc-team-nurpur.jpeg";
+import farmerDiarySocioeconomic from "./src/assets/wheat/docx/farmer-diary-socioeconomic.png";
+import farmerDiaryFertilizer from "./src/assets/wheat/docx/farmer-diary-fertilizer.png";
+import farmerDiaryHarvesting from "./src/assets/wheat/docx/farmer-diary-harvesting.png";
+import annexureVlm from "./src/assets/wheat/docx/annexure-01-vlm.jpeg";
+import annexureZtField from "./src/assets/wheat/docx/annexure-02-zt-field.jpeg";
+import annexureWhatsapp from "./src/assets/wheat/docx/annexure-04-whatsapp.jpeg";
+import annexureHarvest from "./src/assets/wheat/docx/annexure-05-harvest.jpeg";
+import annexureGrains from "./src/assets/wheat/docx/annexure-06-grains.jpeg";
+import annexureReceipt from "./src/assets/wheat/docx/annexure-07-receipt.jpeg";
+import annexureAudit from "./src/assets/wheat/docx/annexure-08-audit.jpeg";
+import aboutGrowIndigoGraphic from "./src/assets/wheat/docx/about-grow-indigo.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -102,7 +122,7 @@ function GlobalStyle() {
 }
 
 /* ----------------------------------------------------------------------------
-   2 · MOTION SYSTEM (identical to ClearHarvest.jsx)
+   2 · MOTION SYSTEM (unchanged)
 ---------------------------------------------------------------------------- */
 function useGsapContext(setup, deps = []) {
   const scope = useRef(null);
@@ -292,12 +312,12 @@ function SectionHead({ index, title, lede, tone = "light" }) {
       <MaskedHeading
         text={title}
         className="wh-display mt-4 text-3xl md:text-5xl"
-        style={{ color: fg, fontWeight: 800, maxWidth: "26ch" }}
+        style={{ color: fg, fontWeight: 800, maxWidth: "30ch" }}
         delay={0.1}
       />
       {lede && (
         <Reveal delay={0.18}>
-          <p className="mt-5 text-base md:text-lg" style={{ color: body, maxWidth: "68ch", lineHeight: 1.65 }}>{lede}</p>
+          <p className="mt-5 text-base md:text-lg" style={{ color: body, maxWidth: "72ch", lineHeight: 1.65 }}>{lede}</p>
         </Reveal>
       )}
     </div>
@@ -316,9 +336,9 @@ function Section({ id, children, tone = "light", className = "" }) {
   );
 }
 
-/** Drop-in image frame - same contract as ClearHarvest's PhotoSlot: give it a
- *  `src` and it renders full-bleed with an optional caption bar. Every use in
- *  this file already has a real `src` from the PDF. */
+/** Drop-in image frame - give it a `src` and it renders full-bleed with an
+ *  optional caption bar. Every use in this file already has a real `src`
+ *  extracted from the docx. */
 function PhotoSlot({ ratio, src, alt, className = "", caption }) {
   return (
     <figure className={className}>
@@ -346,9 +366,8 @@ function PhotoSlot({ ratio, src, alt, className = "", caption }) {
 }
 
 /* ----------------------------------------------------------------------------
-   3 · SIGNATURE - grain moisture gauge
-   Decorative scroll-position chrome (mirrors ClearHarvest's AWD tube gauge),
-   not a data claim - no figure in the PDF is attached to it.
+   3 · SIGNATURE - grain moisture gauge (decorative scroll-position chrome,
+   not a data claim - no figure in the document is attached to it)
 ---------------------------------------------------------------------------- */
 function MoistureGauge() {
   const fill = useRef(null);
@@ -413,18 +432,18 @@ function MoistureGauge() {
 }
 
 /* ----------------------------------------------------------------------------
-   4 · TOP BAR
-   Nav items now mirror the PDF's own table of contents.
+   4 · TOP BAR - nav mirrors the document's own table of contents
 ---------------------------------------------------------------------------- */
 const NAV = [
-  ["summary", "Overview"], ["programme", "Programme"], ["verification", "Verification"],
-  ["performance", "GHG Performance"], ["sourcing", "Sourcing"], ["impact", "Impact"],
-  ["engagement", "Engagement"], ["glance", "At a Glance"], ["confidentiality", "Confidentiality"],
+  ["season", "Season"], ["fields", "Fields"], ["themes", "Themes"], ["governance", "Governance"],
+  ["journey", "Journey"], ["voices", "Voices"], ["documented", "Documented"], ["practice", "Practice"],
+  ["audited", "Audited"], ["timeline", "Timeline"], ["farmerimpact", "Farmer Impact"],
+  ["sourcing", "Sourcing"], ["evidence", "Evidence"], ["about", "About"],
 ];
 
 function TopBar() {
   const [solid, setSolid] = useState(false);
-  const [active, setActive] = useState("summary");
+  const [active, setActive] = useState("season");
   const bar = useRef(null);
 
   const scope = useGsapContext(() => {
@@ -508,15 +527,14 @@ function TopBar() {
 
 /* ----------------------------------------------------------------------------
    5 · HERO
-   Title, subtitle and meta are the report's actual cover page. Background is
-   the report's own cover photograph rather than an illustrated field.
+   Title, lede and meta are the document's own cover page.
 ---------------------------------------------------------------------------- */
-const HERO_LINES = [["Decarbonizing"], ["Nestlé's", "Wheat", "Value"], ["Chain"]];
+const HERO_LINES = [["Low-Carbon"], ["Wheat", "Programme"]];
 const HERO_META = [
   ["Reporting period", "Rabi Season 2025"],
   ["Implementation partner", "Grow Indigo"],
-  ["Geography", "Ludhiana, Punjab"],
-  ["Sowing method", "Happy Seeder"],
+  ["Geography", "Ludiana, Punjab"],
+  ["Quantification", "Cool farm tool.v3"],
 ];
 
 function Hero() {
@@ -549,11 +567,11 @@ function Hero() {
     <div ref={scope} className="relative flex flex-col justify-end" style={{ minHeight: "100vh", background: C.ink }}>
       <div className="hero-photo absolute inset-0 w-full h-full wh-scrub" aria-hidden="true">
         <img
-          src={heroFarmerPhoto}
+          src={heroCoverPhoto}
           alt=""
-          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 22%" }}
+          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 18%" }}
         />
-        <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(32,24,11,.55) 0%, rgba(32,24,11,.55) 45%, rgba(32,24,11,.92) 100%)" }} />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(32,24,11,.5) 0%, rgba(32,24,11,.58) 45%, rgba(32,24,11,.94) 100%)" }} />
       </div>
 
       <div className="hero-content relative px-5 md:px-10 pb-16 md:pb-24 pt-32 mx-auto w-full wh-scrub" style={{ maxWidth: 1180 }}>
@@ -561,12 +579,9 @@ function Hero() {
           <div style={{ maxWidth: 560 }}>
             <LogoLockup light height={38} />
           </div>
-          <div className="mt-8">
-            <Eyebrow color={C.husk}>Emission Quantification Report for Rabi Wheat 2025</Eyebrow>
-          </div>
         </div>
 
-        <h1 className="wh-display mt-6" style={{ color: "#fff", fontWeight: 800, fontSize: "clamp(2.2rem, 6.4vw, 5.2rem)", maxWidth: "20ch" }}>
+        <h1 className="wh-display mt-8" style={{ color: "#fff", fontWeight: 800, fontSize: "clamp(2.2rem, 6.4vw, 5.2rem)", maxWidth: "20ch" }}>
           {HERO_LINES.map((line, li) => (
             <span key={li} className="wh-mask">
               {line.map((w, wi) => (
@@ -583,9 +598,9 @@ function Hero() {
           ))}
         </h1>
 
-        <p className="hero-lede mt-7 text-lg md:text-xl" style={{ color: "rgba(255,255,255,.78)", maxWidth: "56ch", lineHeight: 1.6 }}>
-          The programme enrolled low-carbon wheat farmers across Ludhiana district, Punjab, grouped by their
-          delivering processor.
+        <p className="hero-lede mt-7 text-lg md:text-xl" style={{ color: "rgba(255,255,255,.78)", maxWidth: "60ch", lineHeight: 1.6 }}>
+          Lower-carbon wheat built around Zero Tillage, optimised fertiliser usage, residue management and
+          digitally traceable field-to-processor evidence trail.
         </p>
 
         <div className="hero-meta mt-10 flex flex-wrap gap-x-10 gap-y-5">
@@ -614,60 +629,111 @@ function Hero() {
 }
 
 /* ----------------------------------------------------------------------------
-   6 · SECTION 1 - PROGRAMME OVERVIEW
-   Key highlights table, the overview infographic, the enrolled-fields map and
-   the identity-preservation aerial photo - all as they appear in the PDF.
+   6 · SHARED STAT ROW - reused for the two identical "season headline"
+   result trios (Section 01 and Section 09).
 ---------------------------------------------------------------------------- */
-const KEY_HIGHLIGHTS = [
-  ["Location", "Ludhiana, Punjab"],
-  ["Processors", "Gillco Agro, Golden Wheat & Allied Mills, Kohinoor Agro Foods, Ludhiana Flour Mills"],
-  ["Farmers", "273"],
-  ["Area", "5905 (in acres)"],
-  ["Quantity", "7260.9 MT"],
-  ["Sowing Method", "Happy Seeder"],
-];
-
-function HighlightsTable() {
+function StatRow({ stats }) {
   return (
-    <div className="rounded-lg overflow-hidden" style={{ border: `1px solid ${C.line}` }}>
-      {KEY_HIGHLIGHTS.map(([k, v], i) => (
-        <div key={k} className="grid sm:grid-cols-3" style={{ borderTop: i ? `1px solid ${C.line}` : "none" }}>
-          <div className="px-5 py-4 sm:col-span-1" style={{ background: C.field, color: "#fff", fontWeight: 600, fontSize: 14 }}>
-            {k}
-          </div>
-          <div className="px-5 py-4 sm:col-span-2" style={{ background: i % 2 ? C.paperDim : "#fff", fontSize: 14.5, color: C.ink }}>
-            {v}
-          </div>
+    <div className="grid gap-4 sm:grid-cols-3">
+      {stats.map(([value, label, sub]) => (
+        <div key={label} className="p-6 rounded-lg text-center" style={{ background: "#fff", border: `1px solid ${C.line}` }}>
+          <div className="wh-display" style={{ fontWeight: 800, fontSize: "2rem", color: C.field }}>{value}</div>
+          <div className="mt-2" style={{ fontWeight: 700, fontSize: 14, color: C.ink }}>{label}</div>
+          {sub && <div className="wh-data mt-1" style={{ fontSize: 11.5, color: C.mute }}>{sub}</div>}
         </div>
       ))}
     </div>
   );
 }
 
-function OverviewSection() {
+const HEADLINE_RESULTS = [
+  ["~34%", "Less nitrogen", "187.14 to 123.35 kg N/ha"],
+  ["~46%", "Water saved", "1,410.03 to 760.78 m3/ha"],
+  ["~101%", "Total Net GHG Benefit", "incl. soil-carbon removals"],
+];
+
+/* ----------------------------------------------------------------------------
+   7 · SECTION 01 - WHAT THE SEASON DELIVERED
+---------------------------------------------------------------------------- */
+function SeasonSection() {
   return (
-    <Section id="summary" tone="tint">
+    <Section id="season" tone="tint">
       <SectionHead
         index="01"
-        title="Programme Overview"
-        lede="The programme enrolled low-carbon wheat farmers across Ludhiana district, Punjab, grouped by their delivering processor. The table below summarises the key programme parameters."
+        title="What the Season Delivered"
+        lede="The Low-Carbon Wheat Programme promoted Zero/Reduced Tillage (ZT/RT) as the central practice for wheat sown after the preceding crop. The programme recorded farmer registration, field-level agronomic data including optimised fertilizer uses, crop residue management (CRM) and irrigation water use followed by an independent audit."
       />
 
       <Reveal>
-        <PhotoSlot src={overviewInfographic} alt="Decarbonizing Nestlé's Wheat Value Chain - Rabi Season 2025" caption="Decarbonizing Nestlé's Wheat Value Chain - Rabi Season 2025" />
+        <StatRow stats={[
+          ["273", "Farmers registered", null],
+          ["5905", "Acres registered", null],
+          ["7261", "Procurement quantity (MT)", null],
+        ]} />
       </Reveal>
 
-      <Reveal delay={0.1} className="mt-12">
-        <Eyebrow>Key highlights</Eyebrow>
-        <div className="mt-4"><HighlightsTable /></div>
+      <Reveal delay={0.1} className="mt-6">
+        <StatRow stats={HEADLINE_RESULTS} />
       </Reveal>
 
-      <div className="grid gap-8 lg:grid-cols-2 mt-14">
+      <Reveal delay={0.1} className="mt-14">
+        <Eyebrow>Why This Programme Exists?</Eyebrow>
+        <div className="mt-4 space-y-5" style={{ fontSize: 15, lineHeight: 1.75, color: C.mute, maxWidth: "78ch" }}>
+          <p>
+            Wheat sown after paddy in Punjab is usually established through repeated tillage, with the previous
+            crop's residue often burnt to clear fields fast. Tillage adds diesel use and soil disturbance at every
+            pass; burning adds air pollution and strips out organic matter. Against that backdrop the programme
+            built its establishment method around Zero/Reduced tillage, optimised nitrogen use and Crop residue
+            management (CRM).
+          </p>
+          <p>
+            Participating farmers adopted a revised wheat establishment approach centred on Zero/Reduced tillage.
+            It enabled direct sowing through retained crop residue, replacing conventional ploughing and seedbed
+            preparation with a single-pass operation. Farmer training, nutrient management, field monitoring and
+            digital traceability were aligned around this practice to support consistent implementation and
+            provide an auditable record of programme adoption.
+          </p>
+          <p>
+            The project reduced GHG emissions by an average of 15.34% per MT. By integrating Soil Organic Carbon
+            (SOC) sequestration, the project generated an average 100.88% total net greenhouse gas benefit over
+            the baseline.
+          </p>
+        </div>
+      </Reveal>
+
+      <Reveal delay={0.12} className="mt-12">
+        <div className="p-7 rounded-lg" style={{ background: C.ink }}>
+          <Eyebrow color={C.husk}>The claim, in one line?</Eyebrow>
+          <p className="wh-display mt-4" style={{ color: "#fff", fontWeight: 600, fontSize: "clamp(1.2rem,2.4vw,1.6rem)", lineHeight: 1.4 }}>
+            A farmer-led model for lower-emission wheat, centred on sustainable practices and supported by
+            transparent field records, independent assurance and traceable procurement.
+          </p>
+          <div className="wh-data mt-5" style={{ fontSize: 13, color: "rgba(255,255,255,.65)", letterSpacing: ".02em" }}>
+            273 farmers enrolled · 5,905 acres covered · 17 farmers audited · 7,261 MT of wheat procured
+          </div>
+        </div>
+      </Reveal>
+    </Section>
+  );
+}
+
+/* ----------------------------------------------------------------------------
+   8 · SECTION 02 - EVERY FIELD ON THE MAP
+---------------------------------------------------------------------------- */
+function FieldsSection() {
+  return (
+    <Section id="fields">
+      <SectionHead
+        index="02"
+        title="Every Field on the Map"
+        lede="The programme covered registered wheat farms in Punjab. Farmer identities, field boundaries and agronomic information were digitally recorded to support field-level monitoring and traceability. Field-level records were organised across four processors: Gillco Agro, Golden Wheat & Allied Mills, Kohinoor Agro Foods and Ludhiana Flour Mills. The final map shows the confirmed programme fields and distinguishes fields where practice-level data are available."
+      />
+      <div className="grid gap-8 lg:grid-cols-2">
         <Reveal>
-          <PhotoSlot src={enrolledFieldsMap} alt="Enrolled fields grouped by processor - Ludhiana District" caption="Enrolled fields grouped by processor - Ludhiana District" />
+          <PhotoSlot ratio="4 / 3" src={enrolledFieldsMap} alt="Enrolled fields grouped by processor, Ludhiana District" caption="Enrolled fields grouped by processor, Ludhiana District" />
         </Reveal>
         <Reveal delay={0.1}>
-          <PhotoSlot ratio="4 / 3" src={identityPreservationAerial} alt="Identity-Preservation of Low-Carbon Wheat Grown at Enrolled Farms in Ludhiana" caption="Identity-Preservation of Low-Carbon Wheat Grown at Enrolled Farms in Ludhiana" />
+          <PhotoSlot ratio="4 / 3" src={identityPreservationAerial} alt="Identity-Preservation of Low-Emission Wheat Grown at Enrolled Farms in Ludhiana" caption="Identity-Preservation of Low-Emission Wheat Grown at Enrolled Farms in Ludhiana" />
         </Reveal>
       </div>
     </Section>
@@ -675,12 +741,442 @@ function OverviewSection() {
 }
 
 /* ----------------------------------------------------------------------------
-   7 · PINNED STATEMENT
-   The tagline is quoted directly from the overview infographic.
+   9 · SECTION 03 - THE THREE PROGRAMME THEMES
 ---------------------------------------------------------------------------- */
-const BIG_PICTURE = "From High Emissions to Measurable Impact – A Low-Carbon Wheat Future.";
+const THEME_1_BULLETS = [
+  "Fewer conventional land-preparation operations compared with repeated tillage.",
+  "Reduced soil disturbance during crop establishment.",
+  "Residue retained within the production system instead of being openly burnt.",
+  "Practical ZT/RT demonstrations conducted during farmer meetings and field exposure sessions.",
+  "Field-level adoption recorded and verified through programme monitoring.",
+  "Low-emission wheat segregated in distinct white PP bags during procurement to support identification and traceability.",
+];
 
-function PinnedStatement() {
+const THEME_2_BULLETS = [
+  "No open-field residue burning was reinforced as a core programme practice.",
+  "Farmers were sensitised on the environmental and agronomic importance of responsible crop-residue management.",
+  "Residue retention, incorporation and baling were promoted as appropriate alternatives to burning.",
+  "Zero/reduced Tillage machinery enabled wheat sowing through retained paddy residue, reducing the need for field clearing before sowing.",
+  "Kisan Advisors reinforced no-burning practices through regular field visits, farmer meetings and practical demonstrations.",
+  "Field boundaries and agronomic records were digitally captured, while remote-sensing checks supported verification of no-burning on mapped programme fields.",
+  "Crop-residue management records formed part of the programme's wider monitoring, traceability and GHG-assessment framework.",
+];
+
+const THEME_3_BULLETS = [
+  "Field visits by Kisan Advisors from sowing to harvest",
+  "Six village-level meetings (VLMs) with live demonstrations",
+  "Vernacular learning videos on Grow Indigo's YouTube channel",
+  "A combined field, group and digital handholding ecosystem",
+];
+
+function ThemeBlock({ color, title, paragraphs, bullets }) {
+  return (
+    <div className="rounded-lg overflow-hidden" style={{ background: "#fff", border: `1px solid ${C.line}`, borderTop: `3px solid ${color}` }}>
+      <div className="p-7">
+        <h4 className="wh-display text-xl" style={{ color, fontWeight: 700 }}>{title}</h4>
+        <div className="mt-4 space-y-4" style={{ fontSize: 14.5, lineHeight: 1.72, color: C.mute }}>
+          {paragraphs.map((p, i) => <p key={i}>{p}</p>)}
+        </div>
+        <ul className="mt-5 space-y-2.5">
+          {bullets.map((b, i) => (
+            <li key={i} className="flex gap-2.5" style={{ fontSize: 13.5, lineHeight: 1.6, color: C.ink }}>
+              <span style={{ color }}>▸</span>
+              <span>{b}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+function ThemesSection() {
+  const grid = useBatchReveal(".theme-card", { stagger: 0.1 });
+  return (
+    <Section id="themes" tone="tint">
+      <SectionHead index="03" title="The Three Programme Themes" />
+      <div ref={grid} className="space-y-6">
+        <div className="theme-card">
+          <ThemeBlock
+            color={C.field}
+            title="Theme 1 · Soil"
+            paragraphs={[
+              "Sustainable practices like Zero/Reduced tillage were the main establishment practice promoted under the wheat programme. It enabled wheat to be sown through retained paddy residue without the conventional sequence of repeated land preparation. The practice connected wheat establishment with responsible residue management and provided farmers with an alternative to open-field burning.",
+              "Wheat established directly through retained paddy residue using the Zero-tillage machinery",
+            ]}
+            bullets={THEME_1_BULLETS}
+          />
+        </div>
+        <div className="theme-card">
+          <ThemeBlock
+            color={C.leaf}
+            title="Theme 2 · Crop Residue management"
+            paragraphs={[
+              "The Low-emission wheat Programme promoted no open-field burning of crop residue as a key principle of responsible residue management. Farmers were encouraged to manage paddy residue through appropriate alternatives such as retention, incorporation or baling, depending on field conditions and the wheat-establishment method.",
+              "Sustainable practices like zero/reduced tillage, including sowing, provided farmers with a practical pathway to establish wheat directly through retained paddy residue without first burning the field. This helped connect residue management with lower soil disturbance, fewer preparatory field operations and the programme's wider low-emission objectives. The programme describes residue retention as a practical alternative to open-field burning.",
+            ]}
+            bullets={THEME_2_BULLETS}
+          />
+        </div>
+        <div className="theme-card">
+          <ThemeBlock
+            color={C.husk}
+            title="Theme 3 · Program Competencies: A High-touch, Phygital Extension Model"
+            paragraphs={[
+              "Kisan Advisors (KAs) conducted regular field visits throughout the wheat season, from field establishment to harvest. These visits enabled one-on-one farmer support, field-level troubleshooting and verification of zero/reduced tillage practices, fertiliser application, crop protection and residue management. Farmers received practical recommendations based on field conditions and were supported in maintaining farmer diaries to record agronomic activities, input use and cultivation expenses. Field engagement also reinforced the importance of avoiding residue burning and adopting appropriate methods for residue retention, incorporation or baling.",
+              "Six Village-Level and Stakeholder Meetings were conducted during the programme period to support collective learning and farmer engagement. The sessions covered sustainable practices like zero/reduced tillage, crop residue management, balanced fertiliser application, integrated pest management and avoidance of harmful chemical categories. Practical demonstrations of zero/reduced tillage machinery, Leaf Colour Chart use and farmer-diary maintenance helped farmers understand the recommended practices under field conditions. These meetings also provided a platform for farmer interaction, peer learning and clarification of programme requirements.",
+              "To extend knowledge beyond the field, Grow Indigo also used its digital learning platform, on YouTube (@growindigoindia), featuring simple, vernacular videos on regenerative agriculture, water-saving methods, soil health, and climate-smart practices. This provided continuous learning support that farmers could access anytime.",
+              "Together, these field interactions, group sessions, and digital resources created a strong handholding ecosystem. The combined approach improved farmer awareness, encouraged consistent adoption of regenerative practices, and strengthened overall implementation quality across the project.",
+            ]}
+            bullets={THEME_3_BULLETS}
+          />
+        </div>
+      </div>
+    </Section>
+  );
+}
+
+/* ----------------------------------------------------------------------------
+   10 · SECTION 04 - PROGRAMME GOVERNANCE AND IMPLEMENTATION
+---------------------------------------------------------------------------- */
+const GOVERNANCE_TABLE = [
+  ["Project Management Unit", [
+    "Strategic supervision and governance",
+    "Alignment with Nestlé's sustainability and reporting requirements",
+    "Oversight of procurement and reporting",
+  ]],
+  ["RBM (Regional Business Manager) / Agronomist", [
+    "Led on-ground implementation with the TBM and Kisan Advisors",
+    "Technical guidance on Zero/Reduced tillage machinery",
+    "Farmer training on establishment method and record-keeping",
+    "Quality assurance of field data and practice verification",
+  ]],
+  ["TBM (Territory Business Manager)", [
+    "Supervised Kisan Advisors daily",
+    "Coordination during procurement with processors",
+    "Adherence to implementation timelines and technical protocols",
+  ]],
+  ["Kisan Advisors", [
+    "Single point of contact for farmers",
+    "Farmer engagement and mobilisation across project villages",
+    "Field geofencing in the ClearHarvest application",
+    "Field visits and Zero/Reduced tillage machinery demonstration",
+  ]],
+  ["Scientists", [
+    "Quality checks on field mapping and monitoring of field activities",
+    "GHG emission quantification and nitrogen-reduction assessment",
+  ]],
+  ["Engineering Team", [
+    "Upgradation and maintenance of the ClearHarvest application",
+    "Digital traceability and audit-trail generation, farm to processor",
+  ]],
+];
+
+function GovernanceTable() {
+  return (
+    <div className="rounded-lg overflow-hidden" style={{ border: `1px solid ${C.line}` }}>
+      <div className="hidden md:grid grid-cols-3" style={{ background: C.field }}>
+        <div className="px-5 py-3 col-span-1" style={{ color: "#fff", fontWeight: 600, fontSize: 13 }}>Role</div>
+        <div className="px-5 py-3 col-span-2" style={{ color: "#fff", fontWeight: 600, fontSize: 13 }}>Responsibilities</div>
+      </div>
+      {GOVERNANCE_TABLE.map(([role, resp], i) => (
+        <div key={role} className="grid md:grid-cols-3" style={{ borderTop: i ? `1px solid ${C.line}` : "none", background: i % 2 ? C.paperDim : "#fff" }}>
+          <div className="px-5 py-4 md:col-span-1" style={{ fontWeight: 600, fontSize: 14, color: C.ink }}>{role}</div>
+          <div className="px-5 py-4 md:col-span-2">
+            <ul className="space-y-1.5">
+              {resp.map((r, ri) => (
+                <li key={ri} style={{ fontSize: 13.5, lineHeight: 1.6, color: C.mute }}>{r}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function GovernanceSection() {
+  const grid = useBatchReveal(".monitor-shot", { stagger: 0.08 });
+  return (
+    <Section id="governance">
+      <SectionHead
+        index="04"
+        title="Programme Governance and Implementation"
+        lede="Delivery ran through a layered implementation architecture. Strategic oversight sat with Grow Indigo's Clear Harvest Business team, keeping the programme aligned to Nestlé's sustainability objectives and reporting requirements."
+      />
+
+      <Reveal>
+        <p style={{ fontSize: 15, lineHeight: 1.75, color: C.mute, maxWidth: "78ch" }}>
+          Field execution was led by the Regional Business Manager / Agronomist, who oversaw technical
+          implementation and agronomic fidelity across the project area, supported by the Territory Business
+          Manager on day-to-day oversight, farmer coordination and operational planning. At ground level, Kisan
+          Advisors worked directly with farmers to drive adoption, monitor fields and protect the integrity of
+          data collection.
+        </p>
+      </Reveal>
+
+      <Reveal delay={0.08} className="mt-8">
+        <PhotoSlot src={governanceOrgChart} alt="ClearHarvest team structure" />
+      </Reveal>
+
+      <Reveal delay={0.12} className="mt-8">
+        <GovernanceTable />
+      </Reveal>
+
+      <div className="mt-16">
+        <Eyebrow>Monitoring, Reporting and Verification</Eyebrow>
+
+        <div className="mt-8">
+          <h4 className="wh-display text-lg" style={{ color: C.field, fontWeight: 700 }}>Monitoring and Measurement</h4>
+          <p className="mt-3" style={{ fontSize: 14.5, lineHeight: 1.72, color: C.mute, maxWidth: "78ch" }}>
+            Grow Indigo implemented a structured, phygital monitoring system that combined regular field-level
+            observations with digital data capture to ensure accuracy, traceability and verification. Throughout
+            the season, Kisan Advisors conducted periodic field visits to monitor crop growth, verify Zero
+            tillage establishment practices, verify nutrient applications and update farmer diaries. Farmer
+            information, field boundary geofencing and agronomy information (fertiliser, pesticide use,
+            irrigation method) was recorded using the FieldKhatta application, ODK and farmer diaries. All mapped
+            field boundaries were also quality-checked and verified using Remote Sensing to confirm spatial
+            accuracy, consistency and no burning on the mapped fields. The agronomist and science team reviewed
+            these records, performing quality checks on data accuracy, completeness and geolocation consistency
+            to ensure reliable inputs for GHG accounting.
+          </p>
+          <div ref={grid} className="grid gap-4 grid-cols-2 sm:grid-cols-5 mt-6">
+            {[monitoringApp1, monitoringApp2, monitoringApp3, monitoringApp4, monitoringApp5].map((src, i) => (
+              <div key={i} className="monitor-shot">
+                <PhotoSlot ratio="9 / 16" src={src} alt="Farmer onboarding, field-level data collection & supply chain audit trail" />
+              </div>
+            ))}
+          </div>
+          <div className="wh-data text-center mt-3" style={{ fontSize: 11, color: C.mute, fontStyle: "italic" }}>
+            Farmer onboarding, field-level data collection &amp; supply chain audit trail
+          </div>
+          <Reveal delay={0.1} className="mt-8">
+            <PhotoSlot src={sixStepChain} alt="Farmer onboarding through to GHG quantification: the six-step wheat implementation chain." caption="Farmer onboarding through to GHG quantification: the six-step wheat implementation chain." />
+          </Reveal>
+        </div>
+
+        <div className="mt-14">
+          <h4 className="wh-display text-lg" style={{ color: C.field, fontWeight: 700 }}>Traceability</h4>
+          <p className="mt-3" style={{ fontSize: 14.5, lineHeight: 1.72, color: C.mute, maxWidth: "78ch" }}>
+            Post harvest and during procurement, S3 Sutra enabled traceability of low-emission paddy from farm to
+            miller. It captured the complete audit trail, documenting farmer validation, produce quantities, and
+            movement of low-emission paddy. This integrated approach created a robust monitoring and verification
+            system that delivered high-quality data, ensured credible traceability, and supported accurate GHG
+            quantification aligned with Nestlé's reporting requirements.
+          </p>
+          <Reveal delay={0.1} className="mt-6">
+            <PhotoSlot ratio="4 / 3" src={traceabilityFlow} alt="Farm-to-miller traceability flow, Node-to-node view" caption="Farm-to-miller traceability flow, Node-to-node view" />
+          </Reveal>
+        </div>
+
+        <div className="mt-14">
+          <h4 className="wh-display text-lg" style={{ color: C.field, fontWeight: 700 }}>Verification</h4>
+          <div className="mt-3 space-y-4" style={{ fontSize: 14.5, lineHeight: 1.72, color: C.mute, maxWidth: "78ch" }}>
+            <p>
+              The program delivered measurable reductions in greenhouse gas emissions, water consumption, and
+              fertilizer use through farmers' adoption of regenerative agricultural practices, including
+              zero/reduced tillage and crop residue management.
+            </p>
+            <p>
+              The reported outcomes were evaluated against the approved monitoring methodology through a review
+              of monitoring records, farmer-level data, supporting documentation, and field-level evidence. The
+              verification process assessed the completeness, consistency, accuracy, and traceability of the
+              reported data and cross-checked the results against the established baseline. The project and its
+              reported outcomes were independently verified by the third-party auditor, One Peterson.
+            </p>
+          </div>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
+/* ----------------------------------------------------------------------------
+   11 · SECTION 05 - PROGRAMME JOURNEY
+---------------------------------------------------------------------------- */
+const JOURNEY_STEPS = [
+  {
+    n: "01", title: "Programme Kick-off", img: journeyKickoff,
+    body: "The programme began with alignment on scope, geography and implementation requirements. Field identification and deployment of the programme team followed, establishing the operational base for farmer engagement and seasonal monitoring.",
+  },
+  {
+    n: "02", title: "First VLM", place: "Khasi Kalan, Ludhiana, 4 December 2025", img: journeyVlm1,
+    body: "The first VLM introduced farmers to the ClearHarvest wheat programme and its low-carbon objectives. Zero Tillage and Reduced Tillage were explained alongside crop residue management. The session also covered safe farming practices, record keeping and responsible labour practices. Around 50 farmers participated and interacted with the field team.",
+  },
+  {
+    n: "03", title: "Second VLM", place: "Kotkapura, Faridkot, 5 December 2025", img: journeyVlm2,
+    body: "The second VLM focused on Zero Tillage, Reduced Tillage and crop residue management for lower-emission wheat production. Farmers were also briefed on programme participation and the previous season's low-emission wheat procurement. Responsible pesticide use, safe disposal of chemical containers and fair labour practices were discussed. Around 47 farmers attended and participated in the closing Q&A.",
+  },
+  {
+    n: "04", title: "Third VLM", place: "BISA Farm, Ludhiana, 15 January 2026", img: journeyVlm3,
+    body: "The third VLM was conducted as a farmer meeting and field exposure visit focused on practical capacity building for more than 60 farmers. Training covered Zero/Reduced Tillage, crop residue management, balanced fertiliser use and farmer record-keeping. The session included a live demonstration of Zero Tillage machinery. Farmer diaries and Leaf Colour Chart use were also demonstrated.",
+  },
+  {
+    n: "05", title: "Fourth VLM", place: "Aulakh, Faridkot, 24 February 2026", img: journeyVlm4,
+    body: "The Fourth VLM focused on integrated pest management and safer wheat production practices. Farmers were specifically sensitised on avoiding red- and yellow-category chemicals. Balanced fertiliser use and efficient water use were also discussed. The session saw active farmer participation and discussion.",
+  },
+  {
+    n: "06", title: "Fifth VLM", place: "Nurpur Bet, Ludhiana, 25 February 2026", img: journeyVlm5,
+    body: "The Fifth VLM focused on safe pest management and responsible input use in wheat. Farmers were advised to avoid red-category chemicals because of their impact on soil and human health. Balanced fertiliser application and resource-use efficiency were reinforced. The meeting also created awareness on the wider ClearHarvest sustainability programme.",
+  },
+  {
+    n: "07", title: "Sixth VLM", place: "Dhanansu, Ludhiana, 26 February 2026", img: journeyVlm6,
+    body: "The sixth VLM was conducted as a stakeholder meeting under the ClearHarvest Wheat Programme, bringing farmers and programme representatives together to reinforce key implementation priorities. The discussion focused on responsible pest management, avoidance of harmful chemicals, balanced fertiliser usage and efficient resource management in wheat cultivation. The session also strengthened awareness of the Carbon Credit initiative and the programme's broader low-carbon agriculture objectives. The meeting concluded with active stakeholder participation and discussion on practical adoption at the field level.",
+  },
+  {
+    n: "08", title: "Low-Carbon Wheat", img: journeyLowCarbonWheat,
+    body: "Following farmer engagement, field teams continued to record establishment practices, fertiliser use and crop-stage information through the season from the farm to aarthiya to mills. During procurement, 7,261 metric tonnes of programme wheat was procured, segregated and packed separately in clearly identifiable white PP bags. This controlled handling maintained the identity of the wheat throughout procurement and processing. The process strengthened traceability and preserved the link between participating farms and the final programme volume.",
+  },
+  {
+    n: "09", title: "Third-Party Audit", img: journeyThirdPartyAudit, body: null,
+  },
+  {
+    n: "10", title: "Quantification and Reporting",
+    body: "Following data collection and independent review, the programme's GHG impact was calculated using the Cool Farm Tool. The assessment applied the GHG Protocol Scope 3 framework and IPCC Tier 1 guidance. Results were reviewed and prepared for Nestlé's sustainability reporting.",
+  },
+];
+
+function JourneySection() {
+  const grid = useBatchReveal(".journey-step", { stagger: 0.06 });
+  return (
+    <Section id="journey" tone="tint">
+      <SectionHead
+        index="05"
+        title="Programme Journey"
+        lede="From programme confirmation to the final audit, each stage generates a verifiable record. Together these records form the evidence base for the programme's monitoring and quantification."
+      />
+      <div ref={grid} className="space-y-10">
+        {JOURNEY_STEPS.map((step) => (
+          <div key={step.n} className="journey-step grid gap-6 md:grid-cols-5 items-start">
+            <div className="md:col-span-3">
+              <div className="flex items-baseline gap-3">
+                <span className="wh-data" style={{ color: C.husk, fontWeight: 700, fontSize: 13 }}>{step.n} ·</span>
+                <h4 className="wh-display text-xl" style={{ color: C.ink, fontWeight: 700 }}>{step.title}</h4>
+              </div>
+              {step.place && (
+                <div className="wh-data mt-1.5" style={{ fontSize: 12.5, color: C.field, fontWeight: 600 }}>{step.place}</div>
+              )}
+              {step.body && (
+                <p className="mt-3" style={{ fontSize: 14, lineHeight: 1.72, color: C.mute }}>{step.body}</p>
+              )}
+            </div>
+            {step.img && (
+              <div className="md:col-span-2">
+                <PhotoSlot ratio="4 / 3" src={step.img} alt={step.title} />
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
+/* ----------------------------------------------------------------------------
+   12 · SECTION 06 - FARMER VOICES
+---------------------------------------------------------------------------- */
+function VoicesSection() {
+  return (
+    <Section id="voices">
+      <SectionHead index="06" title="Farmer Voices" />
+      <Reveal>
+        <p className="italic" style={{ fontSize: 15, color: C.mute }}>Recorded on-field during the season.</p>
+      </Reveal>
+    </Section>
+  );
+}
+
+/* ----------------------------------------------------------------------------
+   13 · SECTION 07 - WHAT THE FIELD TEAM DOCUMENTED
+---------------------------------------------------------------------------- */
+function DocumentedSection() {
+  const grid1 = useBatchReveal(".vlm-shot", { stagger: 0.08 });
+  return (
+    <Section id="documented" tone="tint">
+      <SectionHead
+        index="07"
+        title="What the Field Team Documented"
+        lede="Photographic and paper evidence is collected throughout the season. These sit alongside the digital records in FieldKhatta app and S3 Sutra."
+      />
+
+      <div>
+        <h4 className="wh-display text-lg" style={{ color: C.field, fontWeight: 700 }}>Village-level meetings</h4>
+        <p className="mt-3" style={{ fontSize: 14.5, lineHeight: 1.72, color: C.mute, maxWidth: "78ch" }}>
+          Six VLMs across the project period. Demonstrations on zero tillage machinery, Farmer diaries and Leaf
+          Colour Chart use and residue management, with the team members present at every session to answer
+          product questions directly.
+        </p>
+        <div ref={grid1} className="grid gap-5 sm:grid-cols-2 mt-6">
+          <div className="vlm-shot"><PhotoSlot ratio="4 / 3" src={docVlmKhasiKalan} alt="VLM session with farmers at Khasi Kalan, Ludhiana, Punjab" caption="VLM session with farmers at Khasi Kalan, Ludhiana ,Punjab" /></div>
+          <div className="vlm-shot"><PhotoSlot ratio="4 / 3" src={docStakeholderMeeting} alt="Meeting with Local Stakeholders: Village-Level carbon farming sessions" caption="Meeting with Local Stakeholders: Village-Level carbon farming sessions" /></div>
+          <div className="vlm-shot"><PhotoSlot ratio="4 / 3" src={docZtDemoBisa} alt="Live demonstration of Zero Tillage machinery, Borlaug Institute for South Asia (BISA) Farm, Ludhiana" caption="Live demonstration of Zero Tillage machinery, Borlaug Institute for South Asia (BISA) Farm, Ludhiana" /></div>
+          <div className="vlm-shot"><PhotoSlot ratio="4 / 3" src={docTeamNurpur} alt="Field team presenting to farmers, Nurpur, Punjab" caption="Field team presenting to farmers, Nurpur, Punjab" /></div>
+        </div>
+      </div>
+
+      <div className="mt-14">
+        <h4 className="wh-display text-lg" style={{ color: C.field, fontWeight: 700 }}>Farmer diaries</h4>
+        <p className="mt-3" style={{ fontSize: 14.5, lineHeight: 1.72, color: C.mute, maxWidth: "78ch" }}>
+          Kisan Advisors supported farmers in maintaining agronomic and economic records. Farmer diaries captured
+          field operations, input use and other information required for programme monitoring and quantification.
+        </p>
+        <Reveal delay={0.08} className="mt-6">
+          <PhotoSlot ratio="3 / 4" className="max-w-xs" src={heroCoverPhoto} alt="The ClearHarvest handbook provided practical guidance on recommended practices under the Low-Carbon Wheat Programme." caption="The ClearHarvest handbook provided practical guidance on recommended practices under the Low-Carbon Wheat Programme." />
+        </Reveal>
+        <div className="grid gap-5 sm:grid-cols-2 mt-6">
+          <PhotoSlot src={farmerDiarySocioeconomic} alt="Socio-economic profile page" caption="Socio-economic profile page" />
+          <PhotoSlot src={farmerDiaryFertilizer} alt="Fertilizer usage information" caption="Fertilizer usage information" />
+        </div>
+        <div className="mt-6">
+          <PhotoSlot src={farmerDiaryHarvesting} alt="Harvesting Details" caption="Harvesting Details" />
+        </div>
+      </div>
+    </Section>
+  );
+}
+
+/* ----------------------------------------------------------------------------
+   14 · SECTION 08 - ONE PRACTICE, MULTIPLE RETURNS
+   ("Zero Tillage: One Establishment Change, Multiple Returns")
+---------------------------------------------------------------------------- */
+const RETURNS_GRID = [
+  ["01", "More efficient wheat establishment", "Zero tillage machinery enabled direct sowing through retained residue, reducing conventional preparatory operations."],
+  ["02", "Responsible residue and soil management", "Residue retention provided an alternative to open-field burning, while avoiding repeated ploughing reduced soil disturbance."],
+  ["03", "More efficient nitrogen application", "Recorded nitrogen use declined from 187.14 to 123.35 kg N/ha, a calculated reduction of 34.09% across the assessed area."],
+  ["04", "Lower modelled emission intensity", "The assessment recorded an average modelled emission reduction of 15.34% per MT."],
+  ["05", "Stronger farmer capability and field support", "Six village-level and technical sessions, supported by field advisory, reinforced practice adoption, crop management and record-keeping."],
+  ["06", "Traceable and independently assured sourcing", "Digital field records, segregated procurement, audit of 17 farmers and Cool Farm Tool quantification supported credible reporting."],
+];
+
+const PRACTICE_BIG_PICTURE = "Zero/Reduced Tillage is one establishment change with multiple connected benefits: fewer preparatory operations, retained crop residue, reduced soil disturbance, an alternative to open-field burning and lower tillage-related fuel use and emissions. Supported by optimised nitrogen application, farmer guidance and digital traceability, it provides a practical foundation for lower-carbon wheat production.";
+
+function PracticeSection() {
+  const grid = useBatchReveal(".returns-card", { stagger: 0.08 });
+  return (
+    <Section id="practice">
+      <SectionHead
+        index="08"
+        title="Zero Tillage: One Establishment Change, Multiple Returns"
+        lede="Zero/reduced Tillage changed how wheat was established after the preceding crop. Using the zero-tillage machinery, wheat could be sown through retained residue without the conventional sequence of repeated land preparation. The practice reduced soil disturbance supported non-burning residue management and lowered the requirement for preparatory tractor operations."
+      />
+      <div ref={grid} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {RETURNS_GRID.map(([n, title, body]) => (
+          <div key={n} className="returns-card p-6 rounded-lg" style={{ background: C.paperDim, border: `1px solid ${C.line}` }}>
+            <div className="wh-display" style={{ color: C.husk, fontWeight: 800, fontSize: "1.6rem" }}>{n}</div>
+            <h4 className="wh-display mt-2" style={{ fontSize: 15.5, fontWeight: 700, color: C.ink }}>{title}</h4>
+            <p className="mt-2" style={{ fontSize: 13, lineHeight: 1.6, color: C.mute }}>{body}</p>
+          </div>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
+/* ----------------------------------------------------------------------------
+   15 · PINNED STATEMENT - "The big picture" (Section 08's own callout, given
+   the dramatic full-bleed pinned treatment the design system provides)
+---------------------------------------------------------------------------- */
+function PinnedStatement({ text }) {
   const scope = useGsapContext((self, el) => {
     const words = el.querySelectorAll(".pin-word");
     gsap.matchMedia().add(
@@ -708,8 +1204,8 @@ function PinnedStatement() {
     <div ref={scope} className="flex items-center justify-center px-5" style={{ minHeight: "60vh", background: C.field }}>
       <div className="mx-auto text-center" style={{ maxWidth: 900 }}>
         <Eyebrow color={C.husk}>The big picture</Eyebrow>
-        <p className="wh-display mt-6" style={{ color: "#fff", fontWeight: 600, fontSize: "clamp(1.5rem,3.4vw,2.6rem)", lineHeight: 1.28 }}>
-          {BIG_PICTURE.split(" ").map((w, i) => (
+        <p className="wh-display mt-6" style={{ color: "#fff", fontWeight: 600, fontSize: "clamp(1.3rem,2.8vw,2.2rem)", lineHeight: 1.32 }}>
+          {text.split(" ").map((w, i) => (
             <span key={i} className="pin-word" style={{ display: "inline-block", marginRight: "0.28em" }}>{w}</span>
           ))}
         </p>
@@ -719,81 +1215,14 @@ function PinnedStatement() {
 }
 
 /* ----------------------------------------------------------------------------
-   8 · SECTION 2 - DIGITALLY-DRIVEN REGENERATIVE WHEAT PROGRAMME
-   Tech-enabled delivery blurb, the crop calendar, the app-screenshot sequence
-   and the Low Carbon Wheat Journey infographic.
+   16 · SECTION 09 - SAMPLED. QUANTIFIED. AUDITED.
 ---------------------------------------------------------------------------- */
-const APP_SCREENS = [
-  [appOtp, "Field Khata App - farmer OTP verification"],
-  [appFieldTag, "Field Tag - geofenced plot boundary capture"],
-  [appSampleSurvey, "Sample Survey - organic amendment & fuel-use data capture"],
-  [appAadhaarBank, "Aadhaar & bank details verification"],
-  [appAarhtiya, "Aarhtiya - farmer QR / unique code lookup"],
-];
-
-function ProgrammeSection() {
-  const grid = useBatchReveal(".app-shot", { stagger: 0.08 });
-  return (
-    <Section id="programme">
-      <SectionHead
-        index="02"
-        title="Digitally-Driven Regenerative Wheat Programme"
-        lede="Low-carbon wheat, grown using regenerative practices like reduced tillage and optimised fertiliser use, was seamlessly traced and delivered to Nestlé's processors through our tech-enabled infrastructure."
-      />
-
-      <Reveal>
-        <div className="p-7 rounded-lg" style={{ background: C.paperDim, border: `1px solid ${C.line}` }}>
-          <Eyebrow>Tech-Enabled Regenerative Delivery</Eyebrow>
-          <p className="mt-3" style={{ fontSize: 15, lineHeight: 1.75, color: C.ink }}>
-            Low-carbon wheat, grown using regenerative practices like <strong>reduced tillage</strong> and{" "}
-            <strong>optimised fertiliser use</strong>, was seamlessly traced and delivered to Nestlé's processors
-            through our tech-enabled infrastructure.
-          </p>
-        </div>
-      </Reveal>
-
-      <Reveal delay={0.1} className="mt-10">
-        <PhotoSlot src={cropCalendar} alt="Reduced-tillage crop calendar - intervention timeline across the Rabi season" caption="Reduced-tillage crop calendar - intervention timeline across the Rabi season" />
-      </Reveal>
-
-      <Reveal delay={0.14} className="mt-14">
-        <p style={{ fontSize: 15, lineHeight: 1.75, color: C.mute, maxWidth: "72ch" }}>
-          Our digital tools enabled <strong style={{ color: C.ink }}>field-level data capture</strong>,{" "}
-          <strong style={{ color: C.ink }}>monitoring</strong>, and{" "}
-          <strong style={{ color: C.ink }}>end-to-end transparency</strong> - from geofenced plots and verified
-          farmer IDs to supply chain transactions.
-        </p>
-      </Reveal>
-      <div ref={grid} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5 mt-6">
-        {APP_SCREENS.map(([src, label], i) => (
-          <div key={i} className="app-shot">
-            <PhotoSlot ratio="9 / 16" src={src} alt={label} />
-          </div>
-        ))}
-      </div>
-      <Reveal delay={0.06} className="mt-3">
-        <div className="wh-data text-center" style={{ fontSize: 11, color: C.mute, fontStyle: "italic" }}>
-          Farmer onboarding, field-level data collection &amp; supply chain audit trail
-        </div>
-      </Reveal>
-
-      <Reveal delay={0.1} className="mt-14">
-        <PhotoSlot src={lowCarbonJourney} alt="Low Carbon Wheat Journey - Responsible farming. Verified practices. Measurable impact." caption="Low Carbon Wheat Journey - Responsible farming. Verified practices. Measurable impact." />
-      </Reveal>
-    </Section>
-  );
-}
-
-/* ----------------------------------------------------------------------------
-   9 · SECTION 3 - INDEPENDENT VERIFICATION - ONE PETERSON
-   The 3-step carbon accounting & audit pipeline, exactly as tabled in the PDF.
----------------------------------------------------------------------------- */
-const PIPELINE = ["Data Collection", "3rd-Party Audit", "GHG Calculation"];
+const PIPELINE = ["Data Collection", "Independent Audit", "GHG Impact Calculation"];
 const PIPELINE_COLORS = [C.field, C.inkSoft, C.husk];
 
-const VERIFICATION_TABLE = [
+const AUDIT_TABLE = [
   ["Data Collection", "Field-level agronomy data was digitally recorded by enrolled farmers via the Grow Indigo ClearHarvest application at each key intervention event.", "273 wheat farmers participated across Ludhiana district."],
-  ["Independent Audit", "One Peterson conducted on-site field visits to a statistically representative sample of enrolled farms, verifying recorded data against observed practices.", "17 randomly selected farms were independently audited and verified."],
+  ["Independent Audit", "One Peterson conducted on-site field visits to a statistically representative sample of enrolled farms, verifying recorded data against observed practices.", "17 randomly selected farmers were independently audited and verified."],
   ["GHG Impact Calculation", "Emission reductions were quantified using the Cool Farm Tool, applying GHG Protocol Scope 3 and IPCC Tier 1 guidelines.", "Results validated and formatted for Nestlé sustainability reporting."],
 ];
 
@@ -803,7 +1232,7 @@ function PipelineSteps() {
       {PIPELINE.map((label, i) => (
         <React.Fragment key={label}>
           <motion.div
-            className="flex-1 flex items-center justify-center px-6 py-5 rounded"
+            className="flex-1 flex items-center justify-center px-6 py-5 rounded text-center"
             style={{ background: PIPELINE_COLORS[i], color: "#fff", fontWeight: 700, fontSize: 15 }}
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -821,10 +1250,10 @@ function PipelineSteps() {
   );
 }
 
-function VerificationSection() {
+function AuditedSection() {
   return (
-    <Section id="verification" tone="tint">
-      <SectionHead index="03" title="Independent Verification - One Peterson" lede="Carbon accounting & audit pipeline." />
+    <Section id="audited" tone="tint">
+      <SectionHead index="09" title="Sampled. Quantified. Audited." lede="Carbon Accounting and Audit Pipeline: digital field-data collection, independent third-party audit, and GHG calculation." />
       <Reveal><PipelineSteps /></Reveal>
 
       <Reveal delay={0.12} className="mt-10">
@@ -834,7 +1263,7 @@ function VerificationSection() {
               <div key={h} className="px-5 py-3" style={{ color: "#fff", fontWeight: 600, fontSize: 13 }}>{h}</div>
             ))}
           </div>
-          {VERIFICATION_TABLE.map(([step, did, facts], i) => (
+          {AUDIT_TABLE.map(([step, did, facts], i) => (
             <div key={step} className="grid md:grid-cols-3" style={{ borderTop: i ? `1px solid ${C.line}` : "none", background: i % 2 ? C.paperDim : "#fff" }}>
               <div className="px-5 py-4" style={{ fontWeight: 600, fontSize: 14.5, color: C.ink }}>{step}</div>
               <div className="px-5 py-4" style={{ fontSize: 13.5, lineHeight: 1.65, color: C.mute }}>{did}</div>
@@ -844,57 +1273,221 @@ function VerificationSection() {
         </div>
       </Reveal>
 
-      <Reveal delay={0.1} className="mt-12">
-        <PhotoSlot ratio="16 / 9" src={baggedWheatPhoto} alt="Low-Carbon Wheat Separately Packed in White Identifiable Bags" caption="Low-Carbon Wheat Separately Packed in White Identifiable Bags - Regen wheat is packed separately in distinct, easily identifiable white bags." />
+      <Reveal delay={0.1} className="mt-14">
+        <Eyebrow>Season headline results</Eyebrow>
+        <div className="mt-4"><StatRow stats={HEADLINE_RESULTS} /></div>
+      </Reveal>
+
+      <Reveal delay={0.1} className="mt-10">
+        <div className="space-y-5" style={{ fontSize: 14.5, lineHeight: 1.75, color: C.mute, maxWidth: "78ch" }}>
+          <p>
+            Modelled GHG emissions intensity decreased from 425.14 to 359.95 kg CO₂e per MT of wheat, representing
+            a reduction of 65.19 kg CO₂e per MT, or approximately 15%, against the baseline.
+          </p>
+          <p>
+            Average nitrogen application decreased from the Nestlé baseline of 187.14 kg N/ha to 123.35 kg N/ha
+            under the programme, a reduction of 63.79 kg N/ha, or approximately 34%.
+          </p>
+          <p>
+            Modelled irrigation water use decreased from the Grow Indigo baseline of 1,410.03 m³/ha to 760.78
+            m³/ha under the programme, a reduction of 649.25 m³/ha, or approximately 46%.
+          </p>
+        </div>
       </Reveal>
     </Section>
   );
 }
 
 /* ----------------------------------------------------------------------------
-   10 · SECTION 4 - VERIFIED GHG PERFORMANCE
-   The PDF's own emission-reductions chart and impact table were never filled
-   in (every cell read "Xxxx"/"Xxx") - since that data doesn't exist anywhere,
-   those two blocks are omitted rather than shown empty. Yield performance and
-   the SDGs impacted are both real, filled-in figures from the PDF and are
-   kept in full.
+   17 · SECTION 10 - ACTIVITY TIMELINE
 ---------------------------------------------------------------------------- */
-const SDGS = [
-  [2, "Zero Hunger", "#DDA63A"],
-  [8, "Decent Work and Economic Growth", "#A21942"],
-  [12, "Responsible Consumption and Production", "#BF8B2E"],
-  [13, "Climate Action", "#3F7E44"],
-  [15, "Life on Land", "#56C02B"],
+const CROP_STAGES = [
+  ["Oct", "Pre-sowing"],
+  ["Nov", "Sowing & emergence"],
+  ["Dec", "Establishment"],
+  ["Jan", "Tillering"],
+  ["Feb", "Stem elongation"],
+  ["Mar", "Grain development"],
+  ["Apr", "Maturity & harvest"],
 ];
 
-function PerformanceSection() {
-  return (
-    <Section id="performance">
-      <SectionHead index="04" title="Verified GHG Performance" lede="Emission reductions & impact." />
+const INTERVENTIONS = [
+  ["Mobilisation", "Programme kick-off, farmer onboarding and field identification"],
+  ["Zero Tillage establishment", "Happy Seeder sowing through retained paddy residue with optimised basal fertiliser application. Practice and sowing information recorded."],
+  ["Crop nutrition and monitoring", "Need-based urea application, crop-stage advisory and farmer-diary maintenance"],
+  ["Verification", "Field records and practice validation"],
+  ["Harvest", "Segregated packing, procurement and traceability records"],
+];
 
-      <Reveal className="mt-10">
-        <div className="p-7 rounded-lg" style={{ background: C.paperDim, border: `1px solid ${C.line}` }}>
-          <Eyebrow>Yield Performance</Eyebrow>
-          <p className="mt-3" style={{ fontWeight: 700, fontSize: 16, color: C.ink }}>
-            This year: 2.0 MT/acre &nbsp;|&nbsp; Last year: 2.2 MT/acre (– ~9% YoY)
-          </p>
-          <p className="mt-3 italic" style={{ fontSize: 13.5, lineHeight: 1.7, color: C.mute }}>
-            Likely contributing factors: unseasonal/off-season rainfall and cloudy spells during the grain-filling
-            stage, terminal heat stress in late-sown plots, and localised pest-disease pressure - seasonal
-            variables common across Punjab wheat this Rabi cycle, rather than a programme-practice effect.
-          </p>
+function CropStageStrip() {
+  return (
+    <div className="grid" style={{ gridTemplateColumns: `repeat(${CROP_STAGES.length}, 1fr)` }}>
+      {CROP_STAGES.map(([month, stage], i) => (
+        <div key={month} className="text-center px-2 py-4" style={{ borderLeft: i ? `1px solid ${C.line}` : "none", background: i % 2 ? C.paperDim : "#fff" }}>
+          <div className="wh-data" style={{ fontSize: 11, fontWeight: 700, color: C.field, letterSpacing: ".08em" }}>{month.toUpperCase()}</div>
+          <div className="mt-1.5" style={{ fontSize: 12, lineHeight: 1.35, color: C.ink, fontWeight: 500 }}>{stage}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function TimelineSection() {
+  return (
+    <Section id="timeline">
+      <SectionHead
+        index="10"
+        title="Activity Timeline"
+        lede="The wheat programme followed the crop production cycle from pre-sowing through sowing and establishment to maturity and harvest, with agronomic operations, regenerative interventions and nutrient applications aligned to each key growth stage."
+      />
+
+      <Reveal>
+        <Eyebrow>Crop stage</Eyebrow>
+        <div className="mt-4 rounded-lg overflow-hidden" style={{ border: `1px solid ${C.line}` }}>
+          <CropStageStrip />
         </div>
       </Reveal>
 
       <Reveal delay={0.1} className="mt-10">
-        <Eyebrow>SDGs Impacted</Eyebrow>
-        <div className="flex flex-wrap gap-3 mt-4">
-          {SDGS.map(([n, label, color]) => (
-            <div key={n} className="flex flex-col justify-between p-3 rounded" style={{ background: color, color: "#fff", width: 130, height: 130 }}>
-              <div className="wh-display" style={{ fontWeight: 800, fontSize: "1.8rem", lineHeight: 1 }}>{n}</div>
-              <div style={{ fontSize: 11, fontWeight: 700, lineHeight: 1.3, textTransform: "uppercase" }}>{label}</div>
+        <Eyebrow>Programme interventions: field activity and evidence capture</Eyebrow>
+        <div className="mt-4 rounded-lg overflow-hidden" style={{ border: `1px solid ${C.line}` }}>
+          {INTERVENTIONS.map(([title, body], i) => (
+            <div key={title} className="grid sm:grid-cols-3" style={{ borderTop: i ? `1px solid ${C.line}` : "none", background: i % 2 ? C.paperDim : "#fff" }}>
+              <div className="px-5 py-4 sm:col-span-1" style={{ fontWeight: 600, fontSize: 14, color: C.ink }}>{title}</div>
+              <div className="px-5 py-4 sm:col-span-2" style={{ fontSize: 13.5, lineHeight: 1.6, color: C.mute }}>{body}</div>
             </div>
           ))}
+        </div>
+      </Reveal>
+
+      <Reveal delay={0.1} className="mt-12 space-y-5" style={{ fontSize: 14.5, lineHeight: 1.75, color: C.mute, maxWidth: "78ch" }}>
+        <p>
+          Sowing took place during the first half of November. Around 15 days after sowing (DAS), farmers applied
+          a basal dose of Di-Ammonium Phosphate (DAP) fertilizer alongside early pre-emergent herbicides (Axial,
+          Leader, or Sensor). Top-dressing of urea applications followed at approximately 25 DAS and 45 DAS. Once
+          the crop reached maturity, harvesting, procurement, and supply chain traceability documentation were
+          completed, followed by greenhouse gas (GHG) quantification.
+        </p>
+        <p>
+          For participating farms, which average ~23 acres in size, the adopted practices resulted in emissions
+          of 359.95 kg CO₂e/MT of wheat produced. This reflects a 15% reduction compared to Nestle's baseline
+          emissions, in addition to achieving carbon removals of 364 kg CO₂e/MT.
+        </p>
+      </Reveal>
+    </Section>
+  );
+}
+
+/* ----------------------------------------------------------------------------
+   18 · SECTION 11 - WHAT IT MEANT FOR THE FARMER
+---------------------------------------------------------------------------- */
+const SHORT_TERM = [
+  ["Fewer establishment operations", "Zero Tillage, sown through the Happy Seeder, replaced the conventional sequence of repeated land preparation with a single pass through retained residue, cutting the number of field operations needed at establishment"],
+  ["An alternative to burning", "Sowing directly through retained residue gave farmers a practical alternative to open-field burning of the preceding crop's residue."],
+  ["Guided fertiliser application", "Field records and agronomic guidance supported a calculated reduction from a 187.14 kg N/ha baseline to 123.35 kg N/ha, a programme result, and not an outcome of biological inputs."],
+  ["Closer field-team contact", "Village-level meetings and field visits gave farmers guidance on establishment method, fertiliser use and record-keeping through the season."],
+];
+
+const LONG_TERM = [
+  ["Growing familiarity with Zero Tillage machinery", "Repeated use of the Happy Seeder can build farmer confidence in machinery-based establishment and reduce dependence on conventional tillage over successive seasons."],
+  ["Continued non-burning residue management", "Sustained Zero Tillage adoption can support continued avoidance of open-field residue burning beyond the season measured here."],
+  ["Stronger field-level record keeping", "Continued maintenance of field and input records can strengthen farmer participation in verified, traceable sourcing programmes."],
+  ["Stronger market access", "Traceable, low-carbon wheat opens premium procurement linkages with sustainability-focused buyers like Nestlé."],
+  ["Reduced production risk", "Regenerative practices strengthen resilience to water stress, erratic rainfall and pest pressure, helping farmers manage climate and market risk."],
+];
+
+function CheckList({ items, color }) {
+  return (
+    <div className="space-y-5">
+      {items.map(([title, body]) => (
+        <div key={title} className="flex gap-3">
+          <span className="wh-display flex-none" style={{ color, fontWeight: 800, fontSize: 17 }}>✓</span>
+          <div>
+            <div style={{ fontWeight: 700, fontSize: 14.5, color: C.ink }}>{title}</div>
+            <p className="mt-1" style={{ fontSize: 13.5, lineHeight: 1.62, color: C.mute }}>{body}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function FarmerImpactSection() {
+  return (
+    <Section id="farmerimpact" tone="tint">
+      <SectionHead
+        index="11"
+        title="What It Meant for the Farmer"
+        lede="The project strengthened farm economics through immediate cost savings and longer-term productivity gains from regenerative practice."
+      />
+      <div className="grid gap-10 lg:grid-cols-2">
+        <Reveal>
+          <div className="p-7 rounded-lg h-full" style={{ background: "#fff", border: `1px solid ${C.line}`, borderTop: `3px solid ${C.field}` }}>
+            <h4 className="wh-display text-lg" style={{ color: C.field, fontWeight: 700 }}>Short-term impact</h4>
+            <p className="mt-2 mb-6" style={{ fontSize: 13.5, lineHeight: 1.62, color: C.mute }}>
+              In the season of implementation, Zero Tillage gave farmers a more direct route to wheat
+              establishment after the preceding crop, reinforced by guided fertiliser use and closer field-team
+              contact.
+            </p>
+            <CheckList items={SHORT_TERM} color={C.field} />
+          </div>
+        </Reveal>
+        <Reveal delay={0.1}>
+          <div className="p-7 rounded-lg h-full" style={{ background: "#fff", border: `1px solid ${C.line}`, borderTop: `3px solid ${C.leaf}` }}>
+            <h4 className="wh-display text-lg" style={{ color: C.leaf, fontWeight: 700 }}>Long-term impact</h4>
+            <p className="mt-2 mb-6" style={{ fontSize: 13.5, lineHeight: 1.62, color: C.mute }}>
+              These are expected longer-term benefits of continued Zero/Reduced tillage adoption and should not
+              be described as measured programme outcomes unless follow-up evidence is available.
+            </p>
+            <CheckList items={LONG_TERM} color={C.leaf} />
+          </div>
+        </Reveal>
+      </div>
+    </Section>
+  );
+}
+
+/* ----------------------------------------------------------------------------
+   19 · SECTION 12 - MAPPED TO NESTLÉ'S RESPONSIBLE SOURCING STANDARD
+---------------------------------------------------------------------------- */
+const SOURCING_PILLARS = [
+  ["Pillar 01", "Climate Action & Net Zero", "Zero Tillage machinery reduces conventional preparatory operations; optimised nitrogen use (~34% below baseline) lowers application-linked emissions. Together with SOC removals, a calculated Total Net GHG Benefit of ~101% of baseline: a field-recorded Scope 3 contribution.", C.husk],
+  ["Pillar 02", "Water Stewardship & Livelihoods", "Optimised irrigation delivers ~46% water savings against Grow Indigo's baseline; farmer training and pest-management guidance support informed, resource-efficient decisions.", C.water],
+  ["Pillar 03", "Land, Forests & Biodiversity", "Zero Tillage machinery provides an alternative to open-field residue burning; soil sampling supports future soil-health assessment.", C.leaf],
+  ["Pillar 04", "Traceability & Human Rights", "ClearHarvest onboarding, geofencing and farmer diaries build a recorded, audit-ready trail; One Peterson provides independent review.", C.clay],
+];
+
+function SourcingSection() {
+  const grid = useBatchReveal(".pillar-card", { stagger: 0.08 });
+  return (
+    <Section id="sourcing" tone="dark">
+      <SectionHead
+        index="12"
+        tone="dark"
+        title="Mapped to Nestlé's Responsible Sourcing Standard"
+        lede="The standard sets out how the supply chain is expected to operate - environmental performance, human-rights protection, traceability and farmer livelihoods. Every intervention deployed in Ludhiana maps onto a pillar, and every metric here supports Nestlé's Responsible Sourcing."
+      />
+      <div ref={grid} className="grid gap-4 sm:grid-cols-2">
+        {SOURCING_PILLARS.map(([pillar, name, body, color]) => (
+          <div key={pillar} className="pillar-card p-6 rounded-lg" style={{ background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.12)", borderTop: `3px solid ${color}` }}>
+            <div className="wh-data" style={{ color, fontWeight: 700, fontSize: 12, letterSpacing: ".1em" }}>{pillar.toUpperCase()}</div>
+            <h4 className="wh-display mt-1.5 text-lg" style={{ color: "#fff", fontWeight: 700 }}>{name}</h4>
+            <p className="mt-3" style={{ fontSize: 13.5, lineHeight: 1.65, color: "rgba(255,255,255,.72)" }}>{body}</p>
+          </div>
+        ))}
+      </div>
+      <Reveal delay={0.15} className="mt-10">
+        <div className="p-6 rounded-lg" style={{ background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.12)" }}>
+          <Eyebrow color={C.husk}>Insight</Eyebrow>
+          <p className="mt-3" style={{ fontSize: 14, lineHeight: 1.75, color: "rgba(255,255,255,.82)" }}>
+            Zero/Reduced Tillage was the programme's principal establishment intervention, enabling wheat to be
+            sown through retained paddy residue with fewer preparatory operations, while optimised fertiliser use
+            provided an additional route for reducing production-related emissions. Geo-tagged field boundaries,
+            farmer diaries, digital agronomy records, scientific quality checks, Cool Farm Tool quantification
+            and independent verification by One Peterson created a traceable basis for reporting outcomes.
+            Together with farmer engagement and segregated procurement, these measures establish a documented
+            approach for linking regenerative wheat practices with Nestlé's responsible-sourcing requirements.
+          </p>
         </div>
       </Reveal>
     </Section>
@@ -902,94 +1495,35 @@ function PerformanceSection() {
 }
 
 /* ----------------------------------------------------------------------------
-   11 · SECTION 5 - RESPONSIBLE SOURCING
-   Six cards, verbatim from the PDF - including its own "xx" placeholders.
+   20 · SECTION 13 - FIELD EVIDENCE
 ---------------------------------------------------------------------------- */
-const SOURCING_CARDS = [
-  ["Farmer Welfare & Livelihoods", C.husk, "Sustainability incentive payments disbursed directly to 273 enrolled farmers, improving incomes and incentivising continued regenerative practice adoption."],
-  ["Soil Health & Biodiversity", C.leaf, "Elimination of crop residue burning and zero-tillage methods preserved soil organic matter, reduced particulate air pollution, and supported long-term land productivity."],
-  ["Traceability & Transparency", C.waterDeep, "Geofenced plots, white identifiable bags and segregated processor storage ensure complete identity preservation from farm gate to Nestlé supply chain."],
-  ["Third-Party Assurance", C.clay, "One Peterson independently audited 17 sampled farms. GHG Protocol & IPCC Tier 1 guidelines applied for audit-grade credibility and Nestlé reporting alignment."],
+const ANNEXURES = [
+  ["Annexure 1", "Village-level meetings with farmers", annexureVlm, "Farmers attending a VLM with the field team - six VLMs were held across the project period."],
+  ["Annexure 2", "Zero/Reduced Tillage field", annexureZtField, "Uniform crop rows and retained surface residue indicate field-level adoption of Zero/Reduced Tillage practices."],
+  ["Annexure 3", "Farmer diary", farmerDiarySocioeconomic, "Socio-economic profile plus a dated crop name, season, year and villages names are mentioned."],
+  ["Annexure 4", "Weekly WhatsApp messages sent to farmers", annexureWhatsapp, "Weekly WhatsApp messages shared vernacular videos and visual infographics on Zero/Reduced Tillage, crop residue management and balanced fertiliser use. The advisories also reinforced integrated pest management, responsible chemical use, farmer-diary maintenance and safe labour practices"],
+  ["Annexure 5", "Harvest in Action", annexureHarvest, "Geotagged documentation of mechanised wheat harvesting at a programme field prior to programme procurement and traceability activities in Sherpur Kalan, Punjab."],
+  ["Annexure 6", "Grains ready to be transported", annexureGrains, "Harvested low-carbon programme wheat being weighed and packed in separate, clearly identifiable white bags at Kot kapura, Punjab."],
+  ["Annexure 7", "Procurement Receipt", annexureReceipt, "Procurement receipt issued by the Market Committee, Mullanpur Dakha, documenting the purchase of 16.95 MT of wheat at Nurpur Bet Grain Market. (Seller's personal details redacted.)"],
+  ["Annexure 8", "Independent third-party audit", annexureAudit, "Third Party auditor in field with the Grow Indigo team and participating farmers."],
 ];
 
-function SourcingSection() {
-  const grid = useBatchReveal(".sourcing-card", { stagger: 0.08 });
+function EvidenceSection() {
+  const grid = useBatchReveal(".annexure-card", { stagger: 0.07 });
   return (
-    <Section id="sourcing" tone="dark">
+    <Section id="evidence">
       <SectionHead
-        index="05"
-        tone="dark"
-        title="Responsible Sourcing"
-        lede="This programme directly advances Nestlé's Responsible Sourcing commitments by embedding verified sustainability metrics - from field-level data collection to third-party audit - across the entire wheat supply chain."
+        index="13"
+        title="Field Evidence"
+        lede="The annexures below document field-level evidence, monitoring data and operational records collected throughout the project period - each one geo-tagged and dated at the point of capture."
       />
-      <div ref={grid} className="grid gap-4 sm:grid-cols-2">
-        {SOURCING_CARDS.map(([title, color, body]) => (
-          <div key={title} className="sourcing-card p-6 rounded-lg" style={{ borderTop: `3px solid ${color}`, background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.12)", borderTopWidth: 3, borderTopColor: color }}>
-            <h4 className="wh-display text-lg" style={{ color: "#fff", fontWeight: 700 }}>{title}</h4>
-            <p className="mt-3" style={{ fontSize: 13.5, lineHeight: 1.65, color: "rgba(255,255,255,.72)" }}>{body}</p>
-          </div>
-        ))}
-      </div>
-    </Section>
-  );
-}
-
-/* ----------------------------------------------------------------------------
-   12 · SECTION 6 - IMPACT ON SOIL, WATER & FARMER COMPETENCIES
----------------------------------------------------------------------------- */
-const COMPETENCY_COLUMNS = [
-  [
-    "Soil Health", C.field, "Practice adopted: Zero-tillage · No residue burning",
-    [
-      "Zero-tillage (Happy Seeder) and elimination of residue burning preserved soil organic matter and cut particulate air pollution.",
-      "CRM-based dosing - Oorjit Granules (6 kg/acre) & Grow Phos (20 kg/acre) - lowered synthetic input load on soil.",
-      "IPM adoption (all four principles) protected beneficial soil biodiversity from chemical overuse.",
-    ],
-  ],
-  [
-    "Water Stewardship", C.water, null,
-    [
-      "Optimised irrigation practices conserved water in a region subject to seasonal water stress.",
-      "Need-based, CRM-guided fertiliser application reduced nutrient runoff risk to local water bodies.",
-      "Sowing-stage water management (AWD) supports the programme's broader water-efficiency goal.",
-    ],
-  ],
-  [
-    "Farmer Competencies", C.husk, "Farmers upskilled: 273 enrolled farmers",
-    [
-      "Digital literacy: geofencing, e-KYC and field data capture via the Grow Indigo ClearHarvest app.",
-      "Agronomic skill-building: Happy Seeder operation and zero-till sowing technique.",
-      "New nutrient & pest management competency: CRM dosing and all four IPM principles.",
-      "Direct incentive payments from Grow Indigo reinforced sustained practice adoption.",
-    ],
-  ],
-];
-
-function CompetencySection() {
-  const grid = useBatchReveal(".competency-card", { stagger: 0.1 });
-  return (
-    <Section id="impact" tone="tint">
-      <SectionHead
-        index="06"
-        title="Impact on Soil, Water & Farmer Competencies"
-        lede="This programme's regenerative practices reach beyond emissions - improving soil and water outcomes while building lasting farmer capability. Each theme below is verified and reported in detail elsewhere in this document."
-      />
-      <div ref={grid} className="grid gap-5 lg:grid-cols-3">
-        {COMPETENCY_COLUMNS.map(([title, color, headline, bullets]) => (
-          <div key={title} className="competency-card rounded-lg overflow-hidden" style={{ background: "#fff", border: `1px solid ${C.line}`, borderTop: `3px solid ${color}` }}>
-            <div className="p-6">
-              <h4 className="wh-display text-xl" style={{ color, fontWeight: 700 }}>{title}</h4>
-              {headline && (
-                <div className="mt-3 p-3 rounded" style={{ background: C.paperDim, fontSize: 13, fontWeight: 600, color: C.ink }}>{headline}</div>
-              )}
-              <ul className="mt-5 space-y-3">
-                {bullets.map((b, i) => (
-                  <li key={i} className="flex gap-2.5" style={{ fontSize: 13.5, lineHeight: 1.6, color: C.mute }}>
-                    <span style={{ color }}>▸</span>
-                    <span>{b}</span>
-                  </li>
-                ))}
-              </ul>
+      <div ref={grid} className="grid gap-6 sm:grid-cols-2">
+        {ANNEXURES.map(([tag, title, src, caption]) => (
+          <div key={tag} className="annexure-card">
+            <Eyebrow>{tag}</Eyebrow>
+            <h4 className="wh-display mt-1 text-lg" style={{ color: C.ink, fontWeight: 700 }}>{title}</h4>
+            <div className="mt-3">
+              <PhotoSlot ratio="4 / 3" src={src} alt={title} caption={caption} />
             </div>
           </div>
         ))}
@@ -999,56 +1533,59 @@ function CompetencySection() {
 }
 
 /* ----------------------------------------------------------------------------
-   13 · SECTION 7 - FIELD ENGAGEMENT - VILLAGE-LEVEL SESSIONS
+   21 · SECTION 14 - ABOUT GROW INDIGO
 ---------------------------------------------------------------------------- */
-function EngagementSection() {
-  return (
-    <Section id="engagement">
-      <SectionHead index="07" title="Field Engagement - Village-Level Sessions" />
-      <div className="grid gap-8 lg:grid-cols-2">
-        <Reveal>
-          <PhotoSlot ratio="4 / 3" src={stakeholderMeetingPhoto} alt="Meeting with Local Stakeholders - Village-Level Carbon Farming Sessions" caption="Meeting with Local Stakeholders - Village-Level Carbon Farming Sessions" />
-        </Reveal>
-        <Reveal delay={0.1}>
-          <PhotoSlot ratio="4 / 3" src={villageMeetingPhoto} alt="Village-Level Meeting with Farmers" caption="Village-Level Meeting with Farmers" />
-        </Reveal>
-      </div>
-    </Section>
-  );
-}
-
-/* ----------------------------------------------------------------------------
-   14 · SECTION 8 - PROGRAMME AT A GLANCE
----------------------------------------------------------------------------- */
-const GLANCE_TILES = [
-  ["Location", "Ludhiana, Punjab"],
-  ["Farmers", "273 enrolled"],
-  ["Area", "5905 acres"],
-  ["Volume", "7260.9 MT procured"],
-  ["Audit", "One Peterson verified"],
-  ["Method", "Cool Farm Tool (CFT)"],
+const VERTICALS = [
+  ["01", "NATURE-BASED CROP INPUTS", "Biologicals", "We empower farmers with innovative biological products that enhance soil health, promote plant growth, and unlock the full potential of their land.", C.leaf],
+  ["02", "CARBON FARMING", "Carbon - Regen Ag", "We're building India's leading vertically integrated carbon program. This program delivers high-quality, certified carbon units, safeguarding businesses from greenwashing claims and driving positive climate action.", C.field],
+  ["03", "SCOPE 3 INSETTING", "ClearHarvest", "With our combined expertise of biologicals and carbon accounting, we help food, beverage, and apparel companies reduce farm-side emissions to achieve their net-zero goals.", C.husk],
+  ["04", "CARBON-NEGATIVE SOIL AMENDMENT", "Biochar", "We convert crop residue into high-quality biochar, restoring soil health and unlocking a permanent, verifiable route to carbon removal - while ending the need for open-field burning.", C.clay],
 ];
 
-function GlanceSection() {
-  const grid = useBatchReveal(".glance-tile", { stagger: 0.06 });
+function AboutSection() {
+  const grid = useBatchReveal(".vertical-card", { stagger: 0.08 });
   return (
-    <Section id="glance" tone="tint">
-      <SectionHead index="08" title="Programme at a Glance" />
-      <Reveal><PhotoSlot ratio="16 / 9" src={glanceAerialPhoto} alt="Aerial view of low-carbon wheat fields" /></Reveal>
-      <div ref={grid} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mt-10">
-        {GLANCE_TILES.map(([label, value]) => (
-          <div key={label} className="glance-tile p-6 rounded-lg text-center" style={{ background: "#fff", border: `1px solid ${C.line}` }}>
-            <div className="wh-display" style={{ fontWeight: 800, fontSize: "1.3rem", color: C.field }}>{value}</div>
-            <div className="wh-data mt-2" style={{ fontSize: 10.5, color: C.mute, letterSpacing: ".1em" }}>{label.toUpperCase()}</div>
+    <Section id="about" tone="tint">
+      <SectionHead
+        index="14"
+        title="About Grow Indigo"
+        lede="Grow Indigo is a pioneering agri-tech company, with a focus on advancing sustainable agriculture to improve farmer profitability, environmental sustainability, and consumer health. Our mission is to accelerate agricultural transformation for a healthier planet, driven by four core pillars."
+      />
+
+      <Reveal>
+        <PhotoSlot ratio="1 / 1" className="max-w-sm mx-auto" src={aboutGrowIndigoGraphic} alt="Grow Indigo - We Accelerate Ag Transformation For a Healthy Planet" />
+      </Reveal>
+
+      <Reveal delay={0.1} className="mt-14">
+        <Eyebrow>Our four core verticals</Eyebrow>
+        <div ref={grid} className="grid gap-4 sm:grid-cols-2 mt-4">
+          {VERTICALS.map(([n, label, name, body, color]) => (
+            <div key={n} className="vertical-card p-6 rounded-lg" style={{ background: "#fff", border: `1px solid ${C.line}`, borderTop: `3px solid ${color}` }}>
+              <div className="wh-data" style={{ color, fontWeight: 700, fontSize: 11.5, letterSpacing: ".1em" }}>{n} {label}</div>
+              <h4 className="wh-display mt-1.5 text-lg" style={{ color: C.ink, fontWeight: 700 }}>{name}</h4>
+              <p className="mt-2" style={{ fontSize: 13.5, lineHeight: 1.62, color: C.mute }}>{body}</p>
+            </div>
+          ))}
+        </div>
+      </Reveal>
+
+      <Reveal delay={0.1} className="mt-14">
+        <div className="p-7 rounded-lg text-center" style={{ background: C.ink }}>
+          <Eyebrow color={C.husk}>Get in touch</Eyebrow>
+          <div className="wh-display mt-3" style={{ color: "#fff", fontWeight: 700, fontSize: 18 }}>ClearHarvest - Grow Indigo</div>
+          <div className="mt-4 flex flex-wrap justify-center gap-x-10 gap-y-2" style={{ color: "rgba(255,255,255,.78)", fontSize: 14 }}>
+            <div><span style={{ color: "rgba(255,255,255,.5)" }}>Name: </span>Mr. Amit Kumar</div>
+            <div><span style={{ color: "rgba(255,255,255,.5)" }}>Phone: </span>+91 8329049612</div>
+            <div><span style={{ color: "rgba(255,255,255,.5)" }}>Email: </span>clearharvest@growindigo.co.in</div>
           </div>
-        ))}
-      </div>
+        </div>
+      </Reveal>
     </Section>
   );
 }
 
 /* ----------------------------------------------------------------------------
-   15 · LOGO LOCKUP
+   22 · LOGO LOCKUP
 ---------------------------------------------------------------------------- */
 function LogoSlot({ name, src, align = "left", light = false, height = 34 }) {
   const fg = light ? "rgba(255,255,255,.55)" : C.mute;
@@ -1084,33 +1621,15 @@ function LogoLockup({ light = false, height = 34, rule = true }) {
 }
 
 /* ----------------------------------------------------------------------------
-   16 · SECTION 9 - CONFIDENTIALITY + CLOSING
+   23 · CLOSING
 ---------------------------------------------------------------------------- */
 function Closing() {
   return (
     <footer style={{ background: C.ink }}>
-      <Section id="confidentiality" tone="dark" className="!py-16 md:!py-20">
-        <SectionHead index="09" tone="dark" title="Confidentiality" />
-        <Reveal>
-          <p style={{ color: "rgba(255,255,255,.78)", lineHeight: 1.75, maxWidth: "80ch" }}>
-            This document and the data contained within it are strictly confidential and intended for company use
-            only. It has been prepared by Grow Indigo for Nestlé in connection with the Low-Carbon Wheat Programme
-            (Rabi 2025) and may not be reproduced, distributed, or disclosed to any third party, in whole or in
-            part, without the prior written consent of Grow Indigo and Nestlé.
-          </p>
-        </Reveal>
-        <Reveal delay={0.1} className="mt-6">
-          <div className="p-6 rounded-lg text-center" style={{ background: C.field }}>
-            <div className="wh-data" style={{ color: C.husk, fontWeight: 700, letterSpacing: ".14em" }}>★ STRICTLY CONFIDENTIAL ★</div>
-            <div className="mt-2 italic" style={{ color: "rgba(255,255,255,.85)" }}>Strictly confidential – for company use only.</div>
-          </div>
-        </Reveal>
-      </Section>
-
-      <div className="mx-auto px-5 md:px-10 py-14" style={{ maxWidth: 1180, borderTop: "1px solid rgba(255,255,255,.15)" }}>
+      <div className="mx-auto px-5 md:px-10 py-14" style={{ maxWidth: 1180 }}>
         <LogoLockup light height={40} />
         <div className="wh-data mt-8 text-center" style={{ fontSize: 10.5, color: "rgba(255,255,255,.4)", letterSpacing: ".1em" }}>
-          DECARBONIZING NESTLÉ'S WHEAT VALUE CHAIN · LUDHIANA, PUNJAB · RABI SEASON 2025
+          LOW-CARBON WHEAT PROGRAMME · LUDHIANA, PUNJAB · RABI SEASON 2025
         </div>
       </div>
     </footer>
@@ -1118,7 +1637,7 @@ function Closing() {
 }
 
 /* ----------------------------------------------------------------------------
-   17 · ROOT
+   24 · ROOT
 ---------------------------------------------------------------------------- */
 export default function WheatHarvestReport() {
   useEffect(() => {
@@ -1136,15 +1655,21 @@ export default function WheatHarvestReport() {
 
       <main>
         <Hero />
-        <OverviewSection />
-        <PinnedStatement />
-        <ProgrammeSection />
-        <VerificationSection />
-        <PerformanceSection />
+        <SeasonSection />
+        <FieldsSection />
+        <ThemesSection />
+        <GovernanceSection />
+        <JourneySection />
+        <VoicesSection />
+        <DocumentedSection />
+        <PracticeSection />
+        <PinnedStatement text={PRACTICE_BIG_PICTURE} />
+        <AuditedSection />
+        <TimelineSection />
+        <FarmerImpactSection />
         <SourcingSection />
-        <CompetencySection />
-        <EngagementSection />
-        <GlanceSection />
+        <EvidenceSection />
+        <AboutSection />
       </main>
 
       <Closing />
