@@ -1251,6 +1251,113 @@ function PipelineSteps() {
   );
 }
 
+/** Three-bar (Baseline / Reduction / Project) comparison chart - same role
+ *  encoding as the docx's own emissions/nitrogen/water charts, redrawn
+ *  natively in the report's own type and colour system so it isn't a
+ *  screenshot in a different font. Every value is direct-labelled, so the
+ *  muted "Baseline" bar reads fine even at low chroma. */
+const BAR_ROLE_COLOR = { Baseline: C.mute, Reduction: C.husk, Project: C.field };
+
+function MetricBarChart({ eyebrow, headline, unit, bars }) {
+  const max = Math.max(...bars.map((b) => b.value));
+  const barH = 130;
+  return (
+    <div className="p-6 rounded-lg" style={{ background: "#fff", border: `1px solid ${C.line}` }}>
+      <Eyebrow>{eyebrow}</Eyebrow>
+      <div className="wh-display mt-2" style={{ fontWeight: 800, fontSize: "1.4rem", color: C.field }}>{headline}</div>
+      <div className="wh-data mt-0.5" style={{ fontSize: 11, color: C.mute }}>{unit}</div>
+      <div className="flex items-end justify-between gap-4 mt-6" style={{ height: barH }}>
+        {bars.map(({ label, value }) => {
+          const h = Math.max(6, (value / max) * barH);
+          const color = BAR_ROLE_COLOR[label] || C.field;
+          return (
+            <div key={label} className="flex-1 flex flex-col items-center justify-end h-full">
+              <div className="wh-data" style={{ fontSize: 12, fontWeight: 700, color: C.ink }}>
+                {value.toLocaleString("en-IN")}
+              </div>
+              <motion.div
+                className="w-full mt-1.5"
+                style={{ background: color, borderRadius: "4px 4px 0 0", maxWidth: 46, marginLeft: "auto", marginRight: "auto" }}
+                initial={{ height: 0 }}
+                whileInView={{ height: h }}
+                viewport={{ once: true, amount: 0.6 }}
+                transition={{ duration: 0.9, ease: EASE }}
+              />
+            </div>
+          );
+        })}
+      </div>
+      <div className="flex items-stretch justify-between gap-4 mt-2" style={{ borderTop: `1px solid ${C.line}` }}>
+        {bars.map(({ label }) => (
+          <div key={label} className="flex-1 text-center pt-2" style={{ fontSize: 11, color: C.mute, fontWeight: 600 }}>
+            {label}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const METRIC_CHARTS = [
+  {
+    eyebrow: "GHG emissions intensity",
+    headline: "~15% lower",
+    unit: "kg CO₂e per MT of wheat",
+    bars: [
+      { label: "Baseline", value: 425.14 },
+      { label: "Reduction", value: 65.19 },
+      { label: "Project", value: 359.95 },
+    ],
+    caption: "Modelled GHG emissions intensity decreased from 425.14 to 359.95 kg CO₂e per MT of wheat, representing a reduction of 65.19 kg CO₂e per MT, or approximately 15%, against the baseline.",
+  },
+  {
+    eyebrow: "Nitrogen application",
+    headline: "~34% lower",
+    unit: "kg N per ha",
+    bars: [
+      { label: "Baseline", value: 187.14 },
+      { label: "Reduction", value: 63.79 },
+      { label: "Project", value: 123.35 },
+    ],
+    caption: "Average nitrogen application decreased from the Nestlé baseline of 187.14 kg N/ha to 123.35 kg N/ha under the programme, a reduction of 63.79 kg N/ha, or approximately 34%.",
+  },
+  {
+    eyebrow: "Irrigation water use",
+    headline: "~46% lower",
+    unit: "m³ per ha",
+    bars: [
+      { label: "Baseline", value: 1410.03 },
+      { label: "Reduction", value: 649.25 },
+      { label: "Project", value: 760.78 },
+    ],
+    caption: "Modelled irrigation water use decreased from the Grow Indigo baseline of 1,410.03 m³/ha to 760.78 m³/ha under the programme, a reduction of 649.25 m³/ha, or approximately 46%.",
+  },
+];
+
+function MetricChartsGrid() {
+  const grid = useBatchReveal(".metric-chart-card", { stagger: 0.1 });
+  return (
+    <div>
+      <div className="flex items-center gap-4 mb-4">
+        {Object.entries(BAR_ROLE_COLOR).map(([label, color]) => (
+          <div key={label} className="flex items-center gap-1.5">
+            <span style={{ width: 10, height: 10, borderRadius: 2, background: color, display: "inline-block" }} />
+            <span className="wh-data" style={{ fontSize: 11, color: C.mute }}>{label}</span>
+          </div>
+        ))}
+      </div>
+      <div ref={grid} className="grid gap-5 sm:grid-cols-3">
+        {METRIC_CHARTS.map((m) => (
+          <div key={m.eyebrow} className="metric-chart-card">
+            <MetricBarChart eyebrow={m.eyebrow} headline={m.headline} unit={m.unit} bars={m.bars} />
+            <p className="mt-3" style={{ fontSize: 12.5, lineHeight: 1.6, color: C.mute }}>{m.caption}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function AuditedSection() {
   return (
     <Section id="audited" tone="tint">
@@ -1280,20 +1387,8 @@ function AuditedSection() {
       </Reveal>
 
       <Reveal delay={0.1} className="mt-10">
-        <div className="space-y-5" style={{ fontSize: 14.5, lineHeight: 1.75, color: C.mute, maxWidth: "78ch" }}>
-          <p>
-            Modelled GHG emissions intensity decreased from 425.14 to 359.95 kg CO₂e per MT of wheat, representing
-            a reduction of 65.19 kg CO₂e per MT, or approximately 15%, against the baseline.
-          </p>
-          <p>
-            Average nitrogen application decreased from the Nestlé baseline of 187.14 kg N/ha to 123.35 kg N/ha
-            under the programme, a reduction of 63.79 kg N/ha, or approximately 34%.
-          </p>
-          <p>
-            Modelled irrigation water use decreased from the Grow Indigo baseline of 1,410.03 m³/ha to 760.78
-            m³/ha under the programme, a reduction of 649.25 m³/ha, or approximately 46%.
-          </p>
-        </div>
+        <Eyebrow>Modelled results, baseline vs programme</Eyebrow>
+        <div className="mt-4"><MetricChartsGrid /></div>
       </Reveal>
     </Section>
   );
