@@ -634,8 +634,9 @@ function Hero() {
    result trios (Section 01 and Section 09).
 ---------------------------------------------------------------------------- */
 function StatRow({ stats }) {
+  const colsClass = stats.length === 4 ? "sm:grid-cols-4" : "sm:grid-cols-3";
   return (
-    <div className="grid gap-4 sm:grid-cols-3">
+    <div className={`grid gap-4 ${colsClass}`}>
       {stats.map(([value, label, sub]) => (
         <div key={label} className="p-6 rounded-lg text-center" style={{ background: "#fff", border: `1px solid ${C.line}` }}>
           <div className="wh-display" style={{ fontWeight: 800, fontSize: "2rem", color: C.field }}>{value}</div>
@@ -650,7 +651,8 @@ function StatRow({ stats }) {
 const HEADLINE_RESULTS = [
   ["~34%", "Less nitrogen", "187.14 to 123.35 kg N/ha"],
   ["~46%", "Water saved", "1,410.03 to 760.78 m3/ha"],
-  ["~101%", "Total Net GHG Benefit", "incl. soil-carbon removals"],
+  ["15%", "Emission Reduction", "vs. baseline intensity"],
+  ["-363.7", "Net Carbon Removals", "kgCO2e/MT"],
 ];
 
 /* ----------------------------------------------------------------------------
@@ -1029,7 +1031,8 @@ const JOURNEY_STEPS = [
     body: "Following farmer engagement, field teams continued to record establishment practices, fertiliser use and crop-stage information through the season from the farm to aarthiya to mills. During procurement, 7,261 metric tonnes of programme wheat was procured, segregated and packed separately in clearly identifiable white PP bags. This controlled handling maintained the identity of the wheat throughout procurement and processing. The process strengthened traceability and preserved the link between participating farms and the final programme volume.",
   },
   {
-    n: "09", title: "Third-Party Audit", img: journeyThirdPartyAudit, body: null,
+    n: "09", title: "Third-Party Audit", img: journeyThirdPartyAudit,
+    body: "OnePeterson independently reviewed the field evidence and digital records - geo-tagged boundaries, farmer diaries, practice verification and the procurement trail - testing whether the reductions claimed are attributable to the fields that produced them.",
   },
   {
     n: "10", title: "Quantification and Reporting",
@@ -1256,33 +1259,67 @@ function PipelineSteps() {
  *  natively in the report's own type and colour system so it isn't a
  *  screenshot in a different font. Every value is direct-labelled, so the
  *  muted "Baseline" bar reads fine even at low chroma. */
-const BAR_ROLE_COLOR = { Baseline: C.mute, Reduction: C.husk, Project: C.field };
+const BAR_ROLE_COLOR = { Baseline: C.mute, Reduction: C.husk, Project: C.field, "Removals (Net Sink)": C.clay };
+
+/** Value formatter: fixed 2-decimal places with Indian digit grouping, so
+ *  "-363.7" reads as "-363.70" to match the source chart. */
+const fmtBarValue = (v) => v.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 function MetricBarChart({ eyebrow, headline, unit, bars }) {
-  const max = Math.max(...bars.map((b) => b.value));
+  // Positive bars grow up from a shared zero-line; any negative ("Removals")
+  // bar grows down from the same line, sized on its own scale so a small
+  // removals figure doesn't get lost next to a much larger baseline value.
+  const posMax = Math.max(1, ...bars.filter((b) => b.value >= 0).map((b) => b.value));
+  const negValues = bars.filter((b) => b.value < 0).map((b) => Math.abs(b.value));
+  const negMax = negValues.length ? Math.max(...negValues) : 0;
   const barH = 130;
+  const negH = negMax > 0 ? Math.max(60, (negMax / posMax) * barH) : 0;
+  const totalH = barH + negH;
   return (
     <div className="p-6 rounded-lg" style={{ background: "#fff", border: `1px solid ${C.line}` }}>
       <Eyebrow>{eyebrow}</Eyebrow>
       <div className="wh-display mt-2" style={{ fontWeight: 800, fontSize: "1.4rem", color: C.field }}>{headline}</div>
       <div className="wh-data mt-0.5" style={{ fontSize: 11, color: C.mute }}>{unit}</div>
-      <div className="flex items-end justify-between gap-4 mt-6" style={{ height: barH }}>
+      <div className="flex items-stretch justify-between gap-4 mt-6" style={{ height: totalH, position: "relative" }}>
+        {negH > 0 && (
+          <div style={{ position: "absolute", left: 0, right: 0, top: barH, borderTop: `1px dashed ${C.line}` }} />
+        )}
         {bars.map(({ label, value }) => {
-          const h = Math.max(6, (value / max) * barH);
           const color = BAR_ROLE_COLOR[label] || C.field;
+          const isNeg = value < 0;
+          const magnitude = Math.abs(value);
+          const scale = isNeg ? (negMax > 0 ? negH / negMax : 0) : barH / posMax;
+          const barPx = Math.max(6, magnitude * scale);
           return (
-            <div key={label} className="flex-1 flex flex-col items-center justify-end h-full">
-              <div className="wh-data" style={{ fontSize: 12, fontWeight: 700, color: C.ink }}>
-                {value.toLocaleString("en-IN")}
-              </div>
+            <div key={label} className="flex-1" style={{ position: "relative", height: totalH }}>
               <motion.div
-                className="w-full mt-1.5"
-                style={{ background: color, borderRadius: "4px 4px 0 0", maxWidth: 46, marginLeft: "auto", marginRight: "auto" }}
+                className="absolute left-1/2"
+                style={{
+                  background: color,
+                  width: "100%",
+                  maxWidth: 46,
+                  transform: "translateX(-50%)",
+                  borderRadius: isNeg ? "0 0 4px 4px" : "4px 4px 0 0",
+                  ...(isNeg ? { top: barH } : { bottom: negH }),
+                }}
                 initial={{ height: 0 }}
-                whileInView={{ height: h }}
+                whileInView={{ height: barPx }}
                 viewport={{ once: true, amount: 0.6 }}
                 transition={{ duration: 0.9, ease: EASE }}
               />
+              <div
+                className="wh-data absolute left-1/2"
+                style={{
+                  fontSize: 12,
+                  fontWeight: 700,
+                  color: C.ink,
+                  transform: "translateX(-50%)",
+                  whiteSpace: "nowrap",
+                  ...(isNeg ? { top: barH + barPx + 6 } : { bottom: negH + barPx + 4 }),
+                }}
+              >
+                {fmtBarValue(value)}
+              </div>
             </div>
           );
         })}
@@ -1307,8 +1344,9 @@ const METRIC_CHARTS = [
       { label: "Baseline", value: 425.14 },
       { label: "Reduction", value: 65.19 },
       { label: "Project", value: 359.95 },
+      { label: "Removals (Net Sink)", value: -363.70 },
     ],
-    caption: "Modelled GHG emissions intensity decreased from 425.14 to 359.95 kg CO₂e per MT of wheat, representing a reduction of 65.19 kg CO₂e per MT, or approximately 15%, against the baseline.",
+    caption: "Modelled GHG emissions intensity decreased from 425.14 to 359.95 kg CO₂e per MT of wheat, representing a reduction of 65.19 kg CO₂e per MT, or approximately 15%, against the baseline. The project achieved a 15% reduction in emissions compared to the baseline, alongside removals of -363.7 kgCO2e/MT.",
   },
   {
     eyebrow: "Nitrogen application",
@@ -1409,7 +1447,7 @@ const CROP_STAGES = [
 
 const INTERVENTIONS = [
   ["Mobilisation", "Programme kick-off, farmer onboarding and field identification"],
-  ["Zero Tillage establishment", "Happy Seeder sowing through retained paddy residue with optimised basal fertiliser application. Practice and sowing information recorded."],
+  ["Zero Tillage establishment", "Zero tillage machinery sowing through retained paddy residue with optimised basal fertiliser application. Practice and sowing information recorded."],
   ["Crop nutrition and monitoring", "Need-based urea application, crop-stage advisory and farmer-diary maintenance"],
   ["Verification", "Field records and practice validation"],
   ["Harvest", "Segregated packing, procurement and traceability records"],
@@ -1478,14 +1516,14 @@ function TimelineSection() {
    18 · SECTION 11 - WHAT IT MEANT FOR THE FARMER
 ---------------------------------------------------------------------------- */
 const SHORT_TERM = [
-  ["Fewer establishment operations", "Zero Tillage, sown through the Happy Seeder, replaced the conventional sequence of repeated land preparation with a single pass through retained residue, cutting the number of field operations needed at establishment"],
+  ["Fewer establishment operations", "Zero Tillage, sown through Zero tillage machinery, replaced the conventional sequence of repeated land preparation with a single pass through retained residue, cutting the number of field operations needed at establishment"],
   ["An alternative to burning", "Sowing directly through retained residue gave farmers a practical alternative to open-field burning of the preceding crop's residue."],
   ["Guided fertiliser application", "Field records and agronomic guidance supported a calculated reduction from a 187.14 kg N/ha baseline to 123.35 kg N/ha, a programme result, and not an outcome of biological inputs."],
   ["Closer field-team contact", "Village-level meetings and field visits gave farmers guidance on establishment method, fertiliser use and record-keeping through the season."],
 ];
 
 const LONG_TERM = [
-  ["Growing familiarity with Zero Tillage machinery", "Repeated use of the Happy Seeder can build farmer confidence in machinery-based establishment and reduce dependence on conventional tillage over successive seasons."],
+  ["Growing familiarity with Zero Tillage machinery", "Repeated use of Zero tillage machinery can build farmer confidence in machinery-based establishment and reduce dependence on conventional tillage over successive seasons."],
   ["Continued non-burning residue management", "Sustained Zero Tillage adoption can support continued avoidance of open-field residue burning beyond the season measured here."],
   ["Stronger field-level record keeping", "Continued maintenance of field and input records can strengthen farmer participation in verified, traceable sourcing programmes."],
   ["Stronger market access", "Traceable, low-carbon wheat opens premium procurement linkages with sustainability-focused buyers like Nestlé."],
@@ -1547,7 +1585,7 @@ function FarmerImpactSection() {
    19 · SECTION 12 - MAPPED TO NESTLÉ'S RESPONSIBLE SOURCING STANDARD
 ---------------------------------------------------------------------------- */
 const SOURCING_PILLARS = [
-  ["Pillar 01", "Climate Action & Net Zero", "Zero Tillage machinery reduces conventional preparatory operations; optimised nitrogen use (~34% below baseline) lowers application-linked emissions. Together with SOC removals, a calculated Total Net GHG Benefit of ~101% of baseline: a field-recorded Scope 3 contribution.", C.husk],
+  ["Pillar 01", "Climate Action & Net Zero", "Zero Tillage machinery reduces conventional preparatory operations; optimised nitrogen use (~34% below baseline) lowers application-linked emissions. The project achieved a 15% reduction in emissions compared to the baseline, alongside net carbon removals of -363.7 kgCO2e/MT: a field-recorded Scope 3 contribution.", C.husk],
   ["Pillar 02", "Water Stewardship & Livelihoods", "Optimised irrigation delivers ~46% water savings against Grow Indigo's baseline; farmer training and pest-management guidance support informed, resource-efficient decisions.", C.water],
   ["Pillar 03", "Land, Forests & Biodiversity", "Zero Tillage machinery provides an alternative to open-field residue burning; soil sampling supports future soil-health assessment.", C.leaf],
   ["Pillar 04", "Traceability & Human Rights", "ClearHarvest onboarding, geofencing and farmer diaries build a recorded, audit-ready trail; One Peterson provides independent review.", C.clay],
