@@ -534,7 +534,7 @@ const HERO_LINES = [["Low-Carbon"], ["Wheat", "Programme"]];
 const HERO_META = [
   ["Reporting period", "Rabi Season 2025"],
   ["Implementation partner", "Grow Indigo"],
-  ["Geography", "Ludiana, Punjab"],
+  ["Geography", "Ludhiana & Faridkot, Punjab"],
   ["Quantification", "Cool farm tool.v3"],
 ];
 
