@@ -26,6 +26,7 @@ import {
 } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { WheatFieldsMapBlock } from "./WheatHarvestMap.jsx";
 
 /* ----------------------------------------------------------------------------
    PHOTO / MEDIA IMPORTS - LOW-CARBON WHEAT PROGRAMME DOCX ONLY
@@ -732,6 +733,18 @@ function FieldsSection() {
           <PhotoSlot ratio="4 / 3" src={identityPreservationAerial} alt="Identity-Preservation of Low-Emission Wheat Grown at Enrolled Farms in Ludhiana" caption="Identity-Preservation of Low-Emission Wheat Grown at Enrolled Farms in Ludhiana" />
         </Reveal>
       </div>
+
+      <Reveal delay={0.15} className="mt-12">
+        <Eyebrow>Explore every enrolled field</Eyebrow>
+        <p className="mt-4" style={{ fontSize: 15, lineHeight: 1.75, color: C.mute, maxWidth: "78ch" }}>
+          Drill from India down to Punjab, the project districts and an individual village to see every mapped
+          farmer field, coloured by procuring miller. Hover a field for its ID; click to pin its full record in
+          the panel.
+        </p>
+        <div className="mt-6">
+          <WheatFieldsMapBlock />
+        </div>
+      </Reveal>
     </Section>
   );
 }
