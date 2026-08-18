@@ -106,6 +106,7 @@ function GlobalStyle() {
         overflow-x: hidden; }
       .wh-display { font-family: ${FONT_DISPLAY}; letter-spacing: -0.03em; line-height: 0.98; }
       .wh-data { font-family: ${FONT_DATA}; font-variant-numeric: tabular-nums; }
+      .wh-root p, .wh-root .wh-justify { text-align: justify; text-justify: inter-word; }
 
       .wh-mask { display: block; overflow: hidden; }
       .wh-scrub { will-change: transform; }
@@ -1412,8 +1413,8 @@ function AuditedSection() {
           {AUDIT_TABLE.map(([step, did, facts], i) => (
             <div key={step} className="grid md:grid-cols-3" style={{ borderTop: i ? `1px solid ${C.line}` : "none", background: i % 2 ? C.paperDim : "#fff" }}>
               <div className="px-5 py-4" style={{ fontWeight: 600, fontSize: 14.5, color: C.ink }}>{step}</div>
-              <div className="px-5 py-4" style={{ fontSize: 13.5, lineHeight: 1.65, color: C.mute }}>{did}</div>
-              <div className="px-5 py-4" style={{ fontSize: 13.5, lineHeight: 1.65, color: C.field, fontWeight: 600 }}>{facts}</div>
+              <div className="px-5 py-4 wh-justify" style={{ fontSize: 13.5, lineHeight: 1.65, color: C.mute }}>{did}</div>
+              <div className="px-5 py-4 wh-justify" style={{ fontSize: 13.5, lineHeight: 1.65, color: C.field, fontWeight: 600 }}>{facts}</div>
             </div>
           ))}
         </div>
@@ -1488,7 +1489,7 @@ function TimelineSection() {
           {INTERVENTIONS.map(([title, body], i) => (
             <div key={title} className="grid sm:grid-cols-3" style={{ borderTop: i ? `1px solid ${C.line}` : "none", background: i % 2 ? C.paperDim : "#fff" }}>
               <div className="px-5 py-4 sm:col-span-1" style={{ fontWeight: 600, fontSize: 14, color: C.ink }}>{title}</div>
-              <div className="px-5 py-4 sm:col-span-2" style={{ fontSize: 13.5, lineHeight: 1.6, color: C.mute }}>{body}</div>
+              <div className="px-5 py-4 sm:col-span-2 wh-justify" style={{ fontSize: 13.5, lineHeight: 1.6, color: C.mute }}>{body}</div>
             </div>
           ))}
         </div>
