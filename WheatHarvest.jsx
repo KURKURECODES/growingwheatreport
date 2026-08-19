@@ -46,6 +46,11 @@ import monitoringApp3 from "./src/assets/wheat/docx/monitoring-app-3.jpeg";
 import monitoringApp4 from "./src/assets/wheat/docx/monitoring-app-4.jpeg";
 import monitoringApp5 from "./src/assets/wheat/docx/mm5.jpeg";
 import traceabilityFlow from "./src/assets/wheat/docx/trace.jpg";
+import journeyQualityTest1 from "./src/assets/wheat/docx/journey-qtn-1.jpg";
+import journeyQualityTest2 from "./src/assets/wheat/docx/journey-qtn-2.jpg";
+import journeyFarmerDiary1 from "./src/assets/wheat/docx/journey-farmer-diary-1.png";
+import journeyFarmerDiary2 from "./src/assets/wheat/docx/journey-farmer-diary-2.png";
+import journeyFarmerDiary3 from "./src/assets/wheat/docx/journey-farmer-diary-3.png";
 import journeyKickoff from "./src/assets/wheat/docx/pko.jpg";
 import journeyKickoff2 from "./src/assets/wheat/docx/pko2.jpg";
 import journeyVlm1 from "./src/assets/wheat/docx/journey-02-vlm1-khasikalan.jpg";
@@ -296,6 +301,45 @@ function Eyebrow({ children, color = C.husk, className = "" }) {
   );
 }
 
+/** Warm, tinted callout card for a single load-bearing sentence - an
+ *  auditor's finding, a synthesis line - that deserves to stand apart from
+ *  running body copy. A quiet quotation glyph and a serif-italic setting
+ *  (the same FONT_QUOTE used for the report's other pull-quote moments) do
+ *  the differentiating; deliberately no hand-drawn doodle or script accent,
+ *  so it reads as editorial restraint rather than decoration. */
+function PullQuoteCard({ children, tone = C.husk, dark = false, label, className = "" }) {
+  return (
+    <div
+      className={`relative p-7 md:p-8 rounded-lg ${className}`}
+      style={{
+        background: dark ? "rgba(255,255,255,.05)" : `${tone}14`,
+        border: `1px solid ${dark ? "rgba(255,255,255,.12)" : tone + "33"}`,
+      }}
+    >
+      <svg width="30" height="22" viewBox="0 0 34 26" aria-hidden="true" style={{ color: tone, opacity: dark ? 0.85 : 0.5 }}>
+        <path
+          d="M0 26V15.6C0 6.9 5.2 1.4 13.6 0l1.4 3.7C9.6 5 6.8 8 6.6 12.4h6.8V26H0zm18.6 0V15.6c0-8.7 5.2-14.2 13.6-15.6L33.6 3.7c-5.4 1.3-8.2 4.3-8.4 8.7H32V26H18.6z"
+          fill="currentColor"
+        />
+      </svg>
+      {label && <Eyebrow color={tone} className="mt-3">{label}</Eyebrow>}
+      <p
+        className="mt-3"
+        style={{
+          fontFamily: FONT_QUOTE,
+          fontStyle: "italic",
+          fontWeight: 500,
+          fontSize: "1.05rem",
+          lineHeight: 1.65,
+          color: dark ? "rgba(255,255,255,.92)" : C.ink,
+        }}
+      >
+        {children}
+      </p>
+    </div>
+  );
+}
+
 function SectionHead({ index, title, lede, tone = "light" }) {
   const fg = tone === "dark" ? "#fff" : C.field;
   const body = tone === "dark" ? "rgba(255,255,255,.72)" : C.mute;
@@ -391,6 +435,76 @@ function PhotoSlot({ ratio, src, alt, className = "", caption, fit = "cover" }) 
         </figcaption>
       )}
     </motion.figure>
+  );
+}
+
+/** Small arrow-cursor glyph used by CursorFollow - a stand-in for the
+ *  reader's own pointer, tinted to the report's field-green rather than a
+ *  generic system colour, so the floating tag reads as part of this report
+ *  and not a browser chrome element. */
+function CursorArrow(props) {
+  return (
+    <svg width={16} height={19} viewBox="0 0 26 31" fill="none" {...props}>
+      <path
+        fill={C.field}
+        stroke="#fff"
+        strokeWidth={2}
+        strokeLinecap="square"
+        d="M21.993 14.425 2.549 2.935l4.444 23.108 4.653-10.002z"
+      />
+    </svg>
+  );
+}
+
+/** Wraps any block (typically a photo) so that, on hover, a small
+ *  cursor + label tag follows the pointer inside it - a lightweight way to
+ *  name what a reader is looking at without a caption competing for space
+ *  underneath the image itself. Spring-follows the pointer so it trails
+ *  smoothly rather than snapping frame to frame. */
+function CursorFollow({ children, label, className = "" }) {
+  const [hovered, setHovered] = useState(false);
+  const ref = useRef(null);
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const sx = useSpring(mx, { stiffness: 320, damping: 28, mass: 0.5 });
+  const sy = useSpring(my, { stiffness: 320, damping: 28, mass: 0.5 });
+
+  const handleMove = (e) => {
+    const rect = ref.current.getBoundingClientRect();
+    mx.set(e.clientX - rect.left);
+    my.set(e.clientY - rect.top);
+  };
+
+  return (
+    <div
+      ref={ref}
+      className={`relative ${className}`}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onMouseMove={handleMove}
+    >
+      {children}
+      <AnimatePresence>
+        {hovered && (
+          <motion.div
+            initial={{ scale: 0.3, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.3, opacity: 0 }}
+            transition={{ ease: "easeInOut", duration: 0.15 }}
+            className="pointer-events-none absolute z-20 flex items-center gap-1.5"
+            style={{ left: sx, top: sy }}
+          >
+            <CursorArrow />
+            <span
+              className="wh-data rounded"
+              style={{ background: C.field, color: "#fff", padding: "3px 9px", fontSize: 11, fontWeight: 700, whiteSpace: "nowrap", boxShadow: "0 8px 20px -6px rgba(10,31,22,.5)" }}
+            >
+              {label}
+            </span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
 
@@ -564,6 +678,7 @@ const HERO_META = [
   ["Implementation partner", "Grow Indigo"],
   ["Geography", "Ludhiana & Faridkot, Punjab"],
   ["Quantification", "Cool farm tool.v3"],
+  ["Independent audit", "One Peterson"],
 ];
 
 function Hero() {
@@ -772,6 +887,72 @@ function RollingNumber({ value, duration = 1.4 }) {
 }
 
 /* ----------------------------------------------------------------------------
+   5b · REPORT ICON SET - a small shared library of line icons (24x24,
+   stroke="currentColor", 1.6px, rounded caps) matching the hand-drawn style
+   already used for the theme tiles and workflow cards, so every stat,
+   pillar and step in the report reads from one consistent icon language
+   instead of bare numbers and text.
+---------------------------------------------------------------------------- */
+const ICON_PEOPLE = (
+  <path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM2 20c0-3.3 2.7-6 6-6s6 2.7 6 6M17 11a2.6 2.6 0 1 0 0-5.2M22 20c0-2.8-2.1-5.1-4.8-5.6" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+);
+const ICON_FIELD = (
+  <path d="M3 20h18M4 20V9l4-3 4 3 4-3 4 3v11M8 20v-6M12 20v-6M16 20v-6" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+);
+const ICON_CO2 = (
+  <path d="M7 17a4 4 0 1 1 .7-7.94A5 5 0 0 1 17.5 11H18a3.5 3.5 0 0 1 0 7H7zM9 20l-1.5 2M13 20l-1.5 2M17 20l-1.5 2" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+);
+const ICON_NITROGEN = (
+  <path d="M10 3h4M11 3v5.2L6.5 17a2 2 0 0 0 1.8 2.9h7.4A2 2 0 0 0 17.5 17L13 8.2V3M9 14h6" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+);
+const ICON_WATER = (
+  <path d="M12 3s6 6.6 6 11a6 6 0 0 1-12 0c0-4.4 6-11 6-11zM9.5 15a2.5 2.5 0 0 0 2.5 2.5" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+);
+const ICON_GRAIN = (
+  <path d="M12 2c1.2 3 3 4 3 7a3 3 0 1 1-6 0c0-3 1.8-4 3-7zM12 12v10M8 22h8" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+);
+const ICON_SHIELD_CHECK = (
+  <path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6l7-3zM8.5 12.5l2.5 2.5 4.5-5" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinejoin="round" strokeLinecap="round" />
+);
+const ICON_CLIPBOARD = (
+  <path d="M9 4h6a1 1 0 0 1 1 1v1h1a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h1V5a1 1 0 0 1 1-1zM9 4v2h6V4M9 12h6M9 16h4" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+);
+const ICON_CHART = (
+  <path d="M4 20h16M8 20v-7M13 20V7M18 20v-11" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+);
+const ICON_TREE = (
+  <path d="M12 3l4.5 6h-2.7L18 14h-3l3.5 6H7.5L11 14H8l4.2-5H9.5L12 3zM12 20v2" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+);
+
+/** Icon badge - a round tinted disc that sits above a stat or beside a
+ *  label, matching each card's colour system rather than one flat brand hue. */
+function IconBadge({ icon, color = C.field, size = 40 }) {
+  const bg = color === "#fff" ? "rgba(255,255,255,.16)" : `${color}17`;
+  return (
+    <div
+      className="inline-flex items-center justify-center rounded-full flex-none"
+      style={{ width: size, height: size, background: bg, color }}
+    >
+      <svg width={size * 0.52} height={size * 0.52} viewBox="0 0 24 24">{icon}</svg>
+    </div>
+  );
+}
+
+/** Keyword lookup so existing [value, label, sub] stat tuples across the
+ *  report automatically pick up the right icon without every call site
+ *  needing to be rewritten to a new shape. */
+function iconForStatLabel(label = "") {
+  const l = label.toLowerCase();
+  if (l.includes("farmer")) return ICON_PEOPLE;
+  if (l.includes("hectare")) return ICON_FIELD;
+  if (l.includes("nitrogen")) return ICON_NITROGEN;
+  if (l.includes("ghg") || l.includes("emission") || l.includes("carbon")) return ICON_CO2;
+  if (l.includes("water")) return ICON_WATER;
+  if (l.includes("procurement") || l.includes("mt)")) return ICON_GRAIN;
+  return ICON_CHART;
+}
+
+/* ----------------------------------------------------------------------------
    6 · SHARED STAT ROW - reused for the two identical "season headline"
    result trios (Section 01 and Section 09).
 ---------------------------------------------------------------------------- */
@@ -780,8 +961,13 @@ function StatRow({ stats }) {
   return (
     <div className={`grid gap-4 ${colsClass}`}>
       {stats.map(([value, label, sub]) => (
-        <div key={label} className="p-6 rounded-lg text-center" style={{ background: "#fff", border: `1px solid ${C.line}` }}>
-          <div className="wh-display" style={{ fontWeight: 800, fontSize: "2rem", color: C.field }}><RollingNumber value={value} /></div>
+        <div
+          key={label}
+          className="p-6 rounded-lg text-center transition-transform duration-300 ease-out hover:-translate-y-1"
+          style={{ background: "#fff", border: `1px solid ${C.line}`, boxShadow: "0 1px 2px rgba(10,31,22,.04)" }}
+        >
+          <IconBadge icon={iconForStatLabel(label)} color={C.field} />
+          <div className="wh-display mt-3" style={{ fontWeight: 800, fontSize: "2rem", color: C.field }}><RollingNumber value={value} /></div>
           <div className="mx-auto mt-2" style={{ width: 28, height: 2, background: C.husk }} />
           <div className="mt-3" style={{ fontWeight: 700, fontSize: 14, color: C.ink }}>{label}</div>
           {sub && <div className="wh-data mt-1" style={{ fontSize: 11.5, color: C.mute }}>{sub}</div>}
@@ -1235,10 +1421,10 @@ const WF_ICONS = [
 
 const WORKFLOW_WHEAT = [
   ["Kisan Advisor visits the farmer", "On-field engagement and practice verification"],
-  ["Capability building on interventions", "Training on Zero Tillage and Happy Seeder use, crop residue management and optimised fertiliser application"],
-  ["Data capture on agronomic practices", "Zero Tillage, residue and fertiliser practices recorded digitally in ClearHarvest"],
+  ["Capability building on interventions", "Training on sustainable practices"],
+  ["Data capture on agronomic practices", "Digitally captured the agronomy data from sowing to harvest"],
   ["QC of field-reported data by scientists", "Methodological review and validation"],
-  ["Procurement audit trail", "Field-to-processor procurement and traceability records maintained digitally"],
+  ["Procurement audit trail", "Farm to processor"],
   ["3rd-party audit & report submission", "Independent field verification, GHG quantification and final reporting"],
 ];
 
@@ -1289,9 +1475,6 @@ function WorkflowStepper() {
       <div className="text-center mt-5">
         <div className="wh-data" style={{ fontSize: 13, fontWeight: 700, color: C.field, letterSpacing: 0.6 }}>
           MONITORING, TRACEABILITY &amp; ASSURANCE WORKFLOW
-        </div>
-        <div className="mt-1.5" style={{ fontSize: 12.5, color: C.mute, fontStyle: "italic" }}>
-          From farmer engagement to third-party audit - the operational backbone of the programme
         </div>
       </div>
 
@@ -1409,10 +1592,14 @@ function GovernanceSection() {
               The reported outcomes were evaluated against the approved monitoring methodology through a review
               of monitoring records, farmer-level data, supporting documentation, and field-level evidence. The
               verification process assessed the completeness, consistency, accuracy, and traceability of the
-              reported data and cross-checked the results against the established baseline. The project and its
-              reported outcomes were independently verified by the third-party auditor, One Peterson.
+              reported data and cross-checked the results against the established baseline.
             </p>
           </div>
+          <Reveal delay={0.1} className="mt-6">
+            <PullQuoteCard tone={C.field} label="Independently verified">
+              The project and its reported outcomes were independently verified by the third-party auditor, One Peterson.
+            </PullQuoteCard>
+          </Reveal>
         </div>
       </div>
     </Section>
@@ -1432,11 +1619,11 @@ const JOURNEY_STEPS = [
     body: "Several Village-Level Meetings (VLMs) were conducted during the programme period to strengthen farmer awareness, technical capacity and adoption of recommended practices under the ClearHarvest Wheat Programme. The sessions covered Zero Tillage and Reduced Tillage, crop residue management, balanced fertiliser application, integrated and responsible pest management, avoidance of harmful chemical categories, safe disposal of pesticide containers, efficient water and resource use, farmer record-keeping, responsible labour practices and programme participation requirements. Practical demonstrations included Zero Tillage machinery, farmer diaries and Leaf Colour Chart use, while field exposure and stakeholder interactions provided farmers with opportunities for hands-on learning, peer exchange and clarification of programme requirements. The meetings also reinforced awareness of low-carbon wheat production, sustainable procurement, the wider ClearHarvest sustainability programme and the Carbon Credit initiative, supporting practical adoption of improved practices at field level.",
   },
   {
-    n: "03", title: "Farmer Diaries",
+    n: "03", title: "Farmer Diaries", gallery: [journeyFarmerDiary1, journeyFarmerDiary2, journeyFarmerDiary3],
     body: "Kisan Advisors supported farmers in maintaining agronomic and economic records. Farmer diaries captured field operations, input use and other information required for programme monitoring and quantification.",
   },
   {
-    n: "04", title: "Quality Test Conducted by Nestlé",
+    n: "04", title: "Quality Test Conducted by Nestlé", gallery: [journeyQualityTest1, journeyQualityTest2],
     body: "Prior to harvest, the Nestlé team collected representative wheat samples directly from programme fields and conducted pre-harvest quality and food-safety testing for pesticide residues, aflatoxins and other specified contaminants to assess compliance with applicable quality requirements.",
   },
   {
@@ -1504,7 +1691,9 @@ function JourneySection() {
               </div>
               {step.img && (
                 <div className="md:col-span-2" style={{ order: reverse ? 1 : 2 }}>
-                  <PhotoSlot ratio="4 / 3" src={step.img} alt={step.title} />
+                  <CursorFollow label={step.title}>
+                    <PhotoSlot ratio="4 / 3" fit="contain" src={step.img} alt={step.title} />
+                  </CursorFollow>
                 </div>
               )}
               {step.gallery && (
@@ -1513,7 +1702,9 @@ function JourneySection() {
                   style={{ order: reverse ? 1 : 2 }}
                 >
                   {step.gallery.map((src, gi) => (
-                    <PhotoSlot key={gi} ratio="4 / 3" src={src} alt={step.title} />
+                    <CursorFollow key={gi} label={step.title}>
+                      <PhotoSlot ratio="4 / 3" fit="contain" src={src} alt={step.title} />
+                    </CursorFollow>
                   ))}
                 </div>
               )}
@@ -1632,6 +1823,7 @@ function PinnedStatement({ text }) {
    16 · SECTION 09 - SAMPLED. QUANTIFIED. AUDITED.
 ---------------------------------------------------------------------------- */
 const PIPELINE = ["Data Collection", "Independent Audit", "GHG Impact Calculation"];
+const PIPELINE_ICONS = [ICON_CLIPBOARD, ICON_SHIELD_CHECK, ICON_CHART];
 const PIPELINE_COLORS = [C.field, C.inkSoft, C.husk];
 
 const AUDIT_TABLE = [
@@ -1646,13 +1838,14 @@ function PipelineSteps() {
       {PIPELINE.map((label, i) => (
         <React.Fragment key={label}>
           <motion.div
-            className="flex-1 flex items-center justify-center px-6 py-5 rounded text-center"
+            className="flex-1 flex items-center justify-center gap-2.5 px-6 py-5 rounded text-center"
             style={{ background: PIPELINE_COLORS[i], color: "#fff", fontWeight: 700, fontSize: 15 }}
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.6 }}
             transition={{ duration: 0.5, delay: i * 0.12, ease: EASE }}
           >
+            <svg width="19" height="19" viewBox="0 0 24 24" style={{ opacity: 0.85, flexShrink: 0 }}>{PIPELINE_ICONS[i]}</svg>
             {label}
           </motion.div>
           {i < PIPELINE.length - 1 && (
@@ -1791,7 +1984,7 @@ function ChartTip({ active, payload, unit }) {
   );
 }
 
-function ChartFrame({ title, unit, kicker, children, height = 320, footnote }) {
+function ChartFrame({ title, unit, kicker, icon, children, height = 320, footnote }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, amount: 0.25 });
   return (
@@ -1804,7 +1997,10 @@ function ChartFrame({ title, unit, kicker, children, height = 320, footnote }) {
       transition={{ duration: 0.7, ease: EASE }}
       whileHover={{ boxShadow: "0 24px 48px -32px rgba(10,31,22,.5)" }}
     >
-      <Eyebrow>{kicker}</Eyebrow>
+      <div className="flex items-center gap-2.5">
+        {icon && <IconBadge icon={icon} color={C.field} size={30} />}
+        <Eyebrow>{kicker}</Eyebrow>
+      </div>
       <h4 className="wh-display mt-3 text-xl md:text-2xl" style={{ color: C.field, fontWeight: 700 }}>{title}</h4>
       <div className="wh-data mt-1" style={{ fontSize: 11, color: C.mute }}>{unit}</div>
       <div style={{ height, marginTop: 18 }}>
@@ -1823,14 +2019,14 @@ const chartAxisStyle = { fontSize: 11, fill: C.mute, fontFamily: FONT_DATA };
 
 const WHEAT_SEASON_HEADLINE = [
   {
-    label: "GHG reduction", value: 15, prefix: "~ ", suffix: "%", tone: C.field,
+    label: "GHG reduction", value: 15, prefix: "~ ", suffix: "%", tone: C.field, icon: ICON_CO2,
     detail: [
       ["-364", "kg CO₂e/MT of wheat removed · net sink, on top of the reduction"],
       ["65", "kg CO₂e/MT of wheat cut · 425 → 360, vs. Nestlé baseline"],
     ],
   },
-  { label: "Water saved", value: 46, prefix: "~ ", suffix: "%", tone: C.water },
-  { label: "Nitrogen reduction", value: 34, prefix: "~ ", suffix: "%", tone: C.husk },
+  { label: "Water saved", value: 46, prefix: "~ ", suffix: "%", tone: C.water, icon: ICON_WATER },
+  { label: "Nitrogen reduction", value: 34, prefix: "~ ", suffix: "%", tone: C.husk, icon: ICON_NITROGEN },
 ];
 
 function SeasonHeadlineResults() {
@@ -1848,7 +2044,8 @@ function SeasonHeadlineResults() {
             className="p-6 rounded-lg h-full"
             style={{ background: s.detail ? C.ink : "#fff", border: s.detail ? "none" : `1px solid ${C.line}` }}
           >
-            <div className="wh-display" style={{ color: s.detail ? "#fff" : s.tone, fontWeight: 800, fontSize: "clamp(2rem,4.4vw,2.6rem)" }}>
+            <IconBadge icon={s.icon} color={s.detail ? "#fff" : s.tone} />
+            <div className="wh-display mt-3" style={{ color: s.detail ? "#fff" : s.tone, fontWeight: 800, fontSize: "clamp(2rem,4.4vw,2.6rem)" }}>
               <Counter value={s.value} prefix={s.prefix || ""} suffix={s.suffix || ""} />
             </div>
             <div className="mt-1" style={{ fontWeight: 600, fontSize: 14.5, color: s.detail ? "rgba(255,255,255,.85)" : C.ink }}>{s.label}</div>
@@ -1898,6 +2095,7 @@ function AuditedSection() {
       <div className="grid gap-5 lg:grid-cols-2">
         <ChartFrame
           kicker="Emissions intensity"
+          icon={ICON_CO2}
           title="15% less carbon in every tonne"
           unit="kg CO₂e per MT of wheat"
           height={360}
@@ -1915,6 +2113,7 @@ function AuditedSection() {
 
         <ChartFrame
           kicker="Nitrogen use"
+          icon={ICON_NITROGEN}
           title="Less fertiliser, same crop"
           unit="kg nitrogen per ha"
           height={360}
@@ -1935,6 +2134,7 @@ function AuditedSection() {
         <div className="w-full lg:w-1/2 lg:pl-2.5">
           <ChartFrame
             kicker="Irrigation water use"
+            icon={ICON_WATER}
             title="46% less water per hectare"
             unit="m³ per ha"
             height={320}
@@ -1967,8 +2167,8 @@ function AuditedSection() {
 ---------------------------------------------------------------------------- */
 const ACTIVITY_MONTHS = ["Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr"];
 const ACTIVITY_EVENTS = [
-  { month: 1, label: "Reduced Tillage", color: C.leaf },
-  { month: 1, label: "↓ DAP", color: C.water },
+  { month: 0.8, label: "Reduced Tillage", color: C.leaf },
+  { month: 1.2, label: "↓ DAP", color: C.water },
   { month: 2, label: "↓ Urea", color: C.husk },
   { month: 3, label: "↓ Urea", color: C.husk },
   { month: 4, label: "↓ Urea", color: C.husk },
@@ -2039,7 +2239,7 @@ function ActivityTimelineScroller() {
         <Eyebrow>Scroll to grow the season, October to April</Eyebrow>
 
         {/* events row - each badge sits at its month's x position */}
-        <div className="relative mt-8" style={{ height: 40 }}>
+        <div className="relative mt-8" style={{ height: 64 }}>
           {ACTIVITY_EVENTS.map((e, i) => (
             <div
               key={i}
@@ -2143,7 +2343,14 @@ function CheckList({ items, color }) {
     <div className="space-y-5">
       {items.map(([title, body]) => (
         <div key={title} className="flex gap-3">
-          <span className="wh-display flex-none" style={{ color, fontWeight: 800, fontSize: 17 }}>✓</span>
+          <span
+            className="inline-flex items-center justify-center rounded-full flex-none"
+            style={{ width: 22, height: 22, marginTop: 1, background: `${color}17`, color }}
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24">
+              <path d="M4 12.5l5 5.5L20 6" stroke="currentColor" strokeWidth="2.4" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
           <div>
             <div style={{ fontWeight: 700, fontSize: 14.5, color: C.ink }}>{title}</div>
             <p className="mt-1" style={{ fontSize: 13.5, lineHeight: 1.62, color: C.mute }}>{body}</p>
@@ -2184,10 +2391,10 @@ function FarmerImpactSection() {
    19 · SECTION 12 - MAPPED TO NESTLÉ'S RESPONSIBLE SOURCING STANDARD
 ---------------------------------------------------------------------------- */
 const SOURCING_PILLARS = [
-  ["Pillar 01", "Climate Action & Net Zero", "Zero Tillage machinery reduces conventional preparatory operations; optimised nitrogen use (~34% below baseline) lowers application-linked emissions. The project achieved a 15% reduction in emissions compared to the baseline, alongside net carbon removals of -364 kgCO2e/MT: a field-recorded Scope 3 contribution.", C.husk],
-  ["Pillar 02", "Water Stewardship & Livelihoods", "Optimised irrigation delivers ~46% water savings against Grow Indigo's baseline; farmer training and pest-management guidance support informed, resource-efficient decisions.", C.water],
-  ["Pillar 03", "Land, Forests & Biodiversity", "Zero Tillage machinery provides an alternative to open-field residue burning; soil sampling supports future soil-health assessment.", C.leaf],
-  ["Pillar 04", "Transparency & traceability", "ClearHarvest onboarding, geofencing and farmer diaries build a recorded, audit-ready trail; One Peterson provides independent review.", C.clay],
+  ["Pillar 01", "Climate Action & Net Zero", "Zero Tillage machinery reduces conventional preparatory operations; optimised nitrogen use (~34% below baseline) lowers application-linked emissions. The project achieved a 15% reduction in emissions compared to the baseline, alongside net carbon removals of -364 kgCO2e/MT: a field-recorded Scope 3 contribution.", C.husk, ICON_CO2],
+  ["Pillar 02", "Water Stewardship & Livelihoods", "Optimised irrigation delivers ~46% water savings against Grow Indigo's baseline; farmer training and pest-management guidance support informed, resource-efficient decisions.", C.water, ICON_WATER],
+  ["Pillar 03", "Land, Forests & Biodiversity", "Zero Tillage machinery provides an alternative to open-field residue burning; soil sampling supports future soil-health assessment.", C.leaf, ICON_TREE],
+  ["Pillar 04", "Transparency & traceability", "ClearHarvest onboarding, geofencing and farmer diaries build a recorded, audit-ready trail; One Peterson provides independent review.", C.clay, ICON_SHIELD_CHECK],
 ];
 
 function SourcingSection() {
@@ -2202,7 +2409,7 @@ function SourcingSection() {
         lede="The standard sets out how the supply chain is expected to operate - environmental performance, human-rights protection, traceability and farmer livelihoods. Every intervention deployed in Ludhiana and Faridkot maps onto a pillar, and every metric here supports Nestlé's Responsible Sourcing."
       />
       <div ref={grid} className="grid gap-4 sm:grid-cols-2">
-        {SOURCING_PILLARS.map(([pillar, name, body, color]) => {
+        {SOURCING_PILLARS.map(([pillar, name, body, color, icon]) => {
           const isHovered = hovered === pillar;
           return (
             <motion.div
@@ -2221,13 +2428,21 @@ function SourcingSection() {
                 transition: "background .3s ease, border-color .3s ease, box-shadow .3s ease",
               }}
             >
-              <div
-                className="wh-data"
-                style={{ color: isHovered ? "#fff" : color, fontWeight: 700, fontSize: 12, letterSpacing: ".1em", transition: "color .3s ease" }}
-              >
-                {pillar.toUpperCase()}
+              <div className="flex items-center justify-between">
+                <div
+                  className="wh-data"
+                  style={{ color: isHovered ? "#fff" : color, fontWeight: 700, fontSize: 12, letterSpacing: ".1em", transition: "color .3s ease" }}
+                >
+                  {pillar.toUpperCase()}
+                </div>
+                <div
+                  className="inline-flex items-center justify-center rounded-full flex-none"
+                  style={{ width: 32, height: 32, background: isHovered ? "rgba(255,255,255,.18)" : `${color}22`, color: isHovered ? "#fff" : color, transition: "background .3s ease, color .3s ease" }}
+                >
+                  <svg width="17" height="17" viewBox="0 0 24 24">{icon}</svg>
+                </div>
               </div>
-              <h4 className="wh-display mt-1.5 text-lg" style={{ color: "#fff", fontWeight: 700 }}>{name}</h4>
+              <h4 className="wh-display mt-3 text-lg" style={{ color: "#fff", fontWeight: 700 }}>{name}</h4>
               <p
                 className={isHovered ? "mt-3" : "mt-3 line-clamp-2"}
                 style={{ fontSize: 13.5, lineHeight: 1.65, color: "rgba(255,255,255,.85)", transition: "color .3s ease" }}
@@ -2239,15 +2454,12 @@ function SourcingSection() {
         })}
       </div>
       <Reveal delay={0.15} className="mt-10">
-        <div className="p-6 rounded-lg" style={{ background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.12)" }}>
-          <Eyebrow color={C.husk}>Insight</Eyebrow>
-          <p className="mt-3" style={{ fontSize: 14, lineHeight: 1.75, color: "rgba(255,255,255,.82)" }}>
-            Zero/Reduced Tillage and optimised fertiliser use can reduce field operations, fuel consumption and
-            input requirements, improving overall production efficiency. Continued adoption can also support
-            better soil structure, enhanced moisture retention and greater resilience to water stress, while
-            reducing residue burning and the overall environmental footprint of wheat cultivation.
-          </p>
-        </div>
+        <PullQuoteCard tone={C.husk} dark label="Insight">
+          Zero/Reduced Tillage and optimised fertiliser use can reduce field operations, fuel consumption and
+          input requirements, improving overall production efficiency. Continued adoption can also support
+          better soil structure, enhanced moisture retention and greater resilience to water stress, while
+          reducing residue burning and the overall environmental footprint of wheat cultivation.
+        </PullQuoteCard>
       </Reveal>
     </Section>
   );
@@ -2282,7 +2494,9 @@ function EvidenceSection() {
             <Eyebrow>{tag}</Eyebrow>
             <h4 className="wh-display mt-1 text-lg" style={{ color: C.ink, fontWeight: 700 }}>{title}</h4>
             <div className="mt-3">
-              <PhotoSlot ratio="4 / 3" fit="contain" src={src} alt={title} caption={caption} />
+              <CursorFollow label={tag}>
+                <PhotoSlot ratio="4 / 3" fit="contain" src={src} alt={title} caption={caption} />
+              </CursorFollow>
             </div>
           </div>
         ))}
