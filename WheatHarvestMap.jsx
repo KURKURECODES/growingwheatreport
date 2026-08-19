@@ -52,6 +52,7 @@ import { Map as MLMap, Marker, Popup, NavigationControl, ScaleControl, setWorker
 setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
 
 import BOUNDARIES from "./wheat-boundaries.geo.json";
+import INDIA_BORDER from "./india-border.geo.json";
 import FIELDS_FC from "./wheat-fields.geo.json";
 import VILLAGES_DATA from "./wheat-villages.json";
 import MILLERS from "./wheat-millers.json";
@@ -174,7 +175,29 @@ function DrillMap({ level, village, focusedDistrict, selected, onPickState, onPi
   const [ready, setReady] = useState(false);
   const popup = useRef(null);
   const levelRef = useRef(level);
+  const villageRef = useRef(village);
+  const focusedDistrictRef = useRef(focusedDistrict);
   useEffect(() => { levelRef.current = level; }, [level]);
+  useEffect(() => { villageRef.current = village; }, [village]);
+  useEffect(() => { focusedDistrictRef.current = focusedDistrict; }, [focusedDistrict]);
+
+  /** Re-fit the camera to whatever the current drill level should be
+   *  looking at, reading level/village/focusedDistrict off refs so it can
+   *  be called imperatively (from a ResizeObserver) as well as from the
+   *  level-change effect below - both need the exact same "what should be
+   *  on screen right now" logic. */
+  const refitCamera = useCallback((m, opts = {}) => {
+    const lvl = levelRef.current;
+    if (lvl === "village" && villageRef.current) {
+      m.fitBounds(fcBounds(villageFC(villageRef.current)), { padding: 70, duration: 0, essential: true, ...opts });
+    } else if (lvl === "district" && focusedDistrictRef.current) {
+      const districtVillages = VILLAGES.filter((v) => v.district === focusedDistrictRef.current);
+      m.fitBounds(pointBounds(districtVillages.length ? districtVillages : VILLAGES), { padding: 60, duration: 0, essential: true, ...opts });
+    } else {
+      const cam = CAMERA[lvl] || CAMERA.india;
+      m.fitBounds(cam.bounds, { padding: cam.padding, duration: 0, essential: true, ...opts });
+    }
+  }, []);
 
   /* --- init ------------------------------------------------------------- */
   useEffect(() => {
@@ -202,6 +225,16 @@ function DrillMap({ level, village, focusedDistrict, selected, onPickState, onPi
         properties: {},
         geometry: BOUNDARIES.features.find((f) => f.properties.id === id).geometry,
       });
+
+      /* India - national outline, always on, so the country reads clearly
+         at every drill level (not just while zoomed out on it). Dissolved
+         from state polygons by scripts/build_india_border.mjs - see that
+         file's header for the same OSM/LoC-convention caveat noted above
+         for the basemap; swap for a surveyor-general boundary before this
+         ships to print. */
+      m.addSource("india", { type: "geojson", data: INDIA_BORDER });
+      m.addLayer({ id: "in-line", type: "line", source: "india",
+        paint: { "line-color": C.husk, "line-width": 2.2 } });
 
       /* Punjab - the clickable state */
       m.addSource("punjab", { type: "geojson", data: bd("punjab") });
@@ -350,7 +383,21 @@ function DrillMap({ level, village, focusedDistrict, selected, onPickState, onPi
       setReady(true);
     });
 
-    return () => { m.remove(); map.current = null; };
+    // The map column sits in a CSS grid next to the detail panel, and web
+    // fonts/layout can still reflow its width after this effect first runs.
+    // resize() alone only re-reads the container's pixel size - it keeps
+    // whatever centre/zoom fitBounds computed against the OLD (possibly
+    // still-settling) size, which is exactly how India ends up off-centre
+    // or cropped. Re-fitting after every resize recomputes that centre/zoom
+    // against the container's current size, so India (or whatever level is
+    // active) stays properly framed through any later layout shift.
+    const ro = new ResizeObserver(() => {
+      m.resize();
+      refitCamera(m);
+    });
+    ro.observe(holder.current);
+
+    return () => { ro.disconnect(); m.remove(); map.current = null; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -370,18 +417,8 @@ function DrillMap({ level, village, focusedDistrict, selected, onPickState, onPi
     m.setFilter("fld-fill", showDistrict ? true : ["==", ["get", "village"], ""]);
     m.setFilter("fld-line", showDistrict ? true : ["==", ["get", "village"], ""]);
 
-    if (level === "village" && village) {
-      m.fitBounds(fcBounds(villageFC(village)), { padding: 70, duration: 1800, essential: true });
-    } else if (level === "district" && focusedDistrict) {
-      // zoomed into just one of the two (non-adjacent) districts so its
-      // fields stop being illegible specks
-      const districtVillages = VILLAGES.filter((v) => v.district === focusedDistrict);
-      m.fitBounds(pointBounds(districtVillages.length ? districtVillages : VILLAGES), { padding: 60, duration: 1800, essential: true });
-    } else {
-      const cam = CAMERA[level] || CAMERA.india;
-      m.fitBounds(cam.bounds, { padding: cam.padding, duration: 1800, essential: true });
-    }
-  }, [level, village, focusedDistrict, ready]);
+    refitCamera(m, { duration: 1800 });
+  }, [level, village, focusedDistrict, ready, refitCamera]);
 
   /* --- village pins: small pulsing red dot, one per village --------------
      MapLibre writes its own inline `transform: translate(...)` onto the

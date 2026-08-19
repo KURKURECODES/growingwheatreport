@@ -39,27 +39,23 @@ import { WheatFieldsMapBlock } from "./WheatHarvestMap.jsx";
 import wheatPartnerLogo from "./src/assets/wheat/brand/gilogo1.png";
 import wheatProgrammeLogo from "./src/assets/wheat/brand/chnlogo-fixed.png";
 
-import heroCoverPhoto from "./src/assets/wheat/docx/hero-cover.jpeg";
 import enrolledFieldsMap from "./src/assets/wheat/docx/enrolled-fields-map.jpg";
 import identityPreservationAerial from "./src/assets/wheat/docx/identity-preservation-aerial.png";
-import governanceOrgChart from "./src/assets/wheat/docx/governance-org-chart.png";
 import monitoringApp1 from "./src/assets/wheat/docx/monitoring-app-1.jpeg";
 import monitoringApp2 from "./src/assets/wheat/docx/monitoring-app-2.jpeg";
 import monitoringApp3 from "./src/assets/wheat/docx/monitoring-app-3.jpeg";
 import monitoringApp4 from "./src/assets/wheat/docx/monitoring-app-4.jpeg";
 import monitoringApp5 from "./src/assets/wheat/docx/mm5.jpeg";
-import sixStepChain from "./src/assets/wheat/docx/six-step-chain.png";
 import traceabilityFlow from "./src/assets/wheat/docx/trace.jpg";
-import activityTimeline from "./src/assets/wheat/docx/activity-timeline.png";
-import journeyKickoff from "./src/assets/wheat/docx/journey-01-kickoff.jpeg";
+import journeyKickoff from "./src/assets/wheat/docx/pko.jpg";
 import journeyVlm1 from "./src/assets/wheat/docx/journey-02-vlm1-khasikalan.jpg";
 import journeyVlm2 from "./src/assets/wheat/docx/journey-03-vlm2-kotkapura.jpeg";
 import journeyVlm3 from "./src/assets/wheat/docx/journey-04-vlm3-bisafarm.jpeg";
 import journeyVlm4 from "./src/assets/wheat/docx/journey-05-vlm4-aulakh.jpeg";
 import journeyVlm5 from "./src/assets/wheat/docx/journey-06-vlm5-nurpurbet.jpeg";
 import journeyVlm6 from "./src/assets/wheat/docx/journey-07-vlm6-dhanansu.jpeg";
-import journeyLowCarbonWheat from "./src/assets/wheat/docx/journey-08-lowcarbon-wheat.jpeg";
-import journeyThirdPartyAudit from "./src/assets/wheat/docx/journey-09-thirdparty-audit.jpeg";
+import journeyLowCarbonWheat from "./src/assets/wheat/docx/lewp.jpg";
+import journeyThirdPartyAudit from "./src/assets/wheat/docx/itpa.jpg";
 import farmerDiarySocioeconomic from "./src/assets/wheat/docx/farmer-diary-socioeconomic.png";
 import annexureVlm from "./src/assets/wheat/docx/annexure-01-vlm.jpeg";
 import annexureZtField from "./src/assets/wheat/docx/annexure-02-zt-field.jpeg";
@@ -73,26 +69,31 @@ import aboutGrowIndigoGraphic from "./src/assets/wheat/docx/about-grow-indigo.pn
 gsap.registerPlugin(ScrollTrigger);
 
 /* ----------------------------------------------------------------------------
-   1 · DESIGN TOKENS (wheat-toned palette, deepened for contrast/punch)
+   1 · DESIGN TOKENS - ported verbatim from ClearHarvest.jsx (the rice
+   report), per the client's direction to match its palette exactly.
 ---------------------------------------------------------------------------- */
 const C = {
-  ink: "#2E2313",
-  inkSoft: "#4A3A22",
-  field: "#C4470F",
-  leaf: "#6B8C3A",
-  water: "#1E5C82",
-  waterDeep: "#163F5A",
-  husk: "#E0932A",
-  clay: "#8B5A2B",
-  paper: "#FBF3E7",
-  paperDim: "#F0E2CC",
-  line: "#E0CFA9",
+  ink: "#0A1F16",
+  inkSoft: "#12291F",
+  field: "#0E5B33",
+  leaf: "#4FA65B",
+  water: "#1E88A8",
+  waterDeep: "#12566B",
+  husk: "#C98A2E",
+  clay: "#8C5A3C",
+  paper: "#EEF3EC",
+  paperDim: "#DFE8DD",
+  line: "#C3D3C1",
   mute: "#7A6A54",
 };
 
 const FONT_DISPLAY = "'Archivo', 'Helvetica Neue', Arial, sans-serif";
 const FONT_BODY = "'Inter', 'Helvetica Neue', Arial, sans-serif";
 const FONT_DATA = "'Inter', 'Helvetica Neue', Arial, sans-serif";
+/** Editorial serif italic, used sparingly for the report's few pull-quote
+ *  moments - inspired by the Nestlé AR's handwritten-quote treatment,
+ *  without literally copying its script face. */
+const FONT_QUOTE = "'Fraunces', Georgia, 'Times New Roman', serif";
 
 const EASE = [0.22, 0.61, 0.36, 1];
 const GSAP_EASE = "power3.out";
@@ -108,11 +109,6 @@ function GlobalStyle() {
 
       .wh-mask { display: block; overflow: hidden; }
       .wh-scrub { will-change: transform; }
-
-      .wh-ticker-track { display: flex; width: max-content; animation: wh-ticker-scroll 32s linear infinite; }
-      .wh-ticker:hover .wh-ticker-track { animation-play-state: paused; }
-      @keyframes wh-ticker-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-      @media (prefers-reduced-motion: reduce) { .wh-ticker-track { animation: none; } }
 
       .wh-root ::selection { background: ${C.husk}; color: #fff; }
       .wh-root :focus-visible { outline: 2px solid ${C.water}; outline-offset: 3px; border-radius: 2px; }
@@ -321,7 +317,7 @@ function SectionHead({ index, title, lede, tone = "light" }) {
       />
       {lede && (
         <Reveal delay={0.18}>
-          <p className="mt-5 text-base md:text-lg" style={{ color: body, maxWidth: "72ch", lineHeight: 1.65 }}>{lede}</p>
+          <p className="mt-5 text-base md:text-lg" style={{ color: body, lineHeight: 1.65 }}>{lede}</p>
         </Reveal>
       )}
     </div>
@@ -346,11 +342,15 @@ function Section({ id, children, tone = "light", className = "" }) {
  *  view and, where it has a fixed aspect ratio, drifts gently (Ken-Burns
  *  style) as the page keeps scrolling past it - a small "the report is alive"
  *  cue that repeats in every section without needing a bespoke effect each. */
-function PhotoSlot({ ratio, src, alt, className = "", caption }) {
+function PhotoSlot({ ratio, src, alt, className = "", caption, fit = "cover" }) {
   const reduce = useReducedMotion();
   const wrapRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: wrapRef, offset: ["start end", "end start"] });
   const parallaxY = useTransform(scrollYProgress, [0, 1], ["-6%", "6%"]);
+  // "contain" is for evidence-type images (screenshots, forms, receipts,
+  // portrait photos) where cropping could hide real content - it letterboxes
+  // instead of cutting anything off, so the whole image is always visible.
+  const useCover = ratio && fit === "cover";
 
   return (
     <motion.figure
@@ -367,7 +367,7 @@ function PhotoSlot({ ratio, src, alt, className = "", caption }) {
           ? { aspectRatio: ratio, background: C.paperDim, border: `1px solid ${C.line}` }
           : { background: C.paperDim, border: `1px solid ${C.line}`, lineHeight: 0 }}
       >
-        {ratio && !reduce ? (
+        {useCover && !reduce ? (
           <motion.img
             src={src}
             alt={alt}
@@ -378,7 +378,7 @@ function PhotoSlot({ ratio, src, alt, className = "", caption }) {
             src={src}
             alt={alt}
             style={ratio
-              ? { width: "100%", height: "100%", objectFit: "cover" }
+              ? { width: "100%", height: "100%", objectFit: fit }
               : { width: "100%", height: "auto", display: "block" }}
           />
         )}
@@ -571,7 +571,8 @@ function Hero() {
     gsap.set([q(".hero-eyebrow"), q(".hero-lede"), q(".hero-meta > *"), q(".hero-cue")], { autoAlpha: 0, y: 24 });
 
     const tl = gsap.timeline({ defaults: { ease: GSAP_EASE } });
-    tl.fromTo(q(".hero-photo"), { scale: 1.12, opacity: 0 }, { scale: 1, opacity: 1, duration: 2, ease: "power2.out" }, 0)
+    tl.fromTo(q(".hero-stalk"), { scaleY: 0, transformOrigin: "bottom center", opacity: 0 },
+        { scaleY: 1, opacity: 0.8, duration: 1.4, stagger: { each: 0.012, from: "center" } }, 0.15)
       .to(q(".hero-eyebrow"), { autoAlpha: 1, y: 0, duration: 0.8 }, 0.35)
       .to(q(".hero-word"), { yPercent: 0, duration: 1.1, stagger: 0.09, ease: "expo.out" }, 0.5)
       .to(q(".hero-lede"), { autoAlpha: 1, y: 0, duration: 0.9 }, 1.05)
@@ -583,7 +584,7 @@ function Hero() {
         yPercent: -14, autoAlpha: 0, ease: "none",
         scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: 0.5 },
       });
-      gsap.to(q(".hero-photo"), {
+      gsap.to(q(".hero-field"), {
         yPercent: 12, ease: "none",
         scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: 0.5 },
       });
@@ -592,15 +593,37 @@ function Hero() {
 
   return (
     <div ref={scope} className="relative flex flex-col justify-end" style={{ minHeight: "100vh", background: C.ink }}>
-      <div className="hero-photo absolute inset-0 w-full h-full wh-scrub" aria-hidden="true">
-        <img
-          src={heroCoverPhoto}
-          alt=""
-          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 35%" }}
-        />
-        <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(32,24,11,.5) 0%, rgba(32,24,11,.58) 45%, rgba(32,24,11,.94) 100%)" }} />
-        <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, rgba(32,24,11,.85) 0%, rgba(32,24,11,.35) 42%, rgba(32,24,11,0) 68%)" }} />
-      </div>
+      {/* Drawn, not photographed - a field of wheat built from code, same
+          approach as the rice report's paddy-field hero. Sky is a plain CSS
+          gradient covering the whole hero; the wheat itself lives in a fixed-
+          height band pinned to the bottom edge, so it can never grow tall
+          enough to collide with the title/lede/meta above it. */}
+      <div
+        className="absolute inset-0 wh-scrub"
+        aria-hidden="true"
+        style={{ background: "linear-gradient(180deg, #241C16 0%, #3A2418 62%, #4A2F1E 100%)" }}
+      />
+      <svg
+        className="hero-field absolute bottom-0 left-0 w-full wh-scrub"
+        style={{ height: "clamp(140px, 22vh, 240px)" }}
+        preserveAspectRatio="none"
+        viewBox="0 0 1200 240"
+        aria-hidden="true"
+      >
+        {/* stubble line at the base - the zero-tillage story in one gesture:
+            residue stays on the field instead of being burnt off */}
+        <rect x="0" y="200" width="1200" height="40" fill={C.clay} opacity="0.3" />
+        {Array.from({ length: 46 }).map((_, i) => {
+          const x = 20 + i * 26;
+          const h = 30 + ((i * 37) % 40);
+          return (
+            <g key={i} className="hero-stalk">
+              <path d={`M${x} 210 q3 -${h} 0 -${h + 12}`} stroke={C.husk} strokeWidth="1.6" fill="none" opacity=".8" />
+              <ellipse cx={x} cy={210 - h - 12} rx="3.4" ry="8" fill={C.husk} opacity=".85" transform={`rotate(${(i % 5) - 2} ${x} ${210 - h - 12})`} />
+            </g>
+          );
+        })}
+      </svg>
 
       <div className="hero-content relative px-5 md:px-10 pb-16 md:pb-24 pt-32 mx-auto w-full wh-scrub" style={{ maxWidth: 1180 }}>
         <div className="hero-eyebrow">
@@ -652,42 +675,42 @@ function Hero() {
           <path d="M10 2v20M3 15l7 7 7-7" stroke="rgba(255,255,255,.6)" strokeWidth="1.4" fill="none" />
         </motion.svg>
       </div>
-
-      <HeroTicker />
     </div>
   );
 }
 
 /* ----------------------------------------------------------------------------
-   5a · HERO TICKER - the season's headline figures, scrolling edge-to-edge
-   across the foot of the title page so the report's biggest numbers are the
-   very last thing before you scroll past the cover.
+   5a · TICKER - the season's headline figures, running the way the rice
+   report's does: a quiet strip directly under the title page, not layered
+   on top of it. GSAP-driven so it can ease to a crawl (not a hard stop) the
+   moment a reader's cursor lands on it.
 ---------------------------------------------------------------------------- */
 const TICKER_ITEMS = [
-  "273 wheat farmers",
-  "2,390 hectares under ZT/RT",
-  "~34% nitrogen reduction",
-  "~15% GHG reduction",
-  "~46% lower irrigation water use",
-  "7,261 MT wheat procured",
+  "273 wheat farmers enrolled across Ludhiana & Faridkot",
+  "2,390 hectares under Zero/Reduced Tillage",
+  "~34% nitrogen reduction against Nestlé baseline",
+  "~15% GHG reduction against Nestlé baseline",
+  "~46% lower irrigation water use against Grow Indigo's baseline",
+  "7,261 MT of low-emission wheat procured",
   "Rabi Season 2025",
-  "Ludhiana & Faridkot, Punjab",
 ];
 
-function HeroTicker() {
-  const loop = [...TICKER_ITEMS, ...TICKER_ITEMS];
+function Ticker() {
+  const scope = useGsapContext((self, el) => {
+    const track = el.querySelector(".wh-ticker-track");
+    const half = track.scrollWidth / 2;
+    const tween = gsap.to(track, { x: -half, duration: 28, ease: "none", repeat: -1 });
+    // slows to a crawl on hover so a reader can actually catch a figure
+    el.addEventListener("mouseenter", () => gsap.to(tween, { timeScale: 0.15, duration: 0.6 }));
+    el.addEventListener("mouseleave", () => gsap.to(tween, { timeScale: 1, duration: 0.6 }));
+  }, []);
   return (
-    <div
-      className="hero-ticker wh-ticker relative"
-      style={{ borderTop: "1px solid rgba(255,255,255,.14)", background: "rgba(9,7,3,.55)", backdropFilter: "blur(6px)" }}
-    >
-      <div className="wh-ticker-track">
-        {loop.map((item, i) => (
-          <div key={i} className="flex items-center flex-none py-3.5 px-6">
-            <span className="wh-data" style={{ color: "#fff", fontWeight: 600, fontSize: 13, letterSpacing: ".02em", whiteSpace: "nowrap" }}>
-              {item}
-            </span>
-            <span className="wh-data ml-6" style={{ color: C.husk, fontSize: 13 }} aria-hidden="true">✦</span>
+    <div ref={scope} className="overflow-hidden" style={{ background: C.ink, padding: "14px 0" }}>
+      <div className="wh-ticker-track flex" style={{ width: "max-content" }}>
+        {[...TICKER_ITEMS, ...TICKER_ITEMS].map((t, i) => (
+          <div key={i} className="wh-data flex items-center" style={{ fontSize: 12, color: "rgba(255,255,255,.72)", letterSpacing: ".06em", padding: "0 28px" }}>
+            <span style={{ width: 5, height: 5, borderRadius: 99, background: C.husk, marginRight: 14, flexShrink: 0 }} />
+            {t.toUpperCase()}
           </div>
         ))}
       </div>
@@ -756,7 +779,8 @@ function StatRow({ stats }) {
       {stats.map(([value, label, sub]) => (
         <div key={label} className="p-6 rounded-lg text-center" style={{ background: "#fff", border: `1px solid ${C.line}` }}>
           <div className="wh-display" style={{ fontWeight: 800, fontSize: "2rem", color: C.field }}><RollingNumber value={value} /></div>
-          <div className="mt-2" style={{ fontWeight: 700, fontSize: 14, color: C.ink }}>{label}</div>
+          <div className="mx-auto mt-2" style={{ width: 28, height: 2, background: C.husk }} />
+          <div className="mt-3" style={{ fontWeight: 700, fontSize: 14, color: C.ink }}>{label}</div>
           {sub && <div className="wh-data mt-1" style={{ fontSize: 11.5, color: C.mute }}>{sub}</div>}
         </div>
       ))}
@@ -794,7 +818,7 @@ function SeasonSection() {
 
       <Reveal delay={0.1} className="mt-14">
         <Eyebrow>Why This Programme Exists?</Eyebrow>
-        <div className="mt-4 space-y-5" style={{ fontSize: 15, lineHeight: 1.75, color: C.mute, maxWidth: "78ch" }}>
+        <div className="mt-4 space-y-5" style={{ fontSize: 15, lineHeight: 1.75, color: C.mute }}>
           <p>
             Wheat sown after paddy in Punjab is usually established through repeated tillage, with the previous
             crop's residue often burnt to clear fields fast. Tillage adds diesel use and soil disturbance at every
@@ -820,7 +844,7 @@ function SeasonSection() {
       <Reveal delay={0.12} className="mt-12">
         <div className="p-7 rounded-lg" style={{ background: C.ink }}>
           <Eyebrow color={C.husk}>The claim, in one line?</Eyebrow>
-          <p className="wh-display mt-4" style={{ color: "#fff", fontWeight: 600, fontSize: "clamp(1.2rem,2.4vw,1.6rem)", lineHeight: 1.4 }}>
+          <p className="mt-4" style={{ fontFamily: FONT_QUOTE, fontStyle: "italic", color: "#fff", fontWeight: 500, fontSize: "clamp(1.3rem,2.6vw,1.75rem)", lineHeight: 1.42 }}>
             A farmer-led model for lower-emission wheat, centred on sustainable practices and supported by
             transparent field records, independent assurance and traceable procurement.
           </p>
@@ -855,7 +879,7 @@ function FieldsSection() {
 
       <Reveal delay={0.15} className="mt-12">
         <Eyebrow>Explore every enrolled field</Eyebrow>
-        <p className="mt-4" style={{ fontSize: 15, lineHeight: 1.75, color: C.mute, maxWidth: "78ch" }}>
+        <p className="mt-4" style={{ fontSize: 15, lineHeight: 1.75, color: C.mute }}>
           Drill from India down to Punjab, the project districts and an individual village to see every mapped
           farmer field, coloured by procuring miller. Hover a field for its ID; click to pin its full record in
           the panel.
@@ -896,67 +920,123 @@ const THEME_3_BULLETS = [
   "A combined field, group and digital handholding ecosystem",
 ];
 
-function ThemeBlock({ color, title, paragraphs, bullets }) {
+const ICON_SOIL = (
+  <path d="M12 21v-7M12 14c-4 0-7-3-7-7 4 0 7 3 7 7zM12 14c4 0 7-3 7-7-4 0-7 3-7 7z" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+);
+const ICON_NO_BURN = (
+  <>
+    <path d="M12 3c1 3-2 4-2 7a3 3 0 1 0 6 0c0-1-.5-2-1-2.5.5 2-1 3-2 3-1.5 0-2-1.5-1-3.5C13 6 12.5 4.5 12 3z" stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    <line x1="4" y1="20" x2="20" y2="4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+  </>
+);
+const ICON_EXTENSION = (
+  <path d="M3 10v4h3l6 4V6l-6 4H3zM14.5 8.5a4 4 0 0 1 0 7M17.5 6a8 8 0 0 1 0 12" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+);
+
+const THEMES = [
+  {
+    n: "Theme 01", category: "Soil", title: "Zero/Reduced Tillage", icon: ICON_SOIL, color: C.field,
+    stat: "Zero/Reduced Tillage across 2,390 hectares",
+    paragraphs: [
+      "Sustainable practices like Zero/Reduced tillage were the main establishment practice promoted under the wheat programme. It enabled wheat to be sown with in-situ incorporation of paddy residue, avoiding the conventional sequence of repeated land preparation, and provided farmers with an alternative to open-field burning.",
+    ],
+    bullets: THEME_1_BULLETS,
+  },
+  {
+    n: "Theme 02", category: "Residue", title: "Crop Residue Management", icon: ICON_NO_BURN, color: C.leaf,
+    stat: "Zero open-field burning · white PP bag segregation",
+    paragraphs: [
+      "The Low-emission wheat Programme promoted no open-field burning of crop residue as a key principle of responsible residue management. Farmers were encouraged to manage wheat residue through appropriate alternatives such as incorporation in the soil or baling and sending it to a third party.",
+      "Sustainable practices such as Zero/Reduced Tillage provided farmers with a practical pathway to establish wheat through in-situ crop residue management, avoiding the need for open-field burning before sowing.",
+    ],
+    bullets: THEME_2_BULLETS,
+  },
+  {
+    n: "Theme 03", category: "Program Competencies", title: "A High-touch, Phygital Extension Model", icon: ICON_EXTENSION, color: C.husk,
+    stat: "Six Village-Level Meetings across the season",
+    paragraphs: [
+      "Kisan Advisors (KAs) conducted regular field visits throughout the wheat season, from field establishment to harvest, enabling one-on-one farmer support, field-level troubleshooting and verification of zero/reduced tillage practices, fertiliser application, crop protection and residue management.",
+      "Grow Indigo's digital learning platform on YouTube (@growindigoindia) featured simple, vernacular videos on regenerative agriculture, water-saving methods, soil health and climate-smart practices, giving farmers continuous learning support.",
+    ],
+    bullets: THEME_3_BULLETS,
+  },
+];
+
+/** Themes card - icon, category eyebrow, headline and the full point list
+ *  all show at rest, so the section reads rich even before anyone touches
+ *  it. Hovering lifts the card, pulses its icon and reveals one extra
+ *  line - the highlight stat - as the small "there's more here" payoff. */
+function ThemeTile({ t }) {
+  const [hover, setHover] = useState(false);
   return (
-    <div className="rounded-lg overflow-hidden" style={{ background: "#fff", border: `1px solid ${C.line}`, borderTop: `3px solid ${color}` }}>
-      <div className="p-7">
-        <h4 className="wh-display text-xl" style={{ color, fontWeight: 700 }}>{title}</h4>
-        <div className="mt-4 space-y-4" style={{ fontSize: 14.5, lineHeight: 1.72, color: C.mute }}>
-          {paragraphs.map((p, i) => <p key={i}>{p}</p>)}
+    <motion.div
+      className="theme-tile p-6 rounded-lg h-full"
+      style={{ background: "#fff", border: `1px solid ${C.line}`, borderTop: `3px solid ${t.color}` }}
+      onHoverStart={() => setHover(true)}
+      onHoverEnd={() => setHover(false)}
+      whileHover={{ y: -8, scale: 1.02, boxShadow: "0 26px 48px -18px rgba(10,31,22,.28)" }}
+      transition={{ duration: 0.3, ease: EASE }}
+    >
+      <div className="flex items-center gap-3">
+        <motion.span
+          className="flex items-center justify-center rounded-full flex-shrink-0"
+          style={{ width: 38, height: 38, background: `${t.color}1a`, color: t.color }}
+          animate={{ scale: hover ? 1.12 : 1, rotate: hover ? -6 : 0 }}
+          transition={{ type: "spring", stiffness: 320, damping: 16 }}
+        >
+          <svg width="19" height="19" viewBox="0 0 24 24">{t.icon}</svg>
+        </motion.span>
+        <div className="wh-data" style={{ color: t.color, fontWeight: 700, fontSize: 11, letterSpacing: ".1em" }}>
+          {t.n.toUpperCase()} · {t.category.toUpperCase()}
         </div>
-        <ul className="mt-5 space-y-2.5">
-          {bullets.map((b, i) => (
-            <li key={i} className="flex gap-2.5" style={{ fontSize: 13.5, lineHeight: 1.6, color: C.ink }}>
-              <span style={{ color }}>▸</span>
-              <span>{b}</span>
-            </li>
-          ))}
-        </ul>
       </div>
-    </div>
+
+      <h4 className="wh-display mt-3 text-lg" style={{ color: C.ink, fontWeight: 700 }}>{t.title}</h4>
+
+      <AnimatePresence initial={false}>
+        {hover && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: EASE }}
+            style={{ overflow: "hidden" }}
+          >
+            <div
+              className="wh-data mt-1.5 inline-block"
+              style={{ fontSize: 11.5, fontWeight: 700, color: "#fff", background: t.color, padding: "3px 8px", borderRadius: 4 }}
+            >
+              {t.stat}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="mt-4 space-y-3" style={{ fontSize: 13.5, lineHeight: 1.65, color: C.mute }}>
+        {t.paragraphs.map((p, i) => <p key={i}>{p}</p>)}
+      </div>
+
+      <ul className="mt-4 space-y-2">
+        {t.bullets.map((b, i) => (
+          <li key={i} className="flex gap-2.5" style={{ fontSize: 13, lineHeight: 1.6, color: C.ink }}>
+            <span style={{ color: t.color }}>▸</span>
+            <span>{b}</span>
+          </li>
+        ))}
+      </ul>
+    </motion.div>
   );
 }
 
 function ThemesSection() {
-  const grid = useBatchReveal(".theme-card", { stagger: 0.1 });
+  const grid = useBatchReveal(".theme-tile", { stagger: 0.08 });
   return (
     <Section id="themes" tone="tint">
       <SectionHead index="03" title="The Three Programme Themes" />
-      <div ref={grid} className="space-y-6">
-        <div className="theme-card">
-          <ThemeBlock
-            color={C.field}
-            title="Theme 1 · Soil"
-            paragraphs={[
-              "Sustainable practices like Zero/Reduced tillage were the main establishment practice promoted under the wheat programme. It enabled wheat to be sown with in-situ incorporation of paddy residue, avoiding the conventional sequence of repeated land preparation. The practice connected wheat establishment with responsible residue management and provided farmers with an alternative to open-field burning.",
-            ]}
-            bullets={THEME_1_BULLETS}
-          />
-        </div>
-        <div className="theme-card">
-          <ThemeBlock
-            color={C.leaf}
-            title="Theme 2 · Crop Residue management"
-            paragraphs={[
-              "The Low-emission wheat Programme promoted no open-field burning of crop residue as a key principle of responsible residue management. Farmers were encouraged to manage wheat residue through appropriate alternatives such as incorporation in the soil or baling and send it to the third party.",
-              "Sustainable practices such as Zero/Reduced Tillage provided farmers with a practical pathway to establish wheat through in-situ crop residue management, avoiding the need for open-field burning before sowing.",
-            ]}
-            bullets={THEME_2_BULLETS}
-          />
-        </div>
-        <div className="theme-card">
-          <ThemeBlock
-            color={C.husk}
-            title="Theme 3 · Program Competencies: A High-touch, Phygital Extension Model"
-            paragraphs={[
-              "Kisan Advisors (KAs) conducted regular field visits throughout the wheat season, from field establishment to harvest. These visits enabled one-on-one farmer support, field-level troubleshooting and verification of zero/reduced tillage practices, fertiliser application, crop protection and residue management. Farmers received practical recommendations based on field conditions and were supported in maintaining farmer diaries to record agronomic activities, input use and cultivation expenses. Field engagement also reinforced the importance of avoiding residue burning and adopting appropriate methods for residue retention, incorporation or baling.",
-              "Six Village-Level and Stakeholder Meetings were conducted during the programme period to support collective learning and farmer engagement. The sessions covered sustainable practices like zero/reduced tillage, crop residue management, balanced fertiliser application, integrated pest management and avoidance of harmful chemical categories. Practical demonstrations of zero/reduced tillage machinery, Leaf Colour Chart use and farmer-diary maintenance helped farmers understand the recommended practices under field conditions. These meetings also provided a platform for farmer interaction, peer learning and clarification of programme requirements.",
-              "To extend knowledge beyond the field, Grow Indigo also used its digital learning platform, on YouTube (@growindigoindia), featuring simple, vernacular videos on regenerative agriculture, water-saving methods, soil health, and climate-smart practices. This provided continuous learning support that farmers could access anytime.",
-              "Together, these field interactions, group sessions, and digital resources created a strong handholding ecosystem. The combined approach improved farmer awareness, encouraged consistent adoption of regenerative practices, and strengthened overall implementation quality across the project.",
-            ]}
-            bullets={THEME_3_BULLETS}
-          />
-        </div>
+      <div ref={grid} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 items-start">
+        {THEMES.map((t) => (
+          <ThemeTile key={t.n} t={t} />
+        ))}
       </div>
     </Section>
   );
@@ -998,25 +1078,248 @@ const GOVERNANCE_TABLE = [
   ]],
 ];
 
-function GovernanceTable() {
+/** One-line taglines for the org tree's leaf boxes - short enough to sit
+ *  under a name, unlike the full responsibility bullets GOVERNANCE_TABLE and
+ *  RoleAccordion below carry. */
+const ORG_TAGLINE = {
+  "RBM (Regional Business Manager) / Agronomist": "Regional field leadership & agronomic guidance",
+  "TBM (Territory Business Manager)": "Team management & operational execution",
+  "Kisan Advisors": "Farmer engagement, advisory & hand-holding",
+  "Scientists": "GHG quantification, data analysis & impact assessment",
+  "Engineering Team": "Digital tools, data systems & technology enablement",
+};
+
+/** Coded org chart, not a screenshot - the tree assembles top-down as it
+ *  scrolls into view, and every box lifts slightly on hover. */
+function OrgChart() {
+  const scope = useGsapContext((self, el) => {
+    const tl = gsap.timeline({
+      scrollTrigger: { trigger: el, start: "top 80%", once: true },
+      defaults: { ease: GSAP_EASE, duration: 0.6 },
+    });
+    tl.from(el.querySelectorAll(".org-root"), { y: -18, autoAlpha: 0 })
+      .from(el.querySelectorAll(".org-stem"), { scaleY: 0, transformOrigin: "top center", duration: 0.4 }, "-=0.2")
+      .from(el.querySelectorAll(".org-branch"), { y: -14, autoAlpha: 0, stagger: 0.12 }, "-=0.1")
+      .from(el.querySelectorAll(".org-leaf"), { x: -14, autoAlpha: 0, stagger: 0.07 }, "-=0.25");
+  }, []);
+
+  const node = (label, sub, bg, fg = "#fff", cls = "") => (
+    <motion.div
+      className={`px-4 py-3 rounded ${cls}`}
+      style={{ background: bg, color: fg, minWidth: 0 }}
+      whileHover={{ scale: 1.03, transition: { duration: 0.25, ease: EASE } }}
+    >
+      <div style={{ fontWeight: 600, fontSize: 14 }}>{label}</div>
+      {sub && <div className="wh-data mt-1" style={{ fontSize: 10, opacity: 0.75, lineHeight: 1.5 }}>{sub}</div>}
+    </motion.div>
+  );
+
   return (
-    <div className="rounded-lg overflow-hidden" style={{ border: `1px solid ${C.line}` }}>
-      <div className="hidden md:grid grid-cols-3" style={{ background: C.field }}>
-        <div className="px-5 py-3 col-span-1" style={{ color: "#fff", fontWeight: 600, fontSize: 13 }}>Role</div>
-        <div className="px-5 py-3 col-span-2" style={{ color: "#fff", fontWeight: 600, fontSize: 13 }}>Responsibilities</div>
-      </div>
-      {GOVERNANCE_TABLE.map(([role, resp], i) => (
-        <div key={role} className="grid md:grid-cols-3" style={{ borderTop: i ? `1px solid ${C.line}` : "none", background: i % 2 ? C.paperDim : "#fff" }}>
-          <div className="px-5 py-4 md:col-span-1" style={{ fontWeight: 600, fontSize: 14, color: C.ink }}>{role}</div>
-          <div className="px-5 py-4 md:col-span-2">
-            <ul className="space-y-1.5">
-              {resp.map((r, ri) => (
-                <li key={ri} style={{ fontSize: 13.5, lineHeight: 1.6, color: C.mute }}>{r}</li>
-              ))}
-            </ul>
+    <div ref={scope} className="p-6 md:p-8 rounded-lg" style={{ background: "#fff", border: `1px solid ${C.line}` }}>
+      <Eyebrow>ClearHarvest team structure</Eyebrow>
+      <div className="mt-6 flex flex-col items-center">
+        {node("PMU", "Project Management Unit · timely execution against milestones", C.field, "#fff", "org-root")}
+        <div className="org-stem" style={{ width: 1, height: 22, background: C.line }} />
+        <div className="grid gap-4 sm:grid-cols-2 w-full">
+          <div>
+            {node("Field Operations", null, C.leaf, "#fff", "org-branch")}
+            <div className="mt-3 space-y-3">
+              {node("RBM (Regional Business Manager) / Agronomist", ORG_TAGLINE["RBM (Regional Business Manager) / Agronomist"], C.paperDim, C.ink, "org-leaf")}
+              {node("TBM (Territory Business Manager)", ORG_TAGLINE["TBM (Territory Business Manager)"], C.paperDim, C.ink, "org-leaf")}
+              {node("Kisan Advisors", ORG_TAGLINE["Kisan Advisors"], C.paperDim, C.ink, "org-leaf")}
+            </div>
+          </div>
+          <div>
+            {node("Science & Technology", null, C.water, "#fff", "org-branch")}
+            <div className="mt-3 space-y-3">
+              {node("Scientists", ORG_TAGLINE["Scientists"], C.paperDim, C.ink, "org-leaf")}
+              {node("Engineering Team", ORG_TAGLINE["Engineering Team"], C.paperDim, C.ink, "org-leaf")}
+            </div>
           </div>
         </div>
-      ))}
+      </div>
+      <p className="mt-6" style={{ fontSize: 13.5, lineHeight: 1.7, color: C.mute }}>
+        Field execution was led by the Regional Business Manager / Agronomist, who oversaw technical implementation and
+        agronomic fidelity across the project area, supported by the Territory Business Manager on day-to-day oversight,
+        farmer coordination and operational planning. At ground level, Kisan Advisors worked directly with farmers to
+        drive adoption, monitor fields and protect the integrity of data collection.
+      </p>
+    </div>
+  );
+}
+
+/** Accordion of full role responsibilities - one open at a time, click to
+ *  expand - instead of a permanently-open table. */
+function RoleAccordion() {
+  const [open, setOpen] = useState(0);
+  return (
+    <div className="rounded-lg overflow-hidden" style={{ border: `1px solid ${C.line}`, background: "#fff" }}>
+      <div className="px-6 py-4" style={{ background: C.field }}>
+        <Eyebrow color="rgba(255,255,255,.7)">Functional responsibility mapping</Eyebrow>
+      </div>
+      {GOVERNANCE_TABLE.map(([role, duties], i) => {
+        const isOpen = open === i;
+        return (
+          <div key={role} style={{ borderTop: i ? `1px solid ${C.line}` : "none" }}>
+            <motion.button
+              onClick={() => setOpen(isOpen ? -1 : i)}
+              className="w-full flex items-center gap-4 px-6 py-4 text-left"
+              aria-expanded={isOpen}
+              whileHover={{ backgroundColor: "rgba(14,91,51,.04)" }}
+              transition={{ duration: 0.2 }}
+            >
+              <span className="wh-data" style={{ fontSize: 11, color: C.husk, fontWeight: 600, width: 22 }}>
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <motion.span
+                animate={{ color: isOpen ? C.field : C.ink, x: isOpen ? 4 : 0 }}
+                transition={{ duration: 0.3, ease: EASE }}
+                style={{ fontWeight: 600, fontSize: 15, flex: 1 }}
+              >
+                {role}
+              </motion.span>
+              <motion.span
+                animate={{ rotate: isOpen ? 135 : 0, color: isOpen ? C.field : C.mute }}
+                transition={{ type: "spring", stiffness: 320, damping: 22 }}
+                style={{ fontSize: 20, lineHeight: 1 }}
+              >
+                +
+              </motion.span>
+            </motion.button>
+
+            <AnimatePresence initial={false}>
+              {isOpen && (
+                <motion.div
+                  key="body"
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.4, ease: EASE }}
+                  style={{ overflow: "hidden" }}
+                >
+                  <motion.ul
+                    className="px-6 pb-5 space-y-2"
+                    style={{ paddingLeft: 68 }}
+                    variants={vStagger(0.05, 0.06)}
+                    initial="hidden"
+                    animate="show"
+                  >
+                    {duties.map((d) => (
+                      <motion.li key={d} variants={vFadeUp} className="flex gap-3" style={{ fontSize: 14, lineHeight: 1.6, color: C.mute }}>
+                        <span style={{ color: C.leaf }}>▸</span>
+                        <span>{d}</span>
+                      </motion.li>
+                    ))}
+                  </motion.ul>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/** Six-step monitoring/traceability/assurance chain - coded, not a
+ *  screenshot, so each node lifts on hover like everything else in the
+ *  report. Content and snake layout (1→2→3, then down, then 6←5←4) match
+ *  the six-step-chain.png graphic exactly. */
+const WF_ICONS = [
+  <path key="a" d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM16 9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM2 20c0-3.3 2.7-6 6-6s6 2.7 6 6M14.5 14.2c2.9.4 5.5 2.7 5.5 5.8" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />,
+  <path key="b" d="M12 2a6 6 0 0 0-3.5 10.9c.5.4.8 1 .8 1.6v.5h5.4v-.5c0-.6.3-1.2.8-1.6A6 6 0 0 0 12 2zM9.5 19h5M10 22h4" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />,
+  <path key="c" d="M6 2h9l5 5v15H6zM15 2v5h5M9 12h6M9 16h6M9 8h2" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />,
+  <path key="d" d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z M8.5 12.5l2.5 2.5 4.5-5" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinejoin="round" strokeLinecap="round" />,
+  <path key="e" d="M3 6h6l2 2h10v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6z" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinejoin="round" />,
+  <path key="f" d="M4 20V10M10 20V4M16 20v-7M4 20h16" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />,
+];
+
+const WORKFLOW_WHEAT = [
+  ["Kisan Advisor visits the farmer", "On-field engagement and practice verification"],
+  ["Capability building on interventions", "Training on Zero Tillage and Happy Seeder use, crop residue management and optimised fertiliser application"],
+  ["Data capture on agronomic practices", "Zero Tillage, residue and fertiliser practices recorded digitally in ClearHarvest"],
+  ["QC of field-reported data by scientists", "Methodological review and validation"],
+  ["Procurement audit trail", "Field-to-processor procurement and traceability records maintained digitally"],
+  ["3rd-party audit & report submission", "Independent field verification, GHG quantification and final reporting"],
+];
+
+function WFArrow({ dir = "right" }) {
+  const rotate = { right: 0, left: 180, down: 90 }[dir];
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" style={{ color: C.field, transform: `rotate(${rotate}deg)` }}>
+      <path d="M4 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function WFCard({ n, icon, title, sub }) {
+  return (
+    <motion.div
+      className="wf-node rounded-lg"
+      style={{ background: "#fff", border: `1px solid ${C.line}`, borderTop: `3px solid ${C.field}`, padding: "12px 14px", height: "100%" }}
+      whileHover={{ y: -6, boxShadow: "0 16px 32px -12px rgba(14,91,51,.35)" }}
+      transition={{ duration: 0.3, ease: EASE }}
+    >
+      <div className="flex items-start justify-between">
+        <div className="flex items-center justify-center rounded-full" style={{ width: 22, height: 22, background: C.field, color: "#fff", fontWeight: 700, fontSize: 11.5, flexShrink: 0 }}>
+          {n}
+        </div>
+        <svg width="17" height="17" viewBox="0 0 24 24" style={{ color: C.field, opacity: 0.55 }}>{icon}</svg>
+      </div>
+      <div className="mt-2" style={{ fontWeight: 700, fontSize: 12.5, lineHeight: 1.3, color: C.ink }}>{title}</div>
+      <div className="mt-1.5" style={{ width: 22, height: 2, background: C.husk }} />
+      <div className="mt-1.5" style={{ fontSize: 11, lineHeight: 1.5, color: C.mute }}>{sub}</div>
+    </motion.div>
+  );
+}
+
+const WF_ROW_STYLE = { display: "grid", gridTemplateColumns: "1fr 24px 1fr 24px 1fr", columnGap: 8, alignItems: "stretch" };
+const WF_CONNECTOR_STYLE = { display: "grid", gridTemplateColumns: "1fr 24px 1fr 24px 1fr", columnGap: 8, margin: "2px 0" };
+const WF_ARROW_CELL = { display: "flex", alignItems: "center", justifyContent: "center" };
+
+function WorkflowStepper() {
+  const grid = useBatchReveal(".wf-node", { stagger: 0.06 });
+  const step = (i) => <WFCard n={i + 1} icon={WF_ICONS[i]} title={WORKFLOW_WHEAT[i][0]} sub={WORKFLOW_WHEAT[i][1]} />;
+  return (
+    <div className="rounded-lg p-6 md:p-8" style={{ background: "#fff", border: `1px solid ${C.line}` }}>
+      <div className="text-center pb-5" style={{ borderBottom: `2px solid ${C.field}` }}>
+        <div className="wh-display" style={{ fontSize: 16, fontWeight: 800, color: C.ink, letterSpacing: ".01em" }}>
+          CLEAN WHEAT RABI 2025–26 PROGRAM
+        </div>
+      </div>
+      <div className="text-center mt-5">
+        <div className="wh-data" style={{ fontSize: 13, fontWeight: 700, color: C.field, letterSpacing: 0.6 }}>
+          MONITORING, TRACEABILITY &amp; ASSURANCE WORKFLOW
+        </div>
+        <div className="mt-1.5" style={{ fontSize: 12.5, color: C.mute, fontStyle: "italic" }}>
+          From farmer engagement to third-party audit - the operational backbone of the programme
+        </div>
+      </div>
+
+      <div ref={grid} className="mt-8" style={{ overflowX: "auto" }}>
+        <div style={{ minWidth: 560 }}>
+          <div style={WF_ROW_STYLE}>
+            {step(0)}
+            <div style={WF_ARROW_CELL}><WFArrow dir="right" /></div>
+            {step(1)}
+            <div style={WF_ARROW_CELL}><WFArrow dir="right" /></div>
+            {step(2)}
+          </div>
+
+          <div style={WF_CONNECTOR_STYLE}>
+            <div /><div /><div /><div />
+            <div style={WF_ARROW_CELL}><WFArrow dir="down" /></div>
+          </div>
+
+          <div style={WF_ROW_STYLE}>
+            {step(5)}
+            <div style={WF_ARROW_CELL}><WFArrow dir="left" /></div>
+            {step(4)}
+            <div style={WF_ARROW_CELL}><WFArrow dir="left" /></div>
+            {step(3)}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -1032,7 +1335,7 @@ function GovernanceSection() {
       />
 
       <Reveal>
-        <p style={{ fontSize: 15, lineHeight: 1.75, color: C.mute, maxWidth: "78ch" }}>
+        <p style={{ fontSize: 15, lineHeight: 1.75, color: C.mute }}>
           Field execution was led by the Regional Business Manager / Agronomist, who oversaw technical
           implementation and agronomic fidelity across the project area, supported by the Territory Business
           Manager on day-to-day oversight, farmer coordination and operational planning. At ground level, Kisan
@@ -1042,11 +1345,11 @@ function GovernanceSection() {
       </Reveal>
 
       <Reveal delay={0.08} className="mt-8">
-        <PhotoSlot src={governanceOrgChart} alt="ClearHarvest team structure" />
+        <OrgChart />
       </Reveal>
 
       <Reveal delay={0.12} className="mt-8">
-        <GovernanceTable />
+        <RoleAccordion />
       </Reveal>
 
       <div className="mt-16">
@@ -1054,7 +1357,7 @@ function GovernanceSection() {
 
         <div className="mt-8">
           <h4 className="wh-display text-lg" style={{ color: C.field, fontWeight: 700 }}>Monitoring and Measurement</h4>
-          <p className="mt-3" style={{ fontSize: 14.5, lineHeight: 1.72, color: C.mute, maxWidth: "78ch" }}>
+          <p className="mt-3" style={{ fontSize: 14.5, lineHeight: 1.72, color: C.mute }}>
             Grow Indigo implemented a structured, phygital monitoring system that combined regular field-level
             observations with digital data capture to ensure accuracy, traceability and verification. Throughout
             the season, Kisan Advisors conducted periodic field visits to monitor crop growth, verify sustainable
@@ -1077,13 +1380,13 @@ function GovernanceSection() {
             Farmer onboarding, field-level data collection &amp; supply chain audit trail
           </div>
           <Reveal delay={0.1} className="mt-8">
-            <PhotoSlot src={sixStepChain} alt="Farmer onboarding through to GHG quantification: the six-step wheat implementation chain." />
+            <WorkflowStepper />
           </Reveal>
         </div>
 
         <div className="mt-14">
           <h4 className="wh-display text-lg" style={{ color: C.field, fontWeight: 700 }}>Traceability</h4>
-          <p className="mt-3" style={{ fontSize: 14.5, lineHeight: 1.72, color: C.mute, maxWidth: "78ch" }}>
+          <p className="mt-3" style={{ fontSize: 14.5, lineHeight: 1.72, color: C.mute }}>
             Post harvest and during procurement, S3 Sutra enabled traceability of low-emission paddy from farm to
             processor. It captured the complete audit trail, documenting farmer validation, produce quantities, and
             movement of low-emission paddy. This integrated approach created a robust monitoring and verification
@@ -1091,13 +1394,13 @@ function GovernanceSection() {
             quantification aligned with Nestlé reporting requirements.
           </p>
           <Reveal delay={0.1} className="mt-6">
-            <PhotoSlot ratio="4 / 3" src={traceabilityFlow} alt="Node-to-node view, Farm-to-processor traceability flow" caption="Node-to-node view, Farm-to-processor traceability flow" />
+            <PhotoSlot className="max-w-md mx-auto" src={traceabilityFlow} alt="Node-to-node view, Farm-to-processor traceability flow" caption="Node-to-node view, Farm-to-processor traceability flow" />
           </Reveal>
         </div>
 
         <div className="mt-14">
           <h4 className="wh-display text-lg" style={{ color: C.field, fontWeight: 700 }}>Verification</h4>
-          <div className="mt-3 space-y-4" style={{ fontSize: 14.5, lineHeight: 1.72, color: C.mute, maxWidth: "78ch" }}>
+          <div className="mt-3 space-y-4" style={{ fontSize: 14.5, lineHeight: 1.72, color: C.mute }}>
             <p>
               The program delivered measurable reductions in greenhouse gas emissions, water consumption, and
               fertilizer use through farmers' adoption of regenerative agricultural practices, including
@@ -1257,7 +1560,7 @@ function PracticeSection() {
         {RETURNS_GRID.map(([n, title, body]) => (
           <div
             key={n}
-            className="returns-card group relative p-6 rounded-lg transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl hover:z-10"
+            className="returns-card group relative p-6 rounded-lg transition-all duration-300 ease-out hover:-translate-y-4 hover:scale-[1.045] hover:z-10 hover:shadow-[0_28px_50px_-16px_rgba(201,138,46,0.55)]"
             style={{ background: C.paperDim, border: `1px solid ${C.line}` }}
           >
             <div className="wh-display" style={{ color: C.husk, fontWeight: 800, fontSize: "1.6rem" }}>{n}</div>
@@ -1307,7 +1610,7 @@ function PinnedStatement({ text }) {
     <div ref={scope} className="flex items-center justify-center px-5" style={{ minHeight: "60vh", background: C.field }}>
       <div className="mx-auto text-center" style={{ maxWidth: 900 }}>
         <Eyebrow color={C.husk}>The big picture</Eyebrow>
-        <p className="wh-display mt-6" style={{ color: "#fff", fontWeight: 600, fontSize: "clamp(1.3rem,2.8vw,2.2rem)", lineHeight: 1.32 }}>
+        <p className="mt-6" style={{ fontFamily: FONT_QUOTE, fontStyle: "italic", color: "#fff", fontWeight: 500, fontSize: "clamp(1.4rem,3vw,2.4rem)", lineHeight: 1.35 }}>
           {text.split(" ").map((w, i) => (
             <span key={i} className="pin-word" style={{ display: "inline-block", marginRight: "0.28em" }}>{w}</span>
           ))}
@@ -1394,13 +1697,23 @@ function MetricBarChart({ eyebrow, headline, unit, bars }) {
         {negH > 0 && (
           <div style={{ position: "absolute", left: 0, right: 0, top: barH, borderTop: `1px dashed ${C.line}` }} />
         )}
-        {bars.map(({ label, value }) => {
+        {bars.map(({ label, value }, i) => {
           const color = BAR_ROLE_COLOR[label] || C.field;
           const isNeg = value < 0;
           const magnitude = Math.abs(value);
           const scale = isNeg ? (negMax > 0 ? negH / negMax : 0) : barH / posMax;
           const barPx = Math.max(6, magnitude * scale);
           const isHovered = hovered === label;
+          // Anchor the tooltip to whichever edge keeps it inside this card -
+          // centering on every bar pushed the ones near the left/right edge
+          // out over the neighbouring chart card.
+          const isFirst = i === 0;
+          const isLast = i === bars.length - 1;
+          const tooltipAnchor = isFirst
+            ? { left: 0, transform: "none" }
+            : isLast
+              ? { right: 0, left: "auto", transform: "none" }
+              : { left: "50%", transform: "translateX(-50%)" };
           return (
             <div
               key={label}
@@ -1415,11 +1728,10 @@ function MetricBarChart({ eyebrow, headline, unit, bars }) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.18 }}
-                  className="absolute left-1/2"
+                  className="absolute"
                   style={{
                     bottom: "100%",
                     marginBottom: 10,
-                    transform: "translateX(-50%)",
                     width: 176,
                     padding: "10px 12px",
                     borderRadius: 8,
@@ -1430,6 +1742,7 @@ function MetricBarChart({ eyebrow, headline, unit, bars }) {
                     boxShadow: "0 12px 28px rgba(0,0,0,.22)",
                     zIndex: 10,
                     pointerEvents: "none",
+                    ...tooltipAnchor,
                   }}
                 >
                   <div className="wh-data" style={{ color: color, fontWeight: 700, fontSize: 10.5, letterSpacing: ".06em", marginBottom: 3 }}>
@@ -1583,7 +1896,138 @@ function AuditedSection() {
 
 /* ----------------------------------------------------------------------------
    17 · SECTION 10 - ACTIVITY TIMELINE
+   A real scroller, not a photo: GSAP pins this card in place (same
+   ScrollTrigger pin used by PinnedStatement elsewhere in this file) for one
+   long scroll, so the reader stays put and watches the field grow instead of
+   the plant growing while the page also scrolls past it. Every value below -
+   stalk height, colour, whether the ears have formed, which month is
+   "current" - is driven off that one pinned scroll fraction, updated
+   imperatively (not via React state) so it stays smooth at 60fps.
 ---------------------------------------------------------------------------- */
+const ACTIVITY_MONTHS = ["Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr"];
+const ACTIVITY_EVENTS = [
+  { month: 1, label: "Reduced Tillage", color: C.leaf },
+  { month: 1, label: "↓ DAP", color: C.water },
+  { month: 2, label: "↓ Urea", color: C.husk },
+  { month: 3, label: "↓ Urea", color: C.husk },
+  { month: 4, label: "↓ Urea", color: C.husk },
+  { month: 6, label: "Harvest", color: C.field },
+];
+const ACTIVITY_STALK_COUNT = 5;
+
+function ActivityTimelineScroller() {
+  const nMonths = ACTIVITY_MONTHS.length - 1;
+
+  const scope = useGsapContext((self, el) => {
+    const cluster = el.querySelector(".at-cluster");
+    const stalks = el.querySelectorAll(".at-stalk-path");
+    const ears = el.querySelectorAll(".at-ear");
+    const monthEls = el.querySelectorAll(".at-month");
+    const mid = (ACTIVITY_STALK_COUNT - 1) / 2;
+
+    const render = (p) => {
+      const h = 8 + p * 100;
+      const earStart = 0.62, earEnd = 0.74;
+      const earOpacity = p < earStart ? 0 : p < earEnd ? (p - earStart) / (earEnd - earStart) : 1;
+      const bladeOpacity = p < 0.05 ? p / 0.05 : 1;
+      const goldT = Math.max(0, Math.min(1, (p - 0.72) / 0.28));
+      const color = gsap.utils.interpolate(C.leaf, C.husk, goldT);
+      const xPct = 4 + p * 92;
+
+      if (cluster) cluster.style.left = `${xPct}%`;
+      stalks.forEach((path, i) => {
+        const variance = (i - mid) * 5;
+        const hh = Math.max(5, h + variance);
+        path.setAttribute("d", `M0 0 Q${variance * 0.2} ${-hh * 0.55} 0 ${-hh}`);
+        path.setAttribute("stroke", color);
+        path.style.opacity = bladeOpacity;
+      });
+      ears.forEach((ear, i) => {
+        const variance = (i - mid) * 5;
+        const hh = Math.max(5, h + variance);
+        ear.setAttribute("cy", -hh - 7);
+        ear.style.opacity = earOpacity;
+      });
+
+      const monthIndex = p * nMonths;
+      monthEls.forEach((elm, i) => {
+        const isNear = Math.abs(monthIndex - i) < 0.5;
+        elm.style.color = isNear ? C.field : C.mute;
+        elm.style.fontWeight = isNear ? "800" : "700";
+      });
+    };
+
+    render(0);
+
+    gsap.matchMedia().add("(prefers-reduced-motion: no-preference)", () => {
+      ScrollTrigger.create({
+        trigger: el,
+        start: "top top",
+        end: "+=200%",
+        pin: true,
+        scrub: 0.6,
+        anticipatePin: 1,
+        onUpdate: (self2) => render(self2.progress),
+      });
+    });
+  }, []);
+
+  return (
+    <div ref={scope} className="rounded-lg overflow-hidden" style={{ background: C.paperDim, border: `1px solid ${C.line}` }}>
+      <div className="w-full px-6 md:px-10 py-10 md:py-14" style={{ maxWidth: 1040, margin: "0 auto" }}>
+        <Eyebrow>Scroll to grow the season, October to April</Eyebrow>
+
+        {/* events row - each badge sits at its month's x position */}
+        <div className="relative mt-8" style={{ height: 40 }}>
+          {ACTIVITY_EVENTS.map((e, i) => (
+            <div
+              key={i}
+              className="wh-data absolute -translate-x-1/2 px-2.5 py-1.5 rounded whitespace-nowrap"
+              style={{
+                left: `${(e.month / nMonths) * 92 + 4}%`,
+                top: i % 2 ? 0 : undefined,
+                bottom: i % 2 ? undefined : 0,
+                background: e.color,
+                color: "#fff",
+                fontSize: 11,
+                fontWeight: 700,
+                boxShadow: "0 6px 14px -6px rgba(10,31,22,.35)",
+              }}
+            >
+              {e.label}
+            </div>
+          ))}
+        </div>
+
+        {/* the field - a horizon line and a cluster of stalks growing as one, sliding across it */}
+        <div className="relative mt-12" style={{ height: 260 }}>
+          <div className="absolute left-0 right-0" style={{ bottom: 0, height: 1, background: C.line }} />
+          <div className="at-cluster absolute" style={{ bottom: 0, transform: "translateX(-50%)" }}>
+            <svg width="140" height="230" viewBox="0 0 140 230" aria-hidden="true">
+              <rect x="10" y="222" width="120" height="8" rx="3" fill={C.clay} opacity="0.35" />
+              {Array.from({ length: ACTIVITY_STALK_COUNT }).map((_, i) => (
+                <g key={i} transform={`translate(${20 + i * 25}, 222)`}>
+                  <path className="at-stalk-path" d="M0 0 Q0 0 0 0" stroke={C.leaf} strokeWidth="3" fill="none" strokeLinecap="round" />
+                  <ellipse className="at-ear" cx="0" cy="0" rx="6.5" ry="14" fill={C.husk} opacity="0" />
+                </g>
+              ))}
+            </svg>
+          </div>
+        </div>
+
+        {/* month labels - the one nearest the current scroll fraction is highlighted */}
+        <div className="relative mt-6 flex justify-between">
+          {ACTIVITY_MONTHS.map((m) => (
+            <div key={m} className="at-month wh-data text-center" style={{ width: `${100 / ACTIVITY_MONTHS.length}%`, fontSize: 13, fontWeight: 700, color: C.mute }}>
+              {m.toUpperCase()}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function TimelineSection() {
   return (
     <Section id="timeline">
@@ -1593,11 +2037,9 @@ function TimelineSection() {
         lede="The wheat programme followed the crop production cycle from pre-sowing through sowing and establishment to maturity and harvest, with agronomic operations, regenerative interventions and nutrient applications aligned to each key growth stage."
       />
 
-      <Reveal>
-        <PhotoSlot src={activityTimeline} alt="Activity timeline: regenerative interventions, crop stage and month-by-month schedule from pre-sowing through harvest." />
-      </Reveal>
+      <ActivityTimelineScroller />
 
-      <Reveal delay={0.1} className="mt-12 space-y-5" style={{ fontSize: 14.5, lineHeight: 1.75, color: C.mute, maxWidth: "78ch" }}>
+      <Reveal delay={0.1} className="mt-12 space-y-5" style={{ fontSize: 14.5, lineHeight: 1.75, color: C.mute }}>
         <p>
           Sowing took place during Mid October to mid November. Farmers applied a basal dose of Di-Ammonium
           Phosphate (DAP) fertilizer at the time of seed sowing alongside early pre-emergent herbicides (Axial,
@@ -1788,7 +2230,7 @@ function EvidenceSection() {
             <Eyebrow>{tag}</Eyebrow>
             <h4 className="wh-display mt-1 text-lg" style={{ color: C.ink, fontWeight: 700 }}>{title}</h4>
             <div className="mt-3">
-              <PhotoSlot ratio="4 / 3" src={src} alt={title} caption={caption} />
+              <PhotoSlot ratio="4 / 3" fit="contain" src={src} alt={title} caption={caption} />
             </div>
           </div>
         ))}
@@ -1940,6 +2382,7 @@ export default function WheatHarvestReport() {
 
       <main>
         <Hero />
+        <Ticker />
         <SeasonSection />
         <FieldsSection />
         <ThemesSection />
