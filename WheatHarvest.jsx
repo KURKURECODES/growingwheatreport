@@ -109,6 +109,11 @@ function GlobalStyle() {
       .wh-mask { display: block; overflow: hidden; }
       .wh-scrub { will-change: transform; }
 
+      .wh-ticker-track { display: flex; width: max-content; animation: wh-ticker-scroll 32s linear infinite; }
+      .wh-ticker:hover .wh-ticker-track { animation-play-state: paused; }
+      @keyframes wh-ticker-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+      @media (prefers-reduced-motion: reduce) { .wh-ticker-track { animation: none; } }
+
       .wh-root ::selection { background: ${C.husk}; color: #fff; }
       .wh-root :focus-visible { outline: 2px solid ${C.water}; outline-offset: 3px; border-radius: 2px; }
       .wh-scroll::-webkit-scrollbar { height: 6px; }
@@ -647,6 +652,45 @@ function Hero() {
           <path d="M10 2v20M3 15l7 7 7-7" stroke="rgba(255,255,255,.6)" strokeWidth="1.4" fill="none" />
         </motion.svg>
       </div>
+
+      <HeroTicker />
+    </div>
+  );
+}
+
+/* ----------------------------------------------------------------------------
+   5a · HERO TICKER - the season's headline figures, scrolling edge-to-edge
+   across the foot of the title page so the report's biggest numbers are the
+   very last thing before you scroll past the cover.
+---------------------------------------------------------------------------- */
+const TICKER_ITEMS = [
+  "273 wheat farmers",
+  "2,390 hectares under ZT/RT",
+  "~34% nitrogen reduction",
+  "~15% GHG reduction",
+  "~46% lower irrigation water use",
+  "7,261 MT wheat procured",
+  "Rabi Season 2025",
+  "Ludhiana & Faridkot, Punjab",
+];
+
+function HeroTicker() {
+  const loop = [...TICKER_ITEMS, ...TICKER_ITEMS];
+  return (
+    <div
+      className="hero-ticker wh-ticker relative"
+      style={{ borderTop: "1px solid rgba(255,255,255,.14)", background: "rgba(9,7,3,.55)", backdropFilter: "blur(6px)" }}
+    >
+      <div className="wh-ticker-track">
+        {loop.map((item, i) => (
+          <div key={i} className="flex items-center flex-none py-3.5 px-6">
+            <span className="wh-data" style={{ color: "#fff", fontWeight: 600, fontSize: 13, letterSpacing: ".02em", whiteSpace: "nowrap" }}>
+              {item}
+            </span>
+            <span className="wh-data ml-6" style={{ color: C.husk, fontSize: 13 }} aria-hidden="true">✦</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -1134,7 +1178,7 @@ function JourneySection() {
           const hasMedia = Boolean(step.img || step.gallery);
           const reverse = hasMedia && i % 2 === 1;
           return (
-            <div key={step.n} className="journey-step grid gap-6 md:grid-cols-5 items-stretch">
+            <div key={step.n} className="journey-step grid gap-6 md:grid-cols-5 items-start">
               <div
                 className={hasMedia ? "md:col-span-3 p-7 rounded-lg" : "md:col-span-5 p-7 rounded-lg"}
                 style={{ background: "#fff", border: `1px solid ${C.line}`, order: reverse ? 2 : 1 }}
