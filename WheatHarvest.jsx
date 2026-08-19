@@ -223,9 +223,7 @@ function MaskedHeading({ text, className = "", style, delay = 0, as: Tag = "h2" 
 }
 
 function Counter({ value, decimals = 0, duration = 1.8, className = "", style, prefix = "", suffix = "" }) {
-  const ref = useRef(null);
-  useGsapContext(() => {
-    const node = ref.current;
+  const scope = useGsapContext((self, node) => {
     if (!node) return;
     const obj = { v: 0 };
     const fmt = (n) =>
@@ -240,7 +238,7 @@ function Counter({ value, decimals = 0, duration = 1.8, className = "", style, p
       scrollTrigger: { trigger: node, start: "top 88%", once: true },
     });
   }, [value]);
-  return <span ref={ref} className={className} style={style} />;
+  return <span ref={scope} className={className} style={style} />;
 }
 
 function Magnetic({ children, strength = 0.35, className = "", style, ...rest }) {
@@ -312,8 +310,8 @@ function PullQuoteCard({ children, tone = C.husk, dark = false, label, className
     <div
       className={`relative p-7 md:p-8 rounded-lg ${className}`}
       style={{
-        background: dark ? "rgba(255,255,255,.05)" : `${tone}14`,
-        border: `1px solid ${dark ? "rgba(255,255,255,.12)" : tone + "33"}`,
+        background: dark ? "rgba(255,255,255,.04)" : `${tone}14`,
+        border: `1px solid ${dark ? tone + "4d" : tone + "33"}`,
       }}
     >
       <svg width="30" height="22" viewBox="0 0 34 26" aria-hidden="true" style={{ color: tone, opacity: dark ? 0.85 : 0.5 }}>
@@ -2025,8 +2023,18 @@ const WHEAT_SEASON_HEADLINE = [
       ["65", "kg CO₂e/MT of wheat cut · 425 → 360, vs. Nestlé baseline"],
     ],
   },
-  { label: "Water saved", value: 46, prefix: "~ ", suffix: "%", tone: C.water, icon: ICON_WATER },
-  { label: "Nitrogen reduction", value: 34, prefix: "~ ", suffix: "%", tone: C.husk, icon: ICON_NITROGEN },
+  {
+    label: "Water saved", value: 46, prefix: "~ ", suffix: "%", tone: C.water, icon: ICON_WATER,
+    detail: [
+      ["1,410.03 → 760.78", "m³/ha · vs. Grow Indigo baseline"],
+    ],
+  },
+  {
+    label: "Less nitrogen", value: 34, prefix: "~ ", suffix: "%", tone: C.husk, icon: ICON_NITROGEN,
+    detail: [
+      ["187.14 → 123.35", "kg N/ha · vs. Nestlé baseline"],
+    ],
+  },
 ];
 
 function SeasonHeadlineResults() {
@@ -2420,10 +2428,10 @@ function SourcingSection() {
               animate={{ y: isHovered ? -10 : 0, scale: isHovered ? 1.035 : 1 }}
               transition={{ duration: 0.3, ease: EASE }}
               style={{
-                background: isHovered ? `linear-gradient(rgba(20,15,8,.32), rgba(20,15,8,.32)), ${color}` : "rgba(255,255,255,.05)",
-                border: `1px solid ${isHovered ? color : "rgba(255,255,255,.12)"}`,
+                background: isHovered ? `linear-gradient(rgba(20,15,8,.32), rgba(20,15,8,.32)), ${color}` : "rgba(255,255,255,.04)",
+                border: `1px solid ${isHovered ? color : color + "40"}`,
                 borderTop: `3px solid ${color}`,
-                boxShadow: isHovered ? `0 24px 46px -14px ${color}99` : "0 0 0 rgba(0,0,0,0)",
+                boxShadow: isHovered ? `0 14px 28px -12px ${color}80` : "0 0 0 rgba(0,0,0,0)",
                 zIndex: isHovered ? 10 : 1,
                 transition: "background .3s ease, border-color .3s ease, box-shadow .3s ease",
               }}
