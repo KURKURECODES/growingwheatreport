@@ -1,5 +1,5 @@
 /* ============================================================================
-   ClearHarvest - Low-Emission Rice Offtake · Interactive Project Report
+   ClearHarvest - Low-Emission Paddy Offtake · Interactive Project Report
    Grow Indigo  |  Nizamabad, Telangana  |  Rabi 2026
    ----------------------------------------------------------------------------
    ANIMATION STACK
@@ -37,17 +37,26 @@ import {
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
-  BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, Cell, LabelList, ReferenceLine,
+  BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip,
+  ResponsiveContainer, LabelList,
 } from "recharts";
 import "maplibre-gl/dist/maplibre-gl.css";
 import LocationSection from "./ClearHarvestMap.jsx";
 import clearHarvestLogo from "./src/assets/chnlogo-removebg.png";
 import growIndigoLogo from "./src/assets/gilogo1.png";
-import photoVlm1 from "./src/assets/vlm1.jpg";
-import photoVlm2 from "./src/assets/vlm2.jpg";
-import photoVlm3 from "./src/assets/vlm3.jpg";
+import growIndigoOverview from "./src/assets/np.png";
+import photoVlm2 from "./src/assets/vlm222.jpg";
+import photoVlm3 from "./src/assets/3vlm.jpg";
 import photoDobs from "./src/assets/dobs.jpg";
+import photoBd2 from "./src/assets/bd2.png";
+import a1 from "./src/assets/a1.png";
+import a2 from "./src/assets/a2.png";
+import a3 from "./src/assets/a3.png";
+import a5 from "./src/assets/a5.png";
+import kolluriGangaramAwd from "./src/assets/Kolluri_Gangaram_1f22354e_AWD.jpg";
+import a8 from "./src/assets/a8.png";
+import a9 from "./src/assets/a9.png";
+import a10 from "./src/assets/a10.png";
 import photoCls from "./src/assets/cls.jpg";
 import photoDob2 from "./src/assets/dob2.jpg";
 import photoDobs3 from "./src/assets/dobs3.jpg";
@@ -55,17 +64,32 @@ import photoDobs4 from "./src/assets/dobs4.jpg";
 import photoKickoff from "./src/assets/pko.jpg";
 import photoMedia9 from "./src/assets/media9.jpg";
 import photoMedia11 from "./src/assets/media11.jpg";
+import photoVlm1 from './src/assets/1vlm.jpg'; // or your relative path
 import photoMedia13 from "./src/assets/media13.jpg";
+import photoVlmKuni from './src/assets/vlmkuni.jpg';
 import photoAwdMonitoring from "./src/assets/awd-monitoring.jpg";
 import photoPaddyLoading from "./src/assets/paddy-loading.jpg";
+import photoLep from "./src/assets/lep.jpeg";
+import photoTpa from "./src/assets/tpa.jpeg";
+import photoSsimp from "./src/assets/ssimp.png";
+import rs1 from "./src/assets/rs1.png";
+import rs2 from "./src/assets/rs2.png";
+import rs4 from "./src/assets/rs4.png";
+import rs5 from "./src/assets/rs5.png";
+import trac from "./src/assets/tt2.png";
 import photoBailing from "./src/assets/bailing.jpg";
-import videoTestimonial1 from "./src/assets/testimonial1.mp4";
-import videoTestimonial2 from "./src/assets/testimonial2.mp4";
-import videoTestimonial3 from "./src/assets/testimonial3.mp4";
+import videoTestimonial1 from "./vid1.mp4";
+import videoTestimonial2 from "./vid2.mp4";
+import videoTestimonial3 from "./vid3.mp4";
+import videoTestimonial4 from "./vid4.mp4";
+import photoWaterLevel from "./src/assets/waterlevel.jpg";
 import diarySocioEconomic from "./src/assets/diary1.png";
 import diaryWaterLogA from "./src/assets/diary7.png";
-import diaryWaterLogB from "./src/assets/diary8.png";
+import photoWhatsappMsg from "./tm.png";
+
+
 import diaryFeedback from "./src/assets/diary11.png";
+import photoFtmp from "./src/assets/ftmp.jpg";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -75,23 +99,23 @@ gsap.registerPlugin(ScrollTrigger);
    young leaf. Tailwind handles layout; brand colour lives in style objects.
 ---------------------------------------------------------------------------- */
 const C = {
-  ink: "#0A1F16",
-  inkSoft: "#12291F",
-  field: "#0E5B33",
-  leaf: "#4FA65B",
-  water: "#1E88A8",
-  waterDeep: "#12566B",
-  husk: "#C98A2E",
+  ink: "#241C16",
+  inkSoft: "#3A2C22",
+  field: "#A6192E",
+  leaf: "#B3542E",
+  water: "#B8862B",
+  waterDeep: "#4A2F1E",
+  husk: "#E08A34",
   clay: "#8C5A3C",
-  paper: "#EEF3EC",
-  paperDim: "#DFE8DD",
-  line: "#C3D3C1",
-  mute: "#5C7264",
+  paper: "#FBF3E8",
+  paperDim: "#F1E3D0",
+  line: "#E1D0B8",
+  mute: "#7C6C5C",
 };
 
-const FONT_DISPLAY = "'Times New Roman', Times, Georgia, 'Liberation Serif', serif";
-const FONT_BODY = "'Times New Roman', Times, Georgia, 'Liberation Serif', serif";
-const FONT_DATA = "'Times New Roman', Times, Georgia, 'Liberation Serif', serif";
+const FONT_DISPLAY = "'Archivo', 'Helvetica Neue', Arial, sans-serif";
+const FONT_BODY = "'Inter', 'Helvetica Neue', Arial, sans-serif";
+const FONT_DATA = "'Inter', 'Helvetica Neue', Arial, sans-serif";
 
 /** Framer's shared easing curve - one curve across the whole site keeps the
  *  motion language coherent no matter which library is driving it. */
@@ -101,8 +125,11 @@ const GSAP_EASE = "power3.out";
 function GlobalStyle() {
   return (
     <style>{`
+      @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700;800&display=swap');
+
       .ch-root { font-family: ${FONT_BODY}; background: ${C.paper}; color: ${C.ink};
         overflow-x: hidden; }
+      .ch-root p { text-align: justify; text-justify: inter-word; }
       .ch-display { font-family: ${FONT_DISPLAY}; letter-spacing: -0.03em; line-height: 0.98; }
       .ch-data { font-family: ${FONT_DATA}; font-variant-numeric: tabular-nums; }
 
@@ -112,6 +139,7 @@ function GlobalStyle() {
 
       .ch-ripple { animation: chRipple 4.5s ease-in-out infinite; transform-origin: center; }
       @keyframes chRipple { 0%,100% { transform: scaleY(1) } 50% { transform: scaleY(.82) } }
+      @keyframes chDotPulse { 0% { transform: scale(1); opacity: .35; } 100% { transform: scale(2.4); opacity: 0; } }
 
       .ch-root ::selection { background: ${C.husk}; color: #fff; }
       .ch-root :focus-visible { outline: 2px solid ${C.water}; outline-offset: 3px; border-radius: 2px; }
@@ -264,9 +292,7 @@ function Parallax({ children, speed = -12, className = "", style }) {
 /** GSAP-driven counter. Ticks once, snapped, with an easing that decelerates
  *  into the final value rather than stopping dead. */
 function Counter({ value, decimals = 0, duration = 1.8, className = "", style, prefix = "", suffix = "" }) {
-  const ref = useRef(null);
-  useGsapContext(() => {
-    const node = ref.current;
+  const scope = useGsapContext((self, node) => {
     if (!node) return;
     const obj = { v: 0 };
     const fmt = (n) =>
@@ -281,7 +307,7 @@ function Counter({ value, decimals = 0, duration = 1.8, className = "", style, p
       scrollTrigger: { trigger: node, start: "top 88%", once: true },
     });
   }, [value]);
-  return <span ref={ref} className={className} style={style} />;
+  return <span ref={scope} className={className} style={style} />;
 }
 
 /** Magnetic pointer attraction - springs, so it settles instead of snapping. */
@@ -400,10 +426,12 @@ function GeoStamp({ place, coords, when }) {
 
 /* ----------------------------------------------------------------------------
    3 · SIGNATURE - the AWD field tube
-   The programme turns on one object: a perforated pipe sunk into the paddy,
+   The program turns on one object: a perforated pani pipe sunk into the paddy,
    read by hand. Here it becomes the scroll indicator, driven by a scrubbed
    ScrollTrigger rather than a scroll listener, so it stays glued to the
-   scrollbar on momentum devices.
+   scrollbar on momentum devices. Scoped to the "sequence" (Program journey)
+   section only - shown full-page it read as a global progress bar, which was
+   confusing since it didn't track overall scroll position.
 ---------------------------------------------------------------------------- */
 function AwdGauge() {
   const water = useRef(null);
@@ -413,25 +441,27 @@ function AwdGauge() {
 
   const scope = useGsapContext((self, el) => {
     const TOP = 10, H = 168, BOTTOM = TOP + H;
+    const trigger = document.getElementById("sequence");
+    if (!trigger) return;
 
     gsap.matchMedia().add(
       { ok: "(min-width: 1024px) and (prefers-reduced-motion: no-preference)" },
       () => {
-        // entrance: the tube slides in once the reader is past the hero
+        // entrance/exit: the tube only shows while the "Program journey" section is in view
         gsap.fromTo(
           el,
           { autoAlpha: 0, x: 30 },
           {
             autoAlpha: 1, x: 0, duration: 0.9, ease: GSAP_EASE,
-            scrollTrigger: { trigger: document.body, start: "top+=520 top", toggleActions: "play none none reverse" },
+            scrollTrigger: { trigger, start: "top 85%", end: "bottom 15%", toggleActions: "play reverse play reverse" },
           }
         );
 
-        // wetting–drying: three full cycles across the document, never fully dry
+        // wetting–drying: three full cycles across the section, never fully dry
         ScrollTrigger.create({
-          trigger: document.body,
-          start: "top top",
-          end: "bottom bottom",
+          trigger,
+          start: "top bottom",
+          end: "bottom top",
           scrub: 0.4,
           onUpdate: (st) => {
             const cycle = (Math.sin(st.progress * Math.PI * 6 - Math.PI / 2) + 1) / 2;
@@ -486,7 +516,7 @@ const NAV = [
   ["governance", "Governance"], ["sequence", "Sequence"], ["testimonials", "Voices"],
   ["photography", "Photography"], ["benefits", "AWD benefits"], ["results", "Results"],
   ["season", "Season"], ["economics", "Economics"], ["sourcing", "Sourcing"], ["evidence", "Evidence"],
-  ["about", "About"],
+  ["about", "About Grow Indigo"],
 ];
 
 function TopBar() {
@@ -539,7 +569,7 @@ function TopBar() {
         {/* Grow Indigo mark, left */}
         <Magnetic strength={0.2}>
           <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} aria-label="Back to top">
-            <LogoSlot name="Grow Indigo" src={growIndigoLogo} light height={26} />
+            <LogoSlot name="Grow Indigo" src={growIndigoLogo} light height={43} />
           </button>
         </Magnetic>
 
@@ -568,7 +598,7 @@ function TopBar() {
 
         {/* ClearHarvest mark, mirrored right */}
         <div className="ml-auto md:ml-0">
-          <LogoSlot name="ClearHarvest" src={clearHarvestLogo} align="right" light height={26} />
+          <LogoSlot name="ClearHarvest" src={clearHarvestLogo} align="right" light height={43} />
         </div>
       </div>
       <div style={{ height: 2, background: "rgba(255,255,255,.12)" }}>
@@ -579,15 +609,128 @@ function TopBar() {
 }
 
 /* ----------------------------------------------------------------------------
+   4b · COMPANY INTRO
+   Opens the report proper: who Grow Indigo is, and the four verticals the
+   ClearHarvest program sits inside of. Pure Reveal/Stagger - no GSAP scrub -
+   so it reads calmly before the Hero takes over the motion budget.
+---------------------------------------------------------------------------- */
+const VERTICALS = [
+  {
+    tag: "01",
+    name: "Biologicals",
+    sub: "Nature-based crop inputs",
+    tone: C.leaf,
+    body:
+      "We empower farmers with innovative biological products that enhance soil health, promote plant growth, and unlock the full potential of their land.",
+  },
+  {
+    tag: "02",
+    name: "Carbon - Regen Ag",
+    sub: "Carbon Farming",
+    tone: C.field,
+    body:
+      "We're building India's leading vertically integrated carbon program. This program delivers high-quality, certified carbon units, safeguarding businesses from greenwashing claims and driving positive climate action.",
+  },
+  {
+    tag: "03",
+    name: "ClearHarvest",
+    sub: "Scope 3 insetting",
+    tone: C.water,
+    body:
+      "With our combined expertise of biologicals and carbon accounting, we help food, beverage, and apparel companies reduce farm-side emissions to achieve their net-zero goals.",
+  },
+  {
+    tag: "04",
+    name: "Biochar",
+    sub: "Carbon-negative soil amendment",
+    tone: C.husk,
+    body:
+      "We convert crop residue into high-quality biochar, restoring soil health and unlocking a permanent, verifiable route to carbon removal - while ending the need for open-field burning.",
+  },
+];
+
+function VerticalCard({ v }) {
+  return (
+    <motion.div variants={vFadeUp} className="h-full">
+      <motion.div
+        whileHover={{ y: -6 }}
+        transition={{ duration: 0.35, ease: EASE }}
+        className="h-full p-6 md:p-7 rounded-lg"
+        style={{ background: "rgba(255,255,255,.04)", border: "1px solid rgba(255,255,255,.14)" }}
+      >
+        <div className="flex items-baseline gap-3">
+          <span className="ch-data" style={{ fontSize: 11, color: v.tone, fontWeight: 600 }}>{v.tag}</span>
+          <span style={{ height: 1, width: 22, background: "rgba(255,255,255,.18)" }} />
+          <span className="ch-data" style={{ fontSize: 10, letterSpacing: ".12em", color: "rgba(255,255,255,.5)" }}>{v.sub.toUpperCase()}</span>
+        </div>
+        <h3 className="ch-display mt-3" style={{ fontWeight: 800, fontSize: 22, color: "#fff" }}>{v.name}</h3>
+        <p className="mt-3 text-sm" style={{ color: "rgba(255,255,255,.68)", lineHeight: 1.65 }}>{v.body}</p>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+function CompanyIntro() {
+  return (
+    <Section id="about" tone="dark">
+      <SectionHead
+        index="14"
+        tone="dark"
+        title="About Grow Indigo"
+        lede="Grow Indigo is a pioneering agri-tech company, with a focus on advancing sustainable agriculture to improve farmer profitability, environmental sustainability, and consumer health. Our mission is to accelerate agricultural transformation for a healthier planet, driven by four core pillars."
+      />
+      <div className="flex justify-center mb-32 md:mb-40">
+        <Reveal variants={vScaleIn} style={{ maxWidth: 720, width: "100%" }}>
+          <img
+            src={growIndigoOverview}
+            alt="Grow Indigo overview - Biologicals, ClearHarvest, Carbon and Biochar"
+            className="w-full h-auto rounded-lg"
+            style={{ border: "1px solid rgba(255,255,255,.14)", boxShadow: "0 20px 50px -20px rgba(0,0,0,.5)" }}
+          />
+        </Reveal>
+      </div>
+
+      <Eyebrow color={C.husk}>Our four core verticals</Eyebrow>
+      <Stagger stagger={0.1} className="grid sm:grid-cols-2 gap-5 md:gap-6 mt-5">
+        {VERTICALS.map((v) => (
+          <VerticalCard key={v.name} v={v} />
+        ))}
+      </Stagger>
+
+      <div className="mt-16 md:mt-20">
+        <Eyebrow color={C.husk}>Get in touch</Eyebrow>
+        <Reveal delay={0.1} style={{ maxWidth: 420 }}>
+          <div className="mt-5 p-7 md:p-8 rounded-lg" style={{ background: "rgba(255,255,255,.04)", border: "1px solid rgba(255,255,255,.14)" }}>
+            <h3 className="ch-display text-2xl" style={{ color: "#fff", fontWeight: 700 }}>
+              ClearHarvest - Grow Indigo
+            </h3>
+            <div className="mt-6">
+              <a
+                href={`mailto:${CONTACT.email}`}
+                className="flex items-baseline justify-between gap-4 py-3"
+                style={{ textDecoration: "none" }}
+              >
+                <span className="ch-data" style={{ fontSize: 10.5, color: "rgba(255,255,255,.5)", letterSpacing: ".14em" }}>EMAIL</span>
+                <span style={{ fontSize: 15, color: C.leaf, fontWeight: 700, textAlign: "right" }}>{CONTACT.email}</span>
+              </a>
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </Section>
+  );
+}
+
+/* ----------------------------------------------------------------------------
    5 · HERO
    One orchestrated GSAP timeline on load - water recedes, the field grows in,
    the headline rises out of its masks. A second scrubbed trigger hands the
    hero off to the next section with a parallax lift and fade.
 ---------------------------------------------------------------------------- */
-const HERO_LINES = [["Low-Emission"], ["Rice", "Offtake"]];
+const HERO_LINES = [["Low-Emission"], ["Paddy", "Offtake"]];
 const HERO_META = [
-  ["Season", "Rabi 2026"],
-  ["Programme", "ClearHarvest by Grow Indigo"],
+  ["Season", "Rabi crop season 2025-26"],
+  ["Program", "ClearHarvest by Grow Indigo"],
   ["Geography", "Varni & Chandur blocks, Telangana"],
   ["Quantification", "Cool Farm Platform v3.0"],
 ];
@@ -627,9 +770,9 @@ function Hero() {
       <svg className="hero-field absolute inset-0 w-full h-full ch-scrub" preserveAspectRatio="none" viewBox="0 0 1200 800" aria-hidden="true">
         <defs>
           <linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#0A1F16" />
-            <stop offset="62%" stopColor="#0E3324" />
-            <stop offset="100%" stopColor="#12566B" />
+            <stop offset="0%" stopColor="#241C16" />
+            <stop offset="62%" stopColor="#3A2418" />
+            <stop offset="100%" stopColor="#4A2F1E" />
           </linearGradient>
         </defs>
         <rect width="1200" height="800" fill="url(#skyG)" />
@@ -653,9 +796,6 @@ function Hero() {
           <div style={{ maxWidth: 560 }}>
             <LogoLockup light height={38} />
           </div>
-          <div className="mt-8">
-            <Eyebrow color={C.husk}>Nizamabad, Telangana · 11 villages · 326 mapped fields</Eyebrow>
-          </div>
         </div>
 
         <h1 className="ch-display mt-6" style={{ color: "#fff", fontWeight: 800, fontSize: "clamp(2.6rem, 8vw, 6.4rem)", maxWidth: "16ch" }}>
@@ -664,7 +804,7 @@ function Hero() {
               {line.map((w, wi) => (
                 <span key={wi} className="hero-word" style={{ display: "inline-block" }}>
                   {w}
-                  {li === 1 && wi === line.length - 1 ? <span style={{ color: C.husk }}>.</span> : "\u00A0"}
+                  {li === 1 && wi === line.length - 1 ? null : "\u00A0"}
                 </span>
               ))}
             </span>
@@ -672,8 +812,8 @@ function Hero() {
         </h1>
 
         <p className="hero-lede mt-7 text-lg md:text-xl" style={{ color: "rgba(255,255,255,.78)", maxWidth: "56ch", lineHeight: 1.6 }}>
-          Across 1,718 acres in Nizamabad, farmers stopped flooding their fields continuously - and cut the carbon in
-          every tonne of rice by half. Every field mapped, every claim traced.
+          Across 1,718 acres in Nizamabad, farmers stopped flooding their fields continuously - and reduced the
+          Carbon footprint. Every field mapped, every claim science backed.
         </p>
 
         <div className="hero-meta mt-10 flex flex-wrap gap-x-10 gap-y-5">
@@ -708,20 +848,19 @@ function Hero() {
 const HEADLINES = [
   { value: 300, suffix: "", label: "Paddy farmers", note: "enrolled across 11 villages", tone: C.field },
   { value: 1718, suffix: "", label: "Acres under AWD", note: "Varni & Chandur blocks, Nizamabad", tone: C.field },
-  { value: 58, suffix: "%", label: "GHG reduction", note: "vs Nestle baseline of 1,325 kg CO₂e/MT", tone: C.leaf },
-  { value: 67, prefix: "~", suffix: "%", label: "Water saved", note: "3,250 → ~1,073 litres per kg paddy", tone: C.water },
-  { value: 833, suffix: "", label: "Acres baled", note: "nearly 3x the 300-acre CRM target", tone: C.husk },
-  { value: 9, suffix: "%", label: "Less nitrogen", note: "48 → 43.7 kg N/acre vs PJTSAU dose", tone: C.clay },
+  { value: 58, prefix: "~ ", suffix: "%", label: "GHG reduction", note: "vs Nestlé baseline* of 1,325 kg CO₂e/MT of paddy", tone: C.leaf },
+  { value: 67, prefix: "~ ", suffix: "%", label: "Water saved", note: "3,250 → ~1,073 litres per kg paddy**", tone: C.water },
+  { value: 833, prefix: "~ ", suffix: "", label: "Acres baled", note: "nearly 3x the 300 acres CRM target", tone: C.husk },
+  { value: 29, prefix: "~ ", suffix: "%", label: "Nitrogen reduction", note: "~29% Nitrogen reduction vs Nestlé baseline*", tone: C.clay },
 ];
 
 const TICKER = [
-  "771.47 kg CO₂e/MT reduced",
-  "58% below Nestle baseline",
-  "~67% water saved",
-  "9% less nitrogen",
-  "833 acres baled",
-  "11 villages",
-  "16 farmers sampled & audited",
+  "~771 kg CO₂e/MT of paddy reduced",
+  "~ 58% GHG emissions reduction against Nestlé baseline",
+  "~ 67% water saved against Grow Indigo's baseline",
+  "~29% Nitrogen reduction against Nestlé baseline",
+  "~ 833 acres baled",
+  "Farmer Samples Used for CFT Analysis",
 ];
 
 /** Seamless GSAP marquee. Two copies of the strip, x wrapped modulo width. */
@@ -740,7 +879,7 @@ function Ticker() {
         {[...TICKER, ...TICKER].map((t, i) => (
           <div key={i} className="ch-data flex items-center" style={{ fontSize: 12, color: "rgba(255,255,255,.72)", letterSpacing: ".06em", padding: "0 28px" }}>
             <span style={{ width: 5, height: 5, borderRadius: 99, background: C.husk, marginRight: 14 }} />
-            {t.toUpperCase()}
+            {t.toUpperCase().replace("CO₂E", "CO₂e")}
           </div>
         ))}
       </div>
@@ -771,24 +910,29 @@ function ImpactStrip() {
         <SectionHead
           index="01"
           title="What the season delivered"
-          lede="The Low-Emission Rice Offtake project promoted Alternate Wetting & Drying (AWD)–based regenerative practices that cut greenhouse gas emissions, improved water-use efficiency and strengthened long-term soil health - verified farm to mill."
+          lede="The Low-Emission Paddy Offtake project promoted Alternate Wetting & Drying (AWD)–based regenerative practices that cut greenhouse gas emissions, improved water-use efficiency and strengthened long-term soil health."
         />
         <div ref={grid} className="grid gap-4 md:gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {HEADLINES.map((s) => <StatCard key={s.label} stat={s} />)}
+        </div>
+
+        <div className="ch-data mt-3" style={{ fontSize: 10.5, color: C.mute, lineHeight: 1.7 }}>
+          *As given by Nestlé<br />
+          **Grow Indigo's baseline data
         </div>
 
         <div className="grid gap-8 lg:grid-cols-3 mt-14">
           <Reveal className="lg:col-span-2">
             <h3 className="ch-display text-2xl md:text-3xl" style={{ color: C.field, fontWeight: 700 }}>Why this project exists</h3>
             <p className="mt-4" style={{ lineHeight: 1.75, color: C.ink, maxWidth: "68ch" }}>
-              Rice is one of the most water-intensive crops on earth, and traditional flooded cultivation is a
+              Paddy is one of the most water-intensive crops on earth, and traditional flooded cultivation is a
               significant source of methane - while exposing farmers to erratic rainfall, rising temperatures and
               declining groundwater. Against that backdrop the project introduced regenerative interventions focused on{" "}
-              <strong>water</strong>, <strong>soil</strong> and <strong>implementation competencies</strong>.
+              <strong>water</strong>, <strong>soil</strong> and <strong>less use of chemical fertilisers</strong>.
             </p>
             <p className="mt-4" style={{ lineHeight: 1.75, color: C.mute, maxWidth: "68ch" }}>
-              Participating farmers kept their prevailing rice establishment method. The single change at the centre of
-              the programme was irrigation: AWD replaced continuous flooding with monitored wetting–drying cycles to
+              Participating farmers kept their prevailing paddy establishment method. The single change at the centre of
+              the program was irrigation: AWD replaced continuous flooding with monitored wetting–drying cycles to
               conserve water and suppress methane formation. Everything else - biologicals, residue management, digital
               traceability - was built around making that change stick and making it auditable.
             </p>
@@ -802,11 +946,11 @@ function ImpactStrip() {
             >
               <Eyebrow color={C.husk}>The claim, in one line</Eyebrow>
               <p className="ch-display mt-4 text-xl md:text-2xl" style={{ color: "#fff", fontWeight: 600, lineHeight: 1.25 }}>
-                A scalable, farmer-centric model for low-emission rice that is transparent, traceable and ready for
+                A scalable, farmer-centric model for low-emission paddy that is transparent, traceable and ready for
                 climate-aligned procurement.
               </p>
               <div className="ch-data mt-6 pt-4" style={{ fontSize: 11, color: "rgba(255,255,255,.55)", borderTop: "1px solid rgba(255,255,255,.15)", lineHeight: 1.7 }}>
-                419 farmers enrolled · 249 completed procurement · 16 sampled for quantification by the square-root method
+                300 farmers enrolled · 139 completed procurement (~3,287 MT) 
               </div>
             </motion.div>
           </Reveal>
@@ -826,16 +970,16 @@ const INTERVENTIONS = [
     key: "water",
     tag: "Theme 1 · Water",
     title: "Alternate Wetting & Drying",
-    kicker: "1 perforated field pipe per acre, read by hand",
+    kicker: "1 perforated pani pipe per acre",
     color: C.water,
     icon: (
       <path d="M12 2s7 8.2 7 12.6A7 7 0 1 1 5 14.6C5 10.2 12 2 12 2z" fill="currentColor" />
     ),
     mechanism:
-      "AWD replaces continuous flooding with a controlled cycle of irrigation and drying. A perforated field water tube is sunk into each acre; irrigation is scheduled by watching the water level fall inside the tube rather than by calendar habit. Kisan Advisors measured levels manually through the season, so farmers learned to read the pipe themselves.",
+      "AWD replaces continuous flooding with a controlled cycle of irrigation and drying. A perforated field water tube is sunk into each acre; irrigation is scheduled by watching the water level fall inside the tube rather than by calendar habit. Kisan Advisors measured levels manually through the season, so farmers learned to read the pani pipe themselves.",
     why: [
-      ["Water intensity", "Rice needs ~3,250 litres to produce 1 kg of paddy."],
-      ["Water scarcity", "By 2025, 20 million hectares of irrigated rice globally may face scarcity."],
+      ["Water intensity", "Paddy needs ~3,250 litres to produce 1 kg of paddy."],
+      ["Water scarcity", "By 2025, 20 million hectares of irrigated paddy globally may face scarcity."],
       ["Methane", "Flooded fields are a major methane source; drying limits the anaerobic conditions that create it."],
     ],
     benefits: [
@@ -852,21 +996,21 @@ const INTERVENTIONS = [
   {
     key: "soil",
     tag: "Theme 2 · Soil",
-    title: "Oorjit & Grow Phos",
-    kicker: "6 kg + 20 kg per acre, supplied free of cost",
+    title: "Use of Biological Agri inputs",
+    kicker: "6 Kg Oorjit and 20 Kg Grow Phos per acre",
     color: C.leaf,
     icon: (
       <path d="M12 21c0-6 3-10 8-11 0 7-3 11-8 11zM12 21C12 15 9 11 4 10c0 7 3 11 8 11z" fill="currentColor" />
     ),
     mechanism:
-      "An advanced microbial NPK consortium biofertiliser: nitrogen-fixing, phosphorus-solubilising and potash-mobilising bacteria enriched with naturally derived soil minerals. It adds plant-beneficial microbes to the crop rhizosphere, lifting soil biological activity and nutrient-use efficiency. Every farmer received a 6 kg bag of Oorjit granules and a 20 kg bag of Grow Phos - one acre's worth - plus training on correct application.",
+      "Oorjit is a unique advanced microbial NPK consortium biofertilizer formulated with nitrogen-fixing, phosphorus-solubilizing, and potash-mobilizing bacteria, enriched with naturally derived soil minerals. Grow Phos is a premium PSB bio fertilizer granules, a natural alternative to DAP/SSP, which enhances germination, root and shoot growth. This combination adds plant-beneficial microbes (PBMs) in the crop rhizosphere, boosting soil biological activity and significantly improving nutrient-use efficiency (NUE). Every farmer received a 6 kg bag of Oorjit granules and a 20 kg bag of Grow Phos - one acre's worth - plus training on correct application.",
     why: [
       ["Nutrient efficiency", "Biological availability lets the same crop run on less applied nitrogen."],
-      ["Cost", "Inputs were supplied at no cost, so adoption carried no added expense."],
       ["Stacking", "Paired with AWD, better aeration compounds the nutrient-uptake gain."],
     ],
     benefits: [
-      "Steady biologically-driven N-P-K supply; up to 20% less synthetic fertiliser dependence",
+      "Steady biologically driven Nitrogen (N) and Potassium (K) supply through Oorjit; up to 20% less dependency on synthetic fertilizer",
+      "Supply of biologically driven Phosphorous (P) through Grow Phos; up to 30-40% less dependency on Phosphatic chemicals",
       "Improved soil structure - aeration, moisture retention, root penetration",
       "Lower urea requirement, subject to soil condition, crop stage and agronomic advice",
       "Consistent vegetative growth and quality grain formation",
@@ -877,24 +1021,92 @@ const INTERVENTIONS = [
     key: "crm",
     tag: "Theme 3 · Residue",
     title: "Crop Residue Management",
-    kicker: "833 acres baled against a 300-acre target",
+    kicker: "833 acres baled against the 300 acres target",
     color: C.husk,
     icon: (
       <path d="M4 20h16M6 20V9l6-4 6 4v11M9 20v-6h6v6" stroke="currentColor" strokeWidth="1.8" fill="none" />
     ),
     mechanism:
-      "CRM was implemented to eliminate open field burning. Selected farmers were supported in baling and bundling rice residues immediately after harvest, so straw was collected, removed or repurposed instead of burnt. Where residues are retained, mulched, composted or incorporated, biomass nutrients recycle back into the soil and may reduce synthetic nitrogen needs in later seasons. Where residues are baled and removed, the gains are cleaner fields, avoided burning and productive biomass use - urea replacement must be assessed against the specific CRM pathway and soil tests.",
+      "CRM was implemented to eliminate open field burning. Selected farmers were supported in baling and bundling paddy residues immediately after harvest, so straw was collected, removed or repurposed instead of burnt. Where residues are retained, mulched, composted or incorporated, biomass nutrients recycle back into the soil and may reduce synthetic nitrogen needs in later seasons. Where residues are baled and removed, the gains are cleaner fields, avoided burning and productive biomass use - urea replacement must be assessed against the specific CRM pathway and soil tests.",
     why: [
-      ["Air quality", "Burning releases particulate matter, CO₂, methane and nitrous oxide."],
-      ["Soil biota", "Field fires damage soil life and destroy organic carbon."],
+      ["Air quality improved", "since burning releases particulate matter, CO₂, methane and nitrous oxide."],
+      ["Soil biota improved", "since field fires damage soil life and destroy organic carbon."],
       ["Income", "Baled straw has a buyer - local cowsheds and gaushalas."],
+      ["Farmer readiness", "The baling process itself was explained to farmers during village-level meetings, ahead of harvest."],
     ],
     benefits: [
       "New income stream from selling baled residue to gaushalas",
-      "Target exceeded - 178% growth over the original 300-acre plan",
+      "Target exceeded - nearly 3x the original 300 acres plan",
       "Higher soil organic matter; organic carbon retained rather than burnt",
       "Biomass reused as livestock feed, compost and bioenergy",
       "Reduced air pollution and fire risk across the project villages",
+    ],
+  },
+  {
+    key: "ipm",
+    tag: "Theme 4 · Program competencies",
+    title: "A high-touch, phygital extension model",
+    kicker: "Field visits, village-level meetings and digital learning",
+    color: C.field,
+    icon: (
+      <><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinejoin="round" /><path d="M8.5 12.5l2.5 2.5 4.5-5" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round" /></>
+    ),
+    mechanism: (
+      <>
+        <p>
+          Grow Indigo followed a high-touch, phygital extension model to support farmers throughout the cropping
+          cycle. Engagement combined field visits, village-level meetings, and digital learning tools to ensure
+          farmers received timely and practical guidance at every stage.
+        </p>
+        <p style={{ marginTop: 12 }}>
+          Kisan Advisors (KAs) conducted regular field visits from transplanting to harvest. These visits enabled
+          one-on-one support, on-field troubleshooting, and verification of AWD practice, nutrient management, crop
+          protection, and correct application of Oorjit and Grow Phos. Farmers received clear recommendations on water levels,
+          fertilizer splits, and implementation steps based on field conditions. Farmers were also supported in
+          post-harvest operations of residue incorporation and baling to avoid burning and promote sustainable
+          residue management.
+        </p>
+        <p style={{ marginTop: 12 }}>
+          Village-level meetings (VLM), held four times during the project period, created opportunities for
+          collective learning. Demonstrations on Pani Pipe installation, Oorjit and Grow Phos application, and residue management
+          helped farmers understand regenerative ag practices more effectively and encouraged peer learning. In all
+          VLMs, the participation of a Biologicals team member was ensured to explain to farmers the benefits of
+          using biological products, including Oorjit and Grow Phos. Leaflets were distributed among farmers to create awareness
+          about various biological products.
+        </p>
+        <p style={{ marginTop: 12 }}>
+          To extend knowledge beyond the field, Grow Indigo also used its digital learning platform, on{" "}
+          <a
+            href="https://www.youtube.com/@growindigoindia"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: C.water, textDecoration: "underline" }}
+          >
+            YouTube
+          </a>{" "}
+          featuring simple, vernacular videos on regenerative agriculture, water-saving methods, soil health, and
+          climate-smart practices. This provided continuous learning support that farmers could access anytime.
+        </p>
+        <p style={{ marginTop: 12 }}>
+          This was complemented by weekly WhatsApp messages that reinforced key practices and their benefits,
+          including AWD, regenerative agriculture, the use of biological inputs, reduced reliance on chemical
+          pesticides & chemicals, and CRM. These regular digital touchpoints helped reinforce field-level training
+          and build awareness of the long-term benefits of sustainable practices.
+        </p>
+        <p style={{ marginTop: 12 }}>
+          Together, these field interactions, group sessions, and digital resources created a strong handholding
+          ecosystem. The combined approach improved farmer awareness, encouraged consistent adoption of
+          regenerative practices, and strengthened overall implementation quality across the project.
+        </p>
+      </>
+    ),
+    why: [],
+    benefits: [
+      "Field visits by Kisan Advisors from transplanting to harvest",
+      "Four village-level meetings (VLMs) with live demonstrations",
+      "Biologicals team member present at every VLM",
+      "Vernacular learning videos on Grow Indigo's YouTube channel",
+      "A combined field, group and digital handholding ecosystem",
     ],
   },
 ];
@@ -942,23 +1154,25 @@ function InterventionCard({ item }) {
               style={{ overflow: "hidden" }}
             >
               <motion.div variants={vStagger(0.06, 0.08)} initial="hidden" animate="show">
-                <motion.p variants={vFadeUp} className="mt-5" style={{ lineHeight: 1.7, fontSize: 14.5, color: C.ink }}>
+                <motion.div variants={vFadeUp} className="mt-5" style={{ lineHeight: 1.7, fontSize: 14.5, color: C.ink }}>
                   {item.mechanism}
-                </motion.p>
-                <div className="mt-5 pt-4" style={{ borderTop: `1px solid ${C.line}` }}>
-                  {item.why.map(([k, v]) => (
-                    <motion.div key={k} variants={vFadeUp} className="mb-2.5">
-                      <span className="ch-data" style={{ fontSize: 11, color: item.color, fontWeight: 600 }}>{k.toUpperCase()}</span>
-                      <span style={{ fontSize: 13.5, color: C.mute, marginLeft: 8 }}>{v}</span>
-                    </motion.div>
-                  ))}
-                </div>
+                </motion.div>
+                {item.why?.length > 0 && (
+                  <div className="mt-5 pt-4" style={{ borderTop: `1px solid ${C.line}` }}>
+                    {item.why.map(([k, v]) => (
+                      <motion.div key={k} variants={vFadeUp} className="mb-2.5">
+                        <span className="ch-data" style={{ fontSize: 11, color: item.color, fontWeight: 600 }}>{k.toUpperCase()}</span>
+                        <span style={{ fontSize: 13.5, color: C.mute, marginLeft: 8 }}>{v}</span>
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
               </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        <ul className="mt-6 space-y-2">
+        <ul className={item.benefits.length ? "mt-6 space-y-2" : ""}>
           {item.benefits.map((b) => (
             <motion.li
               key={b}
@@ -972,10 +1186,6 @@ function InterventionCard({ item }) {
             </motion.li>
           ))}
         </ul>
-
-        <div className="ch-data mt-6" style={{ fontSize: 10, color: C.mute, letterSpacing: ".1em" }}>
-          {open ? "TAP TO CLOSE" : "HOVER OR TAP FOR THE MECHANISM"}
-        </div>
       </motion.div>
     </motion.div>
   );
@@ -987,10 +1197,9 @@ function InterventionsSection() {
     <Section id="interventions" tone="tint">
       <SectionHead
         index="03"
-        title="Three interventions, one system"
-        lede="Water, soil and residue were addressed together - each supported by the same field team, the same digital record and the same farmer. Hover any card to open its mechanism."
+        title="The four themes"
       />
-      <div ref={grid} className="grid gap-5 lg:grid-cols-3">
+      <div ref={grid} className="grid gap-5 lg:grid-cols-4">
         {INTERVENTIONS.map((it) => <InterventionCard key={it.key} item={it} />)}
       </div>
     </Section>
@@ -1003,10 +1212,10 @@ function InterventionsSection() {
 const ROLES = [
   ["Project Management Unit", [
     "Strategic supervision and governance",
-    "Alignment with Nestle's sustainability and reporting requirements",
-    "Smooth execution throughout the programme, including procurement and reporting",
+    "Alignment with Nestlé's sustainability and reporting requirements",
+    "Smooth execution throughout the program, including procurement and reporting",
   ]],
-  ["RBM / Agronomist", [
+  ["RBM (Regional Business Manager) / Agronomist", [
     "Led on-ground implementation with TBM and Kisan Advisors",
     "Technical guidance on AWD, IPM, INM and sustainability practices",
     "Farmer trainings on AWD, regenerative practices and use of biologicals",
@@ -1019,41 +1228,32 @@ const ROLES = [
     "Adherence to implementation timelines and technical protocols",
   ]],
   ["Kisan Advisors", [
+    "Single point of contact for farmers",
     "Farmer engagement and mobilisation across project villages",
-    "Distributed biologicals and AWD pipes to farmers",
+    "Distributed biologicals and pani pipes to farmers",
     "KML-based mapping of farmer fields in the app",
     "Built awareness of AWD, CRM, nutrient management and biologicals",
     "Field visits and hands-on implementation support",
     "Manual measurement of water level in fields",
   ]],
   ["Scientists", [
-    "Reviewed and validated field data for methodological accuracy",
-    "Scientific oversight on agronomy methodologies and regenerative protocols",
-    "Quality checks on KML mapping of farmer fields",
-    "GHG emission quantification and water-saving assessments from field-level data",
+    "Quality checks in KML mapping of farmer fields, monitoring of field activities verified through remote sensing by the RS team",
+    "GHG emission quantification, water-saving assessment and nitrogen reduction",
   ]],
-  ["Engineering Leads", [
-    "Developed and maintained the digital tools - FieldKhata and S3 Sutra",
-    "Data accuracy, security and seamless flow across platforms",
-    "Troubleshooting, field adoption and technology readiness",
+  ["Engineering Team", [
+    "Upgradation and maintainance of  FieldKhatta app and S3 Sutra",
     "Digital traceability and audit-trail generation from farm to mill",
+    
   ]],
 ];
 
 const WORKFLOW = [
   ["Kisan Advisor visits the farmer", "On-field engagement and practice verification"],
-  ["Capability building on interventions", "Training on AWD, CRM and biological inputs"],
-  ["Data capture on agronomic practices", "AWD and CRM logged in FieldKhata"],
+  ["Capability building on interventions", "AWD, CRM, Pest management and Fertilizer management giving awareness about using biological inputs"],
+  ["Data capture on agronomic practices", "AWD and CRM logged in FieldKhatta/ODK/Farmer diary"],
   ["QC of field-reported data by scientists", "Methodological review and validation"],
   ["Procurement audit trail", "End-to-end record captured in S3 Sutra"],
   ["Third-party audit & report submission", "Independent verification and final delivery"],
-];
-
-const IPM = [
-  ["Cultural control", "Timely agronomic operations, field sanitation, balanced nutrition, weed management and AWD-based water management."],
-  ["Mechanical & physical", "Removal of infected plant parts, cleaning of field bunds, physical suppression of weeds and pest habitats."],
-  ["Biological control", "Biological inputs and practices that improved soil and crop health and encouraged beneficial organisms."],
-  ["Chemical control", "Recommended only when pest or disease pressure required it - correct pesticide, dosage and crop stage."],
 ];
 
 function OrgChart() {
@@ -1090,16 +1290,16 @@ function OrgChart() {
           <div>
             {node("Field Operations", null, C.leaf, "#fff", "org-branch")}
             <div className="mt-3 space-y-3">
-              {node("RBM / Agronomist", "Regional field leadership & agronomic guidance", C.paperDim, C.ink, "org-leaf")}
-              {node("TBM", "Team management & operational execution", C.paperDim, C.ink, "org-leaf")}
+              {node("RBM (Regional Business Manager) / Agronomist", "Regional field leadership & agronomic guidance", C.paperDim, C.ink, "org-leaf")}
+              {node("TBM (Territory Business Manager)", "Team management & operational execution", C.paperDim, C.ink, "org-leaf")}
               {node("Kisan Advisors", "Farmer engagement, advisory & hand-holding", C.paperDim, C.ink, "org-leaf")}
             </div>
           </div>
           <div>
             {node("Science & Technology", null, C.water, "#fff", "org-branch")}
             <div className="mt-3 space-y-3">
-              {node("Quantification Lead", "GHG quantification, data analysis & impact assessment", C.paperDim, C.ink, "org-leaf")}
-              {node("Engineering Lead", "Digital tools, data systems & technology enablement", C.paperDim, C.ink, "org-leaf")}
+              {node("Scientists", "GHG quantification, data analysis & impact assessment", C.paperDim, C.ink, "org-leaf")}
+              {node("Engineering Team", "Digital tools, data systems & technology enablement", C.paperDim, C.ink, "org-leaf")}
             </div>
           </div>
         </div>
@@ -1185,46 +1385,83 @@ function RoleAccordion() {
   );
 }
 
-function WorkflowStepper() {
-  const [hover, setHover] = useState(null);
-  const grid = useBatchReveal(".wf-step", { stagger: 0.06 });
+const WF_ICONS = [
+  <path key="a" d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM16 9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM2 20c0-3.3 2.7-6 6-6s6 2.7 6 6M14.5 14.2c2.9.4 5.5 2.7 5.5 5.8" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />,
+  <path key="b" d="M12 2a6 6 0 0 0-3.5 10.9c.5.4.8 1 .8 1.6v.5h5.4v-.5c0-.6.3-1.2.8-1.6A6 6 0 0 0 12 2zM9.5 19h5M10 22h4" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />,
+  <path key="c" d="M6 2h9l5 5v15H6zM15 2v5h5M9 12h6M9 16h6M9 8h2" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />,
+  <path key="d" d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z M8.5 12.5l2.5 2.5 4.5-5" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinejoin="round" strokeLinecap="round" />,
+  <path key="e" d="M3 6h6l2 2h10v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6z" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinejoin="round" />,
+  <path key="f" d="M4 20V10M10 20V4M16 20v-7M4 20h16" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />,
+];
+
+function WFArrow({ dir = "right" }) {
+  const rotate = { right: 0, left: 180, down: 90 }[dir];
   return (
-    <LayoutGroup id="workflow">
-      <div ref={grid} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {WORKFLOW.map(([title, sub], i) => {
-          const on = hover === i;
-          return (
-            <motion.div
-              key={title}
-              className="wf-step relative p-5 rounded"
-              onHoverStart={() => setHover(i)}
-              onHoverEnd={() => setHover(null)}
-              animate={{ y: on ? -4 : 0 }}
-              transition={{ duration: 0.3, ease: EASE }}
-              style={{ background: "#fff", border: `1px solid ${on ? C.field : C.line}` }}
-            >
-              {on && (
-                <motion.span
-                  layoutId="wf-fill"
-                  className="absolute inset-0 rounded"
-                  style={{ background: C.field }}
-                  transition={{ type: "spring", stiffness: 320, damping: 32 }}
-                />
-              )}
-              <div className="relative">
-                <div className="ch-data" style={{ fontSize: 11, fontWeight: 600, color: C.husk }}>STEP {i + 1}</div>
-                <motion.div className="mt-2" animate={{ color: on ? "#fff" : C.ink }} style={{ fontWeight: 600, fontSize: 14.5 }}>
-                  {title}
-                </motion.div>
-                <motion.div className="mt-1.5" animate={{ color: on ? "rgba(255,255,255,.72)" : C.mute }} style={{ fontSize: 12.5, lineHeight: 1.6 }}>
-                  {sub}
-                </motion.div>
-              </div>
-            </motion.div>
-          );
-        })}
+    <svg width="22" height="22" viewBox="0 0 24 24" style={{ color: C.field, transform: `rotate(${rotate}deg)` }}>
+      <path d="M4 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function WFCard({ n, icon, title, sub }) {
+  return (
+    <div className="wf-node rounded-lg" style={{ background: "#fff", border: `1px solid ${C.line}`, borderTop: `3px solid ${C.field}`, padding: "12px 14px", height: "100%" }}>
+      <div className="flex items-start justify-between">
+        <div className="flex items-center justify-center rounded-full" style={{ width: 22, height: 22, background: C.field, color: "#fff", fontWeight: 700, fontSize: 11.5, flexShrink: 0 }}>
+          {n}
+        </div>
+        <svg width="17" height="17" viewBox="0 0 24 24" style={{ color: C.field, opacity: 0.55 }}>{icon}</svg>
       </div>
-    </LayoutGroup>
+      <div className="mt-2" style={{ fontWeight: 700, fontSize: 12.5, lineHeight: 1.3, color: C.ink }}>{title}</div>
+      <div className="mt-1.5" style={{ width: 22, height: 2, background: C.husk }} />
+      <div className="mt-1.5" style={{ fontSize: 11, lineHeight: 1.5, color: C.mute }}>{sub}</div>
+    </div>
+  );
+}
+
+const WF_ROW_STYLE = { display: "grid", gridTemplateColumns: "1fr 24px 1fr 24px 1fr", columnGap: 8, alignItems: "stretch" };
+const WF_CONNECTOR_STYLE = { display: "grid", gridTemplateColumns: "1fr 24px 1fr 24px 1fr", columnGap: 8, margin: "2px 0" };
+const WF_ARROW_CELL = { display: "flex", alignItems: "center", justifyContent: "center" };
+
+function WorkflowStepper() {
+  const grid = useBatchReveal(".wf-node", { stagger: 0.06 });
+  const step = (i) => <WFCard n={i + 1} icon={WF_ICONS[i]} title={WORKFLOW[i][0]} sub={WORKFLOW[i][1]} />;
+  return (
+    <div className="rounded-lg p-6 md:p-8" style={{ background: "#fff", border: `1px solid ${C.line}` }}>
+      <div className="text-center">
+        <div className="ch-data" style={{ fontSize: 13, fontWeight: 700, color: C.field, letterSpacing: 0.6 }}>
+          MONITORING, TRACEABILITY &amp; ASSURANCE WORKFLOW
+        </div>
+        <div className="mt-1.5" style={{ fontSize: 12.5, color: C.mute, fontStyle: "italic" }}>
+          From farmer engagement to third-party audit - the operational backbone of the program
+        </div>
+      </div>
+
+      <div ref={grid} className="mt-8" style={{ overflowX: "auto" }}>
+        <div style={{ minWidth: 560 }}>
+          <div style={WF_ROW_STYLE}>
+            {step(0)}
+            <div style={WF_ARROW_CELL}><WFArrow dir="right" /></div>
+            {step(1)}
+            <div style={WF_ARROW_CELL}><WFArrow dir="right" /></div>
+            {step(2)}
+          </div>
+
+          <div style={WF_CONNECTOR_STYLE}>
+            <div /><div /><div /><div />
+            <div style={WF_ARROW_CELL}><WFArrow dir="down" /></div>
+          </div>
+
+          <div style={WF_ROW_STYLE}>
+            {step(5)}
+            <div style={WF_ARROW_CELL}><WFArrow dir="left" /></div>
+            {step(4)}
+            <div style={WF_ARROW_CELL}><WFArrow dir="left" /></div>
+            {step(3)}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -1233,8 +1470,8 @@ function GovernanceSection() {
     <Section id="governance">
       <SectionHead
         index="04"
-        title="Who did what, and how it was checked"
-        lede="Delivery ran through a layered implementation architecture. Strategic oversight sat with Grow Indigo's ClearHarvest team, keeping the programme aligned to Nestle's sustainability objectives and reporting requirements."
+        title="Program Governance and Implementation"
+        lede="Delivery ran through a layered implementation architecture. Strategic oversight sat with Grow Indigo's ClearHarvest Business team, keeping the program aligned to Nestlé's sustainability objectives and reporting requirements."
       />
       <div className="grid gap-6 lg:grid-cols-2 items-start">
         <Reveal><OrgChart /></Reveal>
@@ -1244,86 +1481,76 @@ function GovernanceSection() {
       <div className="mt-16">
         <Reveal>
           <h3 className="ch-display text-2xl md:text-3xl" style={{ color: C.field, fontWeight: 700 }}>
-            Monitoring, measurement and traceability
+            Monitoring, Reporting and Verification
           </h3>
-          <p className="mt-4" style={{ lineHeight: 1.75, color: C.mute, maxWidth: "72ch" }}>
-            Grow Indigo ran a phygital monitoring system: regular field observation paired with digital capture.
-            Farmer information, field boundary geofencing and agronomy records (fertiliser, pesticide use, irrigation
-            method) went into <strong style={{ color: C.ink }}>FieldKhata</strong>; the agronomist and scientific team
-            then checked accuracy, completeness and geolocation consistency before anything reached GHG accounting.
-            Post-harvest, <strong style={{ color: C.ink }}>S3 Sutra</strong> traced low-emission paddy from farm to
-            miller - farmer validation, produce quantities and movement - and a third-party auditor reviewed the
-            evidence and digital records.
-          </p>
         </Reveal>
-        <div className="mt-7"><WorkflowStepper /></div>
-      </div>
 
-      <div className="mt-16 grid gap-6 lg:grid-cols-2">
-        <Reveal>
-          <div className="p-7 rounded-lg h-full" style={{ background: "#fff", border: `1px solid ${C.line}` }}>
-            <Eyebrow>Theme 4 · Programme competencies</Eyebrow>
-            <h4 className="ch-display mt-4 text-xl" style={{ color: C.field, fontWeight: 700 }}>
-              Four IPM principles, applied in the field
+        <div className="mt-10 grid gap-10">
+          <Reveal>
+            <Eyebrow>Subtopic 1</Eyebrow>
+            <h4 className="ch-display mt-3 text-xl md:text-2xl" style={{ color: C.field, fontWeight: 700 }}>
+              Monitoring and Measurement
             </h4>
-            <Stagger className="mt-5 space-y-4" stagger={0.08}>
-              {IPM.map(([k, v]) => (
-                <motion.div key={k} variants={vFadeUp} whileHover={{ x: 4 }} transition={{ duration: 0.25 }}>
-                  <div style={{ fontWeight: 600, fontSize: 14, color: C.ink }}>{k}</div>
-                  <div style={{ fontSize: 13.5, lineHeight: 1.65, color: C.mute }}>{v}</div>
-                </motion.div>
-              ))}
-            </Stagger>
-            <p className="ch-data mt-5 pt-4" style={{ fontSize: 11.5, lineHeight: 1.7, color: C.mute, borderTop: `1px solid ${C.line}` }}>
-              Regular monitoring by Kisan Advisors kept crop-protection decisions tied to actual field conditions
-              rather than routine pesticide application.
+            <p className="mt-4" style={{ lineHeight: 1.75, color: C.mute }}>
+              Grow Indigo implemented a structured, phygital monitoring system that combined regular field-level
+              observations with digital data capture to ensure accuracy, traceability and verification.
+              Throughout the season, Kisan Advisors conducted periodic field visits to monitor crop growth, AWD
+              monitoring, verify nutrient applications and update farmer diaries. Farmer information, field boundary
+              geofencing and agronomy information (fertiliser, pesticide use, irrigation method) was recorded using
+              the <strong style={{ color: C.ink }}>FieldKhatta application</strong>, ODK and farmer diaries. All
+              mapped field boundaries were also quality-checked and verified using Remote Sensing to confirm
+              spatial accuracy, consistency and no burning on the mapped fields. The agronomist and science
+              team reviewed these records, performing quality checks on data accuracy, completeness and geolocation
+              consistency to ensure reliable inputs for GHG accounting.
             </p>
-          </div>
-        </Reveal>
-        <Reveal delay={0.11}>
-          <div className="p-7 rounded-lg h-full" style={{ background: "#fff", border: `1px solid ${C.line}` }}>
-            <Eyebrow>Farmer hand-holding</Eyebrow>
-            <h4 className="ch-display mt-4 text-xl" style={{ color: C.field, fontWeight: 700 }}>
-              A high-touch, phygital extension model
+            <div className="mt-7"><WorkflowStepper /></div>
+          </Reveal>
+
+          <Reveal delay={0.1}>
+            <Eyebrow>Subtopic 2</Eyebrow>
+            <h4 className="ch-display mt-3 text-xl md:text-2xl" style={{ color: C.field, fontWeight: 700 }}>
+              Traceability
             </h4>
-            <Stagger className="mt-5 space-y-4" stagger={0.07} style={{ fontSize: 14, lineHeight: 1.7, color: C.mute }}>
-              <motion.p variants={vFadeUp}>
-                <strong style={{ color: C.ink }}>Integrated Nutrient Management.</strong> Nutrient decisions combined
-                farmer practice, crop-stage requirements, biological inputs, soil condition and split application of
-                fertilisers - with Oorjit and Grow Phos as biological complements optimising nitrogen and phosphorus
-                availability.
-              </motion.p>
-              <motion.p variants={vFadeUp}>
-                <strong style={{ color: C.ink }}>Field visits.</strong> Kisan Advisors visited from transplanting to
-                harvest: one-on-one support, on-field troubleshooting, verification of AWD practice, nutrient
-                management, crop protection and correct application of biologicals.
-              </motion.p>
-              <motion.p variants={vFadeUp}>
-                <strong style={{ color: C.ink }}>Village-level meetings.</strong> Held four times in the project period,
-                with live demonstrations of AWD pipe installation, biological application and residue management.
-                Biological-team members joined every VLM and leaflets were distributed.
-              </motion.p>
-              <motion.p variants={vFadeUp}>
-                <strong style={{ color: C.ink }}>Always-on channels.</strong> Vernacular video on Grow Indigo's YouTube
-                learning platform plus weekly WhatsApp messages in Telugu - including pest advisories naming the Kisan
-                Advisor to call.
-              </motion.p>
-            </Stagger>
-          </div>
-        </Reveal>
+            <p className="mt-4" style={{ lineHeight: 1.75, color: C.mute }}>
+              Post harvest and during procurement, <strong style={{ color: C.ink }}>S3 Sutra</strong> enabled
+              traceability of low-emission paddy from farm to miller. It captured the complete audit trail,
+              documenting farmer validation, produce quantities, and movement of low-emission paddy. This
+              integrated approach created a robust monitoring and verification system that delivered high-quality
+              data, ensured credible traceability, and supported accurate GHG quantification aligned with
+              Nestlé's reporting requirements.
+            </p>
+            <div className="mt-6 rounded-lg overflow-hidden" style={{ background: "#fff", border: `1px solid ${C.line}` }}>
+              <div style={{ background: C.paperDim, aspectRatio: "16 / 9" }}>
+                <img src={trac} alt="S3 Sutra traceability flow from farmer groups to trading to miller" style={{ width: "100%", height: "100%", objectFit: "scale-down" }} />
+              </div>
+              <div style={{ padding: "16px 22px" }}>
+                <div style={{ fontSize: 12.5, color: C.mute }}>Farm-to-miller traceability flow, Node-to-node view</div>
+              </div>
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.2}>
+            <Eyebrow>Subtopic 3</Eyebrow>
+            <h4 className="ch-display mt-3 text-xl md:text-2xl" style={{ color: C.field, fontWeight: 700 }}>
+              Verification
+            </h4>
+            <p className="mt-4" style={{ lineHeight: 1.75, color: C.mute }}>
+              The program delivered measurable reductions in greenhouse gas emissions, water consumption, and
+              fertilizer use through farmers' adoption of regenerative agricultural practices, including Alternate
+              Wetting and Drying (AWD) and improved fertilizer management.
+            </p>
+            <p className="mt-4" style={{ lineHeight: 1.75, color: C.mute }}>
+              The reported outcomes were evaluated against the approved monitoring methodology through a review of
+              monitoring records, farmer-level data, supporting documentation, and field-level evidence. The
+              verification process assessed the completeness, consistency, accuracy, and traceability of the
+              reported data and cross-checked the results against the established baseline. The project and its
+              reported outcomes were independently verified by the third-party auditor,{" "}
+              <strong style={{ color: C.ink }}>OnePeterson</strong>.
+            </p>
+          </Reveal>
+        </div>
       </div>
 
-      <Reveal delay={0.08} className="mt-6">
-        <div className="p-7 rounded-lg" style={{ background: C.ink }}>
-          <Eyebrow color={C.husk}>Stakeholder management</Eyebrow>
-          <p className="mt-3" style={{ color: "rgba(255,255,255,.8)", lineHeight: 1.75, maxWidth: "80ch" }}>
-            Field teams, scientists, Aishwarya Rice Mills (Nestle's empanelled miller) and Nestle representatives worked in a
-            connected framework - enabling timely execution, transparent data flow and high implementation fidelity.
-            The TBM and Kisan Advisors supervised the entire procurement process, and the PMU visited fields to ensure
-            timely completion.
-          </p>
-        </div>
-      </Reveal>
     </Section>
   );
 }
@@ -1333,14 +1560,14 @@ function GovernanceSection() {
 ---------------------------------------------------------------------------- */
 const AWD_BENEFITS = [
   ["Water conservation", C.water, [
-    "Reduces irrigation water demand by 30–45% versus continuous flooding without compromising yield",
+    "Reduces irrigation water demand without compromising yield",
     "Project achieved ~67% water savings - ~1,073 litres per kg of paddy against a ~3,250 litre baseline",
     "Preserves groundwater reserves and reduces pumping load on shared aquifers",
     "Lets irrigation cycles be planned around critical stages: tillering, panicle initiation, milking",
   ]],
   ["Climate change mitigation", C.field, [
-    "Lowers the greenhouse-gas footprint of rice, a globally significant agricultural emission source",
-    "Project delivered 771.47 kg CO₂e/MT reduction - 58% against Nestle's baseline of 1,325 kg CO₂e/MT",
+    "Lowers the greenhouse-gas footprint of paddy, a globally significant agricultural emission source",
+    "Project delivered ~771 kg CO₂e/MT of paddy reduction - 58% against Nestlé's baseline of 1,325 kg CO₂e/MT of paddy",
     "Cuts diesel and electric pumping, reducing fossil-fuel emissions across the value chain",
     "Builds systems that tolerate erratic monsoons, heat waves and drought stress",
   ]],
@@ -1356,7 +1583,7 @@ const AWD_BENEFITS = [
     "Enhanced mineralisation increases plant-available nitrogen and phosphorus from native reserves",
     "Over multiple seasons, AWD plus biologicals builds soil organic carbon and water-holding capacity",
   ]],
-  ["Biodiversity", "#6B8F3A", [
+  ["Biodiversity", "#B97A87", [
     "Alternating conditions diversify field micro-habitats versus monotonic flooding",
     "Lower chemical fertiliser and pesticide dependence protects pollinators, earthworms and pest predators",
     "Less water diverted from rivers and tanks helps preserve riparian and wetland ecosystems downstream",
@@ -1366,19 +1593,14 @@ const AWD_BENEFITS = [
     "Fewer irrigation events mean less pump runtime - lower electricity and diesel use",
     "Reduced pumping load cuts wear and maintenance on irrigation infrastructure",
     "At national scale, wide AWD adoption can ease peak agricultural electricity demand",
-    "Indirect savings across the supply chain as fertiliser manufacturing and transport fall",
   ]],
-  ["Human health", "#B0483C", [
+  ["Human health", "#B34936", [
     "Less standing water limits mosquito breeding sites for malaria, Japanese encephalitis and dengue",
-    "Lower fertiliser leaching protects shallow rural wells from nitrate contamination",
     "Ending residue burning and cutting methane improves regional air quality and respiratory health",
     "Resilient livelihoods reduce rural distress and protect food, income and nutrition security",
   ]],
   ["Water governance", C.waterDeep, [
-    "A simple, low-cost perforated tube lets farmers measure and manage their own water use",
-    "Enables demand-side governance at village and watershed level, supporting collective irrigation planning",
-    "Builds farmer capability in water-use scheduling as climate variability increases",
-    "Creates a traceable, auditable record of water savings for climate finance and Scope 3 reporting",
+    "Creates a traceable, auditable record of water savings",
   ]],
 ];
 
@@ -1484,7 +1706,7 @@ function BenefitsSection() {
           index="08"
           tone="dark"
           title="One practice, eight kinds of return"
-          lede="AWD is a climate-smart, water-saving rice cultivation practice that delivers measurable environmental, agronomic, economic and social benefits - from an individual field to an entire watershed. Hover a tile to open the full evidence."
+          lede="AWD is a climate-smart, water-saving paddy cultivation practice that delivers measurable environmental, agronomic, economic and social benefits - from an individual field to an entire watershed."
         />
         <div ref={grid} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {AWD_BENEFITS.map(([t, c, p]) => <BenefitTile key={t} title={t} color={c} points={p} />)}
@@ -1499,27 +1721,102 @@ function BenefitsSection() {
    11 · RESULTS - Recharts, mounted on viewport entry so their own draw
    animation doubles as the scroll reveal. Tooltips animate through framer.
 ---------------------------------------------------------------------------- */
-const EMISSIONS = [
-  { name: "Nestle baseline", value: 1325, fill: C.mute, note: "Nestle's declared baseline for rice, kg CO₂e per MT" },
-  { name: "Project · excl. nursery", value: 540.13, fill: C.leaf, note: "784.87 kg CO₂e/MT lower - a ~59% reduction" },
-  { name: "Project · incl. nursery", value: 553.53, fill: C.field, note: "771.47 kg CO₂e/MT lower - 58%, the headline result" },
-];
+/** Turns a sequence of "total" (absolute) and "delta" (change from the
+ *  running total) steps into floating-bar rows: `base`/`top` mark where the
+ *  segment starts and ends, `height` is its span - so a delta bar hangs
+ *  between the two totals it connects instead of rising from zero. */
+function buildWaterfall(steps) {
+  let cumulative = 0;
+  return steps.map((s) => {
+    if (s.type === "total") {
+      cumulative = s.value;
+      return { ...s, base: 0, height: s.value, top: s.value };
+    }
+    const start = cumulative;
+    cumulative += s.value;
+    const base = Math.min(start, cumulative);
+    const top = Math.max(start, cumulative);
+    return { ...s, base, top, height: top - base };
+  });
+}
 
-const NITROGEN = [
-  { name: "Farmer practice (BAU)", value: 62.4, fill: C.clay, note: "Business-as-usual application in the project area" },
-  { name: "PJTSAU recommended", value: 48, fill: C.mute, note: "University-recommended dose for the district" },
-  { name: "Project rate", value: 43.7, fill: C.leaf, note: "9% below the recommended dose · 30% below BAU" },
-];
+function waterfallLabel(row) {
+  if (row.type === "delta") {
+    const n = Math.abs(row.value).toLocaleString("en-IN");
+    return row.value > 0 ? `+${n}` : n;
+  }
+  return row.value.toLocaleString("en-IN");
+}
 
-const WATER = [
-  { name: "Conventional flooding", value: 3250, fill: C.mute, note: "Litres of water per kg of paddy under continuous flooding" },
-  { name: "Project (AWD)", value: 1073, fill: C.water, note: "Derived from the ~67% saving reported for the project" },
-];
+function waterfallLabelContent(data) {
+  return ({ x, y, width, index }) => (
+    <text x={x + width / 2} y={y - 6} textAnchor="middle" style={{ fontSize: 12, fontFamily: FONT_DATA, fill: C.ink, fontWeight: 600 }}>
+      {waterfallLabel(data[index])}
+    </text>
+  );
+}
 
-const YIELD = [
-  { name: "Previous season", value: 2.7, fill: C.mute, note: "Average rice yield, MT" },
-  { name: "Current season", value: 2.5, fill: C.husk, note: "Down ~7.4% - attributed to seasonal and agronomic factors" },
-];
+/** Custom XAxis tick factory: renders the rotated category label as usual, and for
+ *  categories present in the given pct map, circles a percentage callout beneath it -
+ *  sits under the axis so it reads as an annotation, not a chart value. Each chart
+ *  gets its own map since bar names ("Reduction", "Project") repeat across charts. */
+function makeWaterfallAxisTick(pctMap) {
+  return function waterfallAxisTick({ x, y, payload }) {
+    const pct = pctMap[payload.value];
+    return (
+      <g>
+        <text x={x} y={y + 9} textAnchor="end" transform={`rotate(-12, ${x}, ${y + 9})`} style={{ fontSize: 11, fill: C.mute, fontFamily: FONT_DATA }}>
+          {payload.value}
+        </text>
+        {pct && (
+          <g transform={`translate(${x}, ${y + 40})`}>
+            <circle r={16} fill="none" stroke={C.field} strokeWidth={1.6} />
+            <text textAnchor="middle" dy={4} style={{ fontSize: 11.5, fontWeight: 700, fill: C.field, fontFamily: FONT_DATA }}>
+              {pct}
+            </text>
+          </g>
+        )}
+      </g>
+    );
+  };
+}
+
+const EMISSIONS_AXIS_TICK = makeWaterfallAxisTick({ "Reduction": "58%" });
+const NITROGEN_AXIS_TICK = makeWaterfallAxisTick({ "Reduction": "29%" });
+const WATER_AXIS_TICK = makeWaterfallAxisTick({ "Saving": "67%" });
+
+/** Draws only the [base, top] slice of the bar - recharts positions this
+ *  shape as if it were a full bar for `top`, so we shorten it from the same
+ *  top edge down to `height` px instead of letting it run to the axis. */
+function WaterfallBarShape({ x, y, width, height, payload }) {
+  const pxPerUnit = payload.top > 0 ? height / payload.top : 0;
+  const segHeight = Math.max(payload.height * pxPerUnit, 1);
+  const r = Math.min(4, segHeight / 2, width / 2);
+  return (
+    <path
+      d={`M${x},${y + segHeight} L${x},${y + r} Q${x},${y} ${x + r},${y} L${x + width - r},${y} Q${x + width},${y} ${x + width},${y + r} L${x + width},${y + segHeight} Z`}
+      fill={payload.fill}
+    />
+  );
+}
+
+const EMISSIONS_WATERFALL = buildWaterfall([
+  { name: "Nestlé baseline", type: "total", value: 1325, fill: C.mute, note: "Nestlé's declared baseline for paddy, kg CO₂e per MT of paddy" },
+  { name: "Reduction", type: "delta", value: -785, fill: C.leaf, note: "~785 kg CO₂e/MT of paddy lower - a ~59% reduction" },
+  { name: "Project", type: "total", value: 560, fill: C.field, note: "~765 kg CO₂e/MT of paddy lower - 58%, the headline result" },
+]);
+
+const NITROGEN_WATERFALL = buildWaterfall([
+  { name: "Nestlé Baseline", type: "total", value: 78, fill: C.mute, note: "Nestlé's baseline application rate in the project area" },
+  { name: "Reduction", type: "delta", value: -23, fill: C.leaf, note: "29% below Nestlé baseline · above the PJTSAU recommended dose" },
+  { name: "Project", type: "total", value: 55, fill: C.field, note: "29% below Nestlé baseline · above the PJTSAU recommended dose" },
+]);
+
+const WATER_WATERFALL = buildWaterfall([
+  { name: "Conventional flooding", type: "total", value: 3250, fill: C.mute, note: "Litres of water per kg of paddy under continuous flooding" },
+  { name: "Saving", type: "delta", value: -2177, fill: C.water, note: "2,177 litres/kg lower - the ~67% saving reported for AWD adoption" },
+  { name: "Project (AWD)", type: "total", value: 1073, fill: C.water, note: "Derived from the ~67% saving reported for the project" },
+]);
 
 function ChartTip({ active, payload, unit }) {
   return (
@@ -1535,7 +1832,7 @@ function ChartTip({ active, payload, unit }) {
         >
           <div style={{ color: "#fff", fontWeight: 600, fontSize: 13 }}>{payload[0].payload.name}</div>
           <div className="ch-display" style={{ color: payload[0].payload.fill, fontWeight: 800, fontSize: 22, marginTop: 2 }}>
-            {payload[0].payload.value.toLocaleString("en-IN")}{" "}
+            {(payload[0].payload.type === "delta" ? Math.abs(payload[0].payload.value) : payload[0].payload.value).toLocaleString("en-IN")}{" "}
             <span style={{ fontSize: 11, fontWeight: 500 }}>{unit}</span>
           </div>
           <div className="ch-data" style={{ color: "rgba(255,255,255,.62)", fontSize: 10.5, lineHeight: 1.6, marginTop: 6 }}>
@@ -1577,125 +1874,141 @@ function ChartFrame({ title, unit, kicker, children, height = 320, footnote }) {
 
 const axisStyle = { fontSize: 11, fill: C.mute, fontFamily: FONT_DATA };
 
+const SEASON_HEADLINE = [
+  {
+    label: "GHG emission reduction", value: 58, prefix: "~ ", suffix: "%", tone: C.field,
+    detail: [
+      ["~771", "kg CO₂e/MT of paddy reduced · including nursery"],
+      ["~785", "kg CO₂e/MT of paddy reduced · excluding nursery (~59%)"],
+    ],
+  },
+  { label: "Water savings per MT", value: 67, prefix: "~ ", suffix: "%", tone: C.water },
+  { label: "Nitrogen reduction", value: 29,prefix: "~ ", suffix: "%", tone: C.clay },
+];
+
+function SeasonHeadlineResults() {
+  return (
+    <div className="mb-10 md:mb-12">
+      <Eyebrow color={C.husk}>Season headline results</Eyebrow>
+      <div className="grid gap-5 sm:grid-cols-3 mt-4">
+        {SEASON_HEADLINE.map((s) => (
+          <motion.div
+            key={s.label}
+            variants={vFadeUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.3 }}
+            className="p-6 rounded-lg h-full"
+            style={{ background: s.detail ? C.ink : "#fff", border: s.detail ? "none" : `1px solid ${C.line}` }}
+          >
+            <div className="ch-display" style={{ color: s.detail ? "#fff" : s.tone, fontWeight: 800, fontSize: "clamp(2rem,4.4vw,2.6rem)" }}>
+              <Counter value={s.value} prefix={s.prefix || ""} suffix={s.suffix || ""} />
+            </div>
+            <div className="mt-1" style={{ fontWeight: 600, fontSize: 14.5, color: s.detail ? "rgba(255,255,255,.85)" : C.ink }}>{s.label}</div>
+            {s.detail && (
+              <div className="mt-4 space-y-2 pt-4" style={{ borderTop: "1px solid rgba(255,255,255,.15)" }}>
+                {s.detail.map(([v, l]) => (
+                  <div key={v} className="ch-data" style={{ fontSize: 10.5, color: "rgba(255,255,255,.6)", lineHeight: 1.5 }}>
+                    <span style={{ color: C.leaf, fontWeight: 700 }}>{v}</span> {l}
+                  </div>
+                ))}
+              </div>
+            )}
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function ResultsSection() {
   return (
     <Section id="results" tone="tint">
       <SectionHead
         index="09"
-        title="Quantified, sampled, audited"
-        lede="Grow Indigo started the season with 419 farmers; procurement completed for 249, and the square-root sampling method selected 16 of them for measurement. GHG quantification ran post-harvest on the Cool Farm Platform V3.0 and was reviewed by a third-party auditor."
+        title="Sampled. Quantified. Audited"
+        lede="Grow Indigo started the season with 300 farmers; completed procurement for 139, and farmers were selected for quantification. GHG quantification ran post-harvest on the Cool Farm Platform v3.0."
       />
+
+      <SeasonHeadlineResults />
 
       <div className="grid gap-5 lg:grid-cols-2">
         <ChartFrame
-          kicker="Chart 1 · Emissions intensity"
-          title="Well over half the carbon in every tonne"
+          kicker="Emissions intensity"
+          title="58% less carbon in every tonne"
           unit="kg CO₂e per MT of paddy"
-          footnote="Two project figures are shown because quantification runs with and without the nursery stage. The headline 58% uses the corrected nursery emission of 13.40 kg CO₂e/MT."
+          height={360}
+          footnote="Two project figures are shown because quantification runs with and without the nursery stage. The headline 58% uses the corrected nursery emission of ~13 kg CO₂e/MT of paddy."
         >
-          <BarChart data={EMISSIONS} margin={{ top: 10, right: 10, left: -12, bottom: 34 }}>
-            <CartesianGrid strokeDasharray="2 4" stroke={C.line} vertical={false} />
-            <XAxis dataKey="name" tick={axisStyle} interval={0} angle={-12} textAnchor="end" height={54} axisLine={{ stroke: C.line }} tickLine={false} />
+          <BarChart data={EMISSIONS_WATERFALL} margin={{ top: 10, right: 10, left: -12, bottom: 46 }}>
+            <XAxis dataKey="name" tick={EMISSIONS_AXIS_TICK} interval={0} height={66} axisLine={{ stroke: C.line }} tickLine={false} />
             <YAxis tick={axisStyle} axisLine={false} tickLine={false} domain={[0, 1400]} />
-            <Tooltip content={<ChartTip unit="kg CO₂e/MT" />} cursor={{ fill: "rgba(14,91,51,.06)" }} />
-            <ReferenceLine y={1325} stroke={C.husk} strokeDasharray="4 4" />
-            <Bar dataKey="value" radius={[4, 4, 0, 0]} animationDuration={1400} animationEasing="ease-out">
-              {EMISSIONS.map((e) => <Cell key={e.name} fill={e.fill} />)}
-              <LabelList dataKey="value" position="top" style={{ fontSize: 12, fontFamily: FONT_DATA, fill: C.ink, fontWeight: 600 }} />
+            <Tooltip content={<ChartTip unit="kg CO₂e/MT of paddy" />} cursor={{ fill: "rgba(14,91,51,.06)" }} />
+            <Bar dataKey="top" shape={WaterfallBarShape} animationDuration={1400} animationEasing="ease-out">
+              <LabelList dataKey="top" content={waterfallLabelContent(EMISSIONS_WATERFALL)} />
             </Bar>
           </BarChart>
         </ChartFrame>
 
         <ChartFrame
-          kicker="Chart 2 · Nitrogen use"
-          title="Less urea, same crop"
+          kicker="Nitrogen use"
+          title="Less fertiliser, same crop"
           unit="kg nitrogen per acre"
-          footnote="Driven primarily by Oorjit granules' fertiliser-use efficiency combined with AWD irrigation, and supported by temporary urea market shortages. Evidence indicates AWD enables a further ~13% nitrogen reduction without compromising performance (P.V.M. et al., 2025)."
+          height={360}
+          footnote="Driven primarily by Oorjit granules' fertiliser-use efficiency combined with AWD irrigation, and supported by temporary urea market shortages."
         >
-          <BarChart data={NITROGEN} margin={{ top: 10, right: 10, left: -12, bottom: 34 }}>
-            <CartesianGrid strokeDasharray="2 4" stroke={C.line} vertical={false} />
-            <XAxis dataKey="name" tick={axisStyle} interval={0} angle={-12} textAnchor="end" height={54} axisLine={{ stroke: C.line }} tickLine={false} />
-            <YAxis tick={axisStyle} axisLine={false} tickLine={false} domain={[0, 70]} />
+          <BarChart data={NITROGEN_WATERFALL} margin={{ top: 10, right: 10, left: -12, bottom: 46 }}>
+            <XAxis dataKey="name" tick={NITROGEN_AXIS_TICK} interval={0} height={66} axisLine={{ stroke: C.line }} tickLine={false} />
+            <YAxis tick={axisStyle} axisLine={false} tickLine={false} domain={[0, 85]} />
             <Tooltip content={<ChartTip unit="kg N/acre" />} cursor={{ fill: "rgba(14,91,51,.06)" }} />
-            <ReferenceLine y={48} stroke={C.husk} strokeDasharray="4 4" label={{ value: "PJTSAU dose", position: "insideTopRight", style: { fontSize: 10, fill: C.husk, fontFamily: FONT_DATA } }} />
-            <Bar dataKey="value" radius={[4, 4, 0, 0]} animationDuration={1400} animationBegin={200}>
-              {NITROGEN.map((e) => <Cell key={e.name} fill={e.fill} />)}
-              <LabelList dataKey="value" position="top" style={{ fontSize: 12, fontFamily: FONT_DATA, fill: C.ink, fontWeight: 600 }} />
+            <Bar dataKey="top" shape={WaterfallBarShape} animationDuration={1400} animationBegin={200}>
+              <LabelList dataKey="top" content={waterfallLabelContent(NITROGEN_WATERFALL)} />
             </Bar>
           </BarChart>
-        </ChartFrame>
-
-        <ChartFrame
-          kicker="Supporting indicator"
-          title="Water per kilogram of paddy"
-          unit="litres per kg"
-          height={230}
-          footnote="Baseline of ~3,250 litres/kg; the project figure is derived from the ~67% saving reported for AWD adoption."
-        >
-          <BarChart data={WATER} layout="vertical" margin={{ top: 4, right: 44, left: 96, bottom: 4 }}>
-            <CartesianGrid strokeDasharray="2 4" stroke={C.line} horizontal={false} />
-            <XAxis type="number" tick={axisStyle} axisLine={false} tickLine={false} domain={[0, 3600]} />
-            <YAxis type="category" dataKey="name" tick={axisStyle} axisLine={false} tickLine={false} width={92} />
-            <Tooltip content={<ChartTip unit="litres/kg" />} cursor={{ fill: "rgba(30,136,168,.07)" }} />
-            <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={30} animationDuration={1400}>
-              {WATER.map((e) => <Cell key={e.name} fill={e.fill} />)}
-              <LabelList dataKey="value" position="right" style={{ fontSize: 12, fontFamily: FONT_DATA, fill: C.ink, fontWeight: 600 }} />
-            </Bar>
-          </BarChart>
-        </ChartFrame>
-
-        <ChartFrame
-          kicker="Supporting indicator"
-          title="Yield, season on season"
-          unit="MT per acre, average"
-          height={230}
-          footnote="A ~7.4% decline attributed to seasonal factors - irregular monsoon distribution, untimely rainfall, temporary water stress, high temperatures at flowering or grain filling, cloudy weather and lodging - alongside agronomic variation in transplanting dates, varietal performance, pest pressure, weed competition, nutrient timing and soil fertility."
-        >
-          <LineChart data={YIELD} margin={{ top: 16, right: 24, left: -18, bottom: 8 }}>
-            <CartesianGrid strokeDasharray="2 4" stroke={C.line} vertical={false} />
-            <XAxis dataKey="name" tick={axisStyle} axisLine={{ stroke: C.line }} tickLine={false} />
-            <YAxis tick={axisStyle} axisLine={false} tickLine={false} domain={[2, 3]} />
-            <Tooltip content={<ChartTip unit="MT" />} />
-            <Line type="linear" dataKey="value" stroke={C.husk} strokeWidth={2.5} dot={{ r: 5, fill: C.husk, strokeWidth: 0 }} activeDot={{ r: 7 }} animationDuration={1400}>
-              <LabelList dataKey="value" position="top" style={{ fontSize: 12, fontFamily: FONT_DATA, fill: C.ink, fontWeight: 600 }} />
-            </Line>
-          </LineChart>
         </ChartFrame>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2 mt-12">
+      <div className="mt-5 flex justify-center">
+        <div className="w-full lg:w-1/2 lg:pl-2.5">
+          <ChartFrame
+            kicker="Water savings"
+            title="67% less water per Kg of paddy"
+            unit="litres per kg"
+            height={320}
+            footnote="Baseline of ~3,250 litres/kg; the project figure is derived from the ~67% saving reported for AWD adoption."
+          >
+            <BarChart data={WATER_WATERFALL} margin={{ top: 10, right: 10, left: -12, bottom: 46 }}>
+              <XAxis dataKey="name" tick={WATER_AXIS_TICK} interval={0} height={66} axisLine={{ stroke: C.line }} tickLine={false} />
+              <YAxis tick={axisStyle} axisLine={false} tickLine={false} domain={[0, 3600]} />
+              <Tooltip content={<ChartTip unit="litres/kg" />} cursor={{ fill: "rgba(30,136,168,.07)" }} />
+              <Bar dataKey="top" shape={WaterfallBarShape} animationDuration={1400}>
+                <LabelList dataKey="top" content={waterfallLabelContent(WATER_WATERFALL)} />
+              </Bar>
+            </BarChart>
+          </ChartFrame>
+        </div>
+      </div>
+
+      <div className="mt-12">
         <Reveal>
-          <div className="p-7 rounded-lg h-full" style={{ background: "#fff", border: `1px solid ${C.line}` }}>
+          <div className="p-7 rounded-lg" style={{ background: "#fff", border: `1px solid ${C.line}` }}>
             <Eyebrow>How the nursery stage was handled</Eyebrow>
             <p className="mt-4" style={{ fontSize: 14.5, lineHeight: 1.75, color: C.mute }}>
-              Farmers typically raise seedlings on ~10% of their land for ~21 days. With average landholding in the
-              project at ~9.1 acres, that is ~0.9 acres per farmer. Methane emissions during cultivation are calculated
-              per day, so nursery emissions were estimated over ~0.9 acres × ~21 days, then adjusted by a ~33%
-              correction factor because seedlings produce far less biomass than main-field crops.
+              For the nursery stage, farmers typically raise seedlings on ~10% of their total land area for an average
+              duration of ~21 days. Given that average landholding in the project is ~6 acres, the nursery area is
+              ~1 acre per farmer. Methane emissions during cultivation are calculated on a per-day basis, and
+              nursery emissions are estimated for ~1 acre × ~21 days. A ~33% correction factor is applied to
+              reflect lower methane generation in nurseries, as seedlings produce significantly less biomass than
+              main-field crops.
             </p>
             <Stagger className="mt-5 grid grid-cols-3 gap-3" stagger={0.1}>
-              {[["20.09", "gross nursery"], ["13.40", "after correction"], ["771.47", "net reduction"]].map(([v, l]) => (
+              {[["~20", "gross nursery"], ["~13", "after correction"], ["~771", "net reduction"]].map(([v, l]) => (
                 <motion.div key={l} variants={vScaleIn} whileHover={{ y: -4 }} className="p-3 rounded" style={{ background: C.paperDim }}>
                   <div className="ch-display" style={{ fontWeight: 800, color: C.field, fontSize: "1.35rem" }}>{v}</div>
-                  <div className="ch-data" style={{ fontSize: 9.5, color: C.mute, marginTop: 2 }}>{l} · kg CO₂e/MT</div>
+                  <div className="ch-data" style={{ fontSize: 9.5, color: C.mute, marginTop: 2 }}>{l} · kg CO₂e/MT of paddy</div>
                 </motion.div>
               ))}
             </Stagger>
-          </div>
-        </Reveal>
-        <Reveal delay={0.11}>
-          <div className="p-7 rounded-lg h-full" style={{ background: C.field }}>
-            <Eyebrow color={C.husk}>Nitrogen use optimisation</Eyebrow>
-            <p className="mt-4" style={{ fontSize: 14.5, lineHeight: 1.75, color: "rgba(255,255,255,.85)" }}>
-              Application fell from the university-recommended 48 kg N/acre (PJTSAU) to 43.7 kg N/acre - a 9%
-              reduction - driven primarily by Oorjit granules' enhanced fertiliser-use efficiency combined with AWD
-              irrigation, and further supported by temporary urea market shortages. Against farmers' business-as-usual
-              62.4 kg N/acre, the project rate is 30% lower.
-            </p>
-            <p className="ch-data mt-5 pt-4" style={{ fontSize: 11, lineHeight: 1.7, color: "rgba(255,255,255,.6)", borderTop: "1px solid rgba(255,255,255,.18)" }}>
-              Evidence indicates AWD enables a further ~13% nitrogen reduction without compromising system performance,
-              due to improved nitrogen-use efficiency (P.V.M. et al., 2025).
-            </p>
           </div>
         </Reveal>
       </div>
@@ -1715,24 +2028,25 @@ const TIMELINE = [
     ["Nursery planting", 1, 1, "Seedlings raised on ~10% of land for ~21 days"],
     ["Transplanting", 2, 1, "Post-emergence herbicide applied within 3 days of transplanting"],
   ]],
-  ["Regen interventions", C.water, [
-    ["AWD pipe installed", 3, 1, "10–15 days after transplanting, across all project plots"],
+  ["Farmer Engagement", C.clay, [
+    ["1st VLM", 3, 1, "Demonstration of pani pipe installation"],
+    ["2nd VLM", 4, 1, "Oorjit and Grow Phos application"],
+    ["3rd & 4th VLM", 5, 2, "Residue management and season review"],
+  ]],
+  ["Regen Interventions", C.water, [
+    ["Pani pipe installed", 3, 1, "10–15 days after transplanting, across all project plots"],
     ["AWD monitoring", 3, 3, "Manual water-level measurement guiding every irrigation cycle"],
   ]],
+  ["Field monitoring", C.waterDeep, [["Data collection for agronomy, fertiliser & water", 3, 5, "Captured in FieldKhatta app with geofenced field boundaries"]]],
   ["Nutrition", C.field, [
     ["1st split", 3, 1, "~15 DAT · urea + DAP with 6 kg/acre Oorjit and 20 kg Grow Phos"],
     ["2nd split", 5, 1, "~65 DAT · panicle initiation, typically with fungicide and insecticide"],
     ["3rd split", 6, 1, "~75 DAT · supports grain development"],
   ]],
-  ["Harvest", C.husk, [["Harvest", 6, 1, "Crop matured through the season, harvest from mid-October onward"]]],
-  ["Field monitoring", C.waterDeep, [["Data collection for agronomy, fertiliser & water", 3, 5, "Captured in FieldKhata with geofenced field boundaries"]]],
-  ["Farmer engagement", C.clay, [
-    ["1st VLM", 3, 1, "Demonstration of AWD pipe installation"],
-    ["2nd VLM", 4, 1, "Oorjit and Grow Phos application"],
-    ["3rd & 4th VLM", 5, 2, "Residue management and season review"],
+  ["Procurement", C.mute, [
+    ["Procurement & traceability", 7, 1, "Farm-to-mill audit trail captured in S3 Sutra"],
   ]],
-  ["Procurement & compliance", C.mute, [
-    ["Procurement & traceability", 6, 2, "Farm-to-mill audit trail captured in S3 Sutra"],
+  ["GHG quantification & Third party verification", "#B34936", [
     ["Audit & report submission", 8, 1, "Independent verification and final delivery"],
   ]],
 ];
@@ -1815,7 +2129,7 @@ function Timeline() {
             transition={{ duration: 0.22, ease: EASE }}
             style={{ display: "inline-block" }}
           >
-            {tip || "HOVER ANY BAR FOR THE OPERATIONAL DETAIL"}
+            {tip || ""}
           </motion.span>
         </AnimatePresence>
       </div>
@@ -1828,24 +2142,24 @@ function SeasonSection() {
     <Section id="season">
       <SectionHead
         index="10"
-        title="A season, operation by operation"
-        lede="The rice production cycle ran from nursery establishment through transplanting to harvest, with a structured sequence of agronomic operations, regenerative interventions and nutrient applications timed to crop stage."
+        title="Activity Timeline"
+        lede="The paddy production cycle ran from nursery establishment through transplanting to harvest, with a structured sequence of agronomic operations, regenerative interventions and nutrient applications timed to crop stage."
       />
       <Reveal><Timeline /></Reveal>
 
       <div className="grid gap-6 lg:grid-cols-2 mt-10">
         <Stagger className="space-y-4" stagger={0.1} style={{ fontSize: 14.5, lineHeight: 1.75, color: C.mute }}>
           <motion.p variants={vFadeUp}>
-            Seedlings were transplanted mid-season and, within the first three days, farmers applied a post-emergence
-            herbicide - Bispyribac Sodium 10SC, or Fenoxaprop-p-ethyl 6.7EC + Metsulfuron Methyl 10WP + Chlorimuron
-            Ethyl 10WP - for early weed suppression. Between 10–15 days after transplanting, AWD field pipes were
-            installed across all project plots and manual water-level measurement began.
+            Seedlings were transplanted mid-season, farmers applied a post-emergence herbicide - Bispyribac Sodium
+            10SC, or Triafamone + Ethoxysulfuron, 20% + 10% WG, or Pretilachlor 50% EC or Pyrazosulfuron-ethyl 70%
+            WDG - for early weed suppression. Between 10–15 days after transplanting, pani pipes were installed
+            across all project plots and manual water-level measurement began.
           </motion.p>
           <motion.p variants={vFadeUp}>
             At ~15 DAT (tillering), farmers applied the first split of urea and DAP alongside 6 kg/acre of Oorjit
             granules and 20 kg of Grow Phos, with support from Grow Indigo's field team. Around ~55 DAT a second
-            herbicide went on where weed pressure required it. The second urea split followed at ~65 DAT (panicle
-            initiation), typically with fungicide and insecticide; the third and final split at ~75 DAT supported grain
+            herbicide went on where weed pressure required it. The second urea split followed at ~35-65 DAT,
+            typically with fungicide and insecticide; the third and final split at ~75 DAT supported grain
             development.
           </motion.p>
           <motion.p variants={vFadeUp}>
@@ -1886,8 +2200,7 @@ function SeasonSection() {
    13 · ECONOMICS FOR FARMERS
 ---------------------------------------------------------------------------- */
 const SHORT_TERM = [
-  ["Fertiliser cost optimisation", "Oorjit Granules and Grow Phos improved nutrient uptake and reduced reliance on synthetic fertilisers. Supplied free of cost, so farmers saw no added expense and a ~9% reduction per acre in nitrogen fertiliser."],
-  ["No investment for AWD infrastructure", "AWD pipes were supplied, removing upfront cost and enabling immediate adoption."],
+  ["Fertiliser cost optimisation", "Oorjit Granules and Grow Phos improved nutrient uptake and reduced reliance on synthetic fertilisers. Supplied free of cost, so farmers saw no added expense and a ~29% reduction per acre in nitrogen fertiliser."],
   ["Reduced irrigation & energy costs", "Lower irrigation frequency cut electricity and diesel for pumping - direct savings on power and fuel."],
   ["Residue monetisation", "CRM support let farmers sell paddy straw to local gaushalas - additional income while avoiding residue-management costs."],
 ];
@@ -1895,7 +2208,7 @@ const SHORT_TERM = [
 const LONG_TERM = [
   ["Improved soil organic carbon", "Repeated use of biological inputs and AWD raises SOC over time, improving nutrient retention and supporting stable, improved yields."],
   ["Reduced production risk", "Regenerative practices strengthen resilience to water stress, erratic rainfall and pest pressure, helping farmers manage climate and market risk."],
-  ["Stronger market access", "Traceable, low-emission rice opens premium procurement linkages with sustainability-focused buyers like Nestle."],
+  ["Stronger market access", "Traceable, low-emission paddy opens premium procurement linkages with sustainability-focused buyers like Nestlé."],
   ["Community capacity built", "Knowledge of climate-smart practices stays with farmers, multiplying the benefit across seasons and neighbours."],
 ];
 
@@ -1939,22 +2252,21 @@ function EconomicsSection() {
 }
 
 /* ----------------------------------------------------------------------------
-   14 · ALIGNMENT WITH Nestle RESPONSIBLE SOURCING
+   14 · ALIGNMENT WITH Nestlé RESPONSIBLE SOURCING
    Hovering a lever moves a shared layoutId highlight onto its pillar, so the
    mapping is demonstrated by the motion rather than asserted by an arrow.
 ---------------------------------------------------------------------------- */
 const LEVERS = [
   ["Alternate Wetting & Drying", "~67% water savings · CH₄ reduction", 0],
-  ["Oorjit, Grow Phos + CRM", "9% N reduction · no field burning", 2],
-  ["FieldKhata + S3 Sutra", "End-to-end digital audit trail", 3],
+  ["Oorjit, Grow Phos + CRM", "29% N reduction · no field burning", 0],
+  ["FieldKhatta + S3 Sutra", "End-to-end digital audit trail", 2],
   ["Farmer capacity building", "VLMs, KA support, vernacular training", 1],
 ];
 
 const PILLARS = [
-  ["Pillar 01", "Climate Action & Net Zero", "AWD reduces methane formation at source; optimised nitrogen lowers N₂O. A direct, verifiable Scope 3 insetting contribution.", C.field],
-  ["Pillar 02", "Water Stewardship & Livelihoods", "~67% water savings free up aquifer capacity; pumping and fertiliser cuts plus straw monetisation lift farm-gate margins.", C.water],
-  ["Pillar 03", "Land, Forests & Biodiversity", "Oorjit and Grow Phos improve SOC and soil biology; CRM ends open field burning, protecting soil biota and air quality.", C.leaf],
-  ["Pillar 04", "Traceability & Human Rights", "FieldKhata and S3 Sutra build a geo-tagged, audit-ready record; the engagement model preserves voluntary participation.", C.husk],
+  ["Pillar 01", "Environment", "Climate · Water · Soil · Biodiversity - AWD reduces methane formation at source; optimised nitrogen, Oorjit and Grow Phos improve soil biology; CRM ends open field burning, protecting soil biota and air quality.", C.field],
+  ["Pillar 02", "Human Rights", "Farmer wellbeing · Safe practices · Inclusion - VLMs, Kisan Advisor support and vernacular training build farmer capability while preserving voluntary participation.", C.leaf],
+  ["Pillar 03", "Transparency", "Traceability · Digital records · Verification - FieldKhatta and S3 Sutra build a geo-tagged, audit-ready record from farm to mill.", C.husk],
 ];
 
 function SourcingSection() {
@@ -1964,8 +2276,8 @@ function SourcingSection() {
       <SectionHead
         index="12"
         tone="dark"
-        title="Mapped to Nestle's Responsible Sourcing Standard"
-        lede="The standard sets out how the supply chain is expected to operate - environmental performance, human-rights protection, traceability and farmer livelihoods. Every intervention deployed in Nizamabad maps onto a pillar, and every metric here supports Nestle's Scope 3 and ESG disclosure obligations."
+        title="Mapped to Nestlé's Responsible Sourcing Standard"
+        lede="The standard sets out how the supply chain is expected to operate - environmental performance, human-rights protection, traceability and farmer livelihoods. Every intervention deployed in Nizamabad maps onto a pillar, and every metric here supports Nestlé's Responsible Sourcing."
       />
       <LayoutGroup id="sourcing">
         <div className="grid gap-6 lg:grid-cols-2">
@@ -1995,10 +2307,10 @@ function SourcingSection() {
                     style={{ border: "1px solid", cursor: "pointer" }}
                   >
                     <motion.div animate={{ color: on ? C.ink : "#fff" }} style={{ fontWeight: 600, fontSize: 15 }}>{name}</motion.div>
-                    <motion.div className="ch-data mt-1" animate={{ color: on ? C.mute : "rgba(255,255,255,.55)" }} style={{ fontSize: 11 }}>{sub}</motion.div>
                     <div className="ch-data mt-2" style={{ fontSize: 10, color: PILLARS[target][3], letterSpacing: ".1em" }}>
                       → {PILLARS[target][0].toUpperCase()}
                     </div>
+                    <motion.div className="ch-data mt-1" animate={{ color: on ? C.mute : "rgba(255,255,255,.55)" }} style={{ fontSize: 11 }}>{sub}</motion.div>
                   </motion.div>
                 );
               })}
@@ -2049,7 +2361,7 @@ function SourcingSection() {
           <Eyebrow color={C.husk}>Insight</Eyebrow>
           <Stagger className="mt-5 grid gap-6 md:grid-cols-3" stagger={0.12} style={{ fontSize: 14, lineHeight: 1.75, color: "rgba(255,255,255,.75)" }}>
             <motion.p variants={vFadeUp}>
-              AWD alone delivers eight distinct ESG benefits. That breadth lets Nestle communicate the work credibly
+              AWD alone delivers eight distinct ESG benefits. That breadth lets Nestlé communicate the work credibly
               across climate, water, biodiversity and rural-development pillars - without overstating any single claim,
               and while staying inside the bounds of the field evidence.
             </motion.p>
@@ -2060,9 +2372,9 @@ function SourcingSection() {
               guidance.
             </motion.p>
             <motion.p variants={vFadeUp}>
-              The programme is a working template for how Responsible Sourcing commitments translate into measurable,
+              The program is a working template for how Responsible Sourcing commitments translate into measurable,
               defensible field outcomes - providing both the operational learnings and the disclosure evidence needed
-              to scale climate-aligned procurement across the rice category, and beyond.
+              to scale climate-aligned procurement across the paddy category, and beyond.
             </motion.p>
           </Stagger>
         </div>
@@ -2072,122 +2384,21 @@ function SourcingSection() {
 }
 
 /* ----------------------------------------------------------------------------
-   15 · FIELD EVIDENCE (Annexures 1–10)
-   Cards reveal in batched rows; the geotag stamp lifts in on hover. Swap
-   <EvidenceScene/> for an <img src> and the stamp still sits correctly.
+   15 · FIELD EVIDENCE (Annexures 1–8)
+   Cards reveal in batched rows. Photos already carry a baked-in geotag
+   stamp; scans use "contain" so no part of the document is cropped off.
 ---------------------------------------------------------------------------- */
 const EVIDENCE = [
-  { n: 1, title: "Village-level meetings with farmers", scene: "meeting", place: "Kunipoor, Telangana, India", coords: "18.511113°N 77.940613°E", when: "Tue, 16/12/2025 10:27 AM GMT +05:30", caption: "Farmers attending a VLM with the field team - four VLMs were held across the project period." },
-  { n: 2, title: "Stakeholder feedback form", scene: "form", place: "Ghanpur, Telangana, India", coords: "Signed at village level", when: "22-01-26", caption: "Bilingual Telugu/English feedback form. Respondent rated the programme in the top band and noted Grow Phos and Oorjit performed well." },
-  { n: 3, title: "Farmer diary", scene: "form", place: "Ghanpur, Telangana, India", coords: "Farmer ID 1f22356e", when: "Rabi 2026", caption: "Socio-economic profile plus a dated water-management log: irrigation date, method, source and re-irrigation frequency for every event." },
-  { n: 4, title: "Feedback form (second respondent)", scene: "form", place: "Ghanpur, Telangana, India", coords: "Stakeholder feedback", when: "22-01-26", caption: "Second signed stakeholder feedback record retained in the audit pack." },
-  { n: 5, title: "Nestle team field visits", scene: "team", place: "Srinagar, Nizamabad, Telangana", coords: "18.537088°N 77.925309°E", when: "Mon, 25/05/2026 10:43 AM GMT +05:30", caption: "Nestle representatives in-field with the Grow Indigo team and participating farmers." },
-  { n: 6, title: "AWD pipes during monitoring", scene: "pipe", place: "Ghanpur, Telangana, India", coords: "18.573399°N 77.927099°E", when: "Thu, 05/02/2026 12:00 PM GMT +05:30", caption: "Perforated field tube with the measuring scale in place - water depth read directly against the gauge." },
-  { n: 7, title: "Harvest in action", scene: "harvest", place: "Bhavanipet, Telangana, India", coords: "18.580134°N 77.925124°E", when: "Mon, 23/03/2026 09:33 AM GMT +05:30", caption: "Combine harvesting a project plot in the Bodhan–Chandur road cluster." },
-  { n: 8, title: "Baled crop residue, geo-tagged", scene: "bales", place: "Ghanpur, Telangana, India", coords: "18.569495°N 77.937344°E", when: "Tue, 19/05/2026 10:49 AM GMT +05:30", caption: "Straw baled and stacked instead of burnt - 833 acres against a 300-acre target." },
-  { n: 9, title: "Grains ready to be transported", scene: "grain", place: "Nizamabad, Telangana, India", coords: "18.522364°N 77.868633°E", when: "Mon, 20/04/2026 07:16 AM GMT +05:30", caption: "Procurement staging at Pedda Kalava Katta ahead of movement to the empanelled miller." },
-  { n: 10, title: "Procurement form and receipt", scene: "form", place: "Varni, Nizamabad", coords: "Vehicle AP29TB1278 · Paddy 36,750 kg net", when: "12-04-2026", caption: "Weighbridge slip, Form of Certificate (X) countersigned by the village officer, and the miller's payment voucher - the closing links in the farm-to-mill chain." },
+  { n: 1, title: "Village-level meetings with farmers", img: a1, fit: "cover", position: "center 22%", caption: "Farmers attending a VLM with the field team - four VLMs were held across the project period." },
+  { n: 2, title: "Stakeholder feedback form", img: a2, fit: "contain", caption: "Bilingual Telugu/English feedback form. Respondent rated the program in the top band and noted Grow Phos and Oorjit performed well." },
+  { n: 3, title: "Farmer diary", img: a3, fit: "contain", caption: "Socio-economic profile plus a dated water-management log: irrigation date, method, source and re-irrigation frequency for every event." },
+  { n: 4, title: "Pani pipes during monitoring", img: kolluriGangaramAwd, fit: "contain", caption: "Perforated field tube with the measuring scale in place - water depth read directly against the gauge." },
+  { n: 5, title: "Weekly WhatsApp messages sent to farmers", img: photoWhatsappMsg, fit: "contain", caption: "Farmers received messages on a weekly basis about key practices and their benefits, including AWD, regenerative agriculture, the use of biological inputs, reduced reliance on chemical pesticides & chemicals, and CRM." },
+  { n: 6, title: "Baled crop residue, geo-tagged", img: a8, fit: "cover", position: "center 25%", caption: "Straw baled and stacked instead of burnt - 833 acres against a 300 acres target." },
+  { n: 7, title: "Grains ready to be transported", img: a9, fit: "cover", position: "center 38%", caption: "Procurement staging at Pedda Kalava Katta ahead of movement to the empanelled miller." },
+  { n: 8, title: "Form X", img: a10, fit: "contain", caption: "Weighbridge slip, Form X countersigned by the village officer, and the miller's payment voucher - the closing links in the farm-to-mill chain." },
+  { n: 9, title: "Independent Third-Party audit", img: a5, fit: "cover", position: "center 18%", caption: "Third Party auditor in field with the Grow Indigo team and participating farmers." },
 ];
-
-function EvidenceScene({ kind }) {
-  const base = { width: "100%", height: 168, display: "block" };
-  const scenes = {
-    meeting: (
-      <svg viewBox="0 0 320 168" style={base}>
-        <rect width="320" height="168" fill="#123B2A" />
-        <rect y="110" width="320" height="58" fill="#0C2A1E" />
-        {Array.from({ length: 16 }).map((_, i) => (
-          <g key={i}>
-            <circle cx={30 + (i % 8) * 36} cy={112 + Math.floor(i / 8) * 26} r="8" fill={i % 3 ? "#2E6B4C" : "#3C7F5A"} />
-            <rect x={22 + (i % 8) * 36} y={122 + Math.floor(i / 8) * 26} width="16" height="18" rx="4" fill={i % 2 ? "#245A40" : "#2E6B4C"} />
-          </g>
-        ))}
-        <rect x="120" y="34" width="90" height="52" rx="3" fill="#EEF3EC" opacity=".9" />
-        <circle cx="76" cy="66" r="11" fill={C.husk} />
-        <rect x="66" y="78" width="20" height="26" rx="5" fill={C.husk} opacity=".8" />
-      </svg>
-    ),
-    pipe: (
-      <svg viewBox="0 0 320 168" style={base}>
-        <rect width="320" height="168" fill="#16452F" />
-        {Array.from({ length: 22 }).map((_, i) => (
-          <path key={i} d={`M${8 + i * 15} 168 q6 -60 2 -92`} stroke={C.leaf} strokeWidth="2" fill="none" opacity=".55" />
-        ))}
-        <ellipse cx="160" cy="104" rx="58" ry="26" fill="#E8EDE6" />
-        <ellipse cx="160" cy="104" rx="44" ry="18" fill="#2E4A3C" />
-        <rect x="150" y="34" width="20" height="76" rx="3" fill="#fff" opacity=".92" />
-        {Array.from({ length: 8 }).map((_, i) => (
-          <line key={i} x1="152" y1={44 + i * 9} x2="162" y2={44 + i * 9} stroke={C.mute} strokeWidth="1" />
-        ))}
-        <rect x="150" y="88" width="20" height="22" fill={C.water} opacity=".7" />
-      </svg>
-    ),
-    bales: (
-      <svg viewBox="0 0 320 168" style={base}>
-        <rect width="320" height="168" fill="#D9C089" />
-        <rect y="128" width="320" height="40" fill="#C7AC76" />
-        {[[30, 96], [86, 96], [142, 96], [58, 62], [114, 62], [86, 28]].map(([x, y], i) => (
-          <g key={i}>
-            <rect x={x} y={y} width="52" height="32" rx="3" fill="#E3CF9C" stroke="#B79B64" />
-            <line x1={x + 14} y1={y} x2={x + 14} y2={y + 32} stroke="#B79B64" />
-            <line x1={x + 36} y1={y} x2={x + 36} y2={y + 32} stroke="#B79B64" />
-          </g>
-        ))}
-        <rect x="228" y="60" width="60" height="72" rx="4" fill="#5B8FB0" opacity=".6" />
-      </svg>
-    ),
-    harvest: (
-      <svg viewBox="0 0 320 168" style={base}>
-        <rect width="320" height="168" fill="#CBB55E" />
-        <rect y="0" width="320" height="52" fill="#9FBBA0" />
-        {Array.from({ length: 40 }).map((_, i) => (
-          <path key={i} d={`M${4 + i * 8} 168 q3 -30 0 -46`} stroke="#B79A3E" strokeWidth="2" fill="none" opacity=".7" />
-        ))}
-        <rect x="180" y="40" width="76" height="34" rx="4" fill="#B0483C" />
-        <rect x="248" y="50" width="26" height="24" rx="3" fill="#8E3A31" />
-        <circle cx="200" cy="78" r="9" fill="#3A3A3A" />
-        <circle cx="240" cy="78" r="9" fill="#3A3A3A" />
-      </svg>
-    ),
-    grain: (
-      <svg viewBox="0 0 320 168" style={base}>
-        <rect width="320" height="168" fill="#B99A6B" />
-        <rect y="112" width="320" height="56" fill="#A98A5D" />
-        <path d="M100 132 q60 -74 120 0 z" fill="#E0C98F" />
-        <path d="M40 136 q34 -40 68 0 z" fill="#D8BE80" />
-        {[[24, 108], [46, 108], [268, 106], [288, 106]].map(([x, y], i) => (
-          <rect key={i} x={x} y={y} width="18" height="30" rx="3" fill="#8E7448" />
-        ))}
-      </svg>
-    ),
-    team: (
-      <svg viewBox="0 0 320 168" style={base}>
-        <rect width="320" height="168" fill="#8FA98A" />
-        <rect y="96" width="320" height="72" fill="#7A6B4F" />
-        {[0, 1, 2, 3, 4, 5].map((i) => (
-          <g key={i}>
-            <circle cx={38 + i * 50} cy="66" r="12" fill="#E8D5B5" />
-            <rect x={26 + i * 50} y="82" width="24" height="46" rx="7" fill={[C.field, "#2E6B4C", "#E8EDE6", "#1E88A8", C.field, "#E8EDE6"][i]} />
-          </g>
-        ))}
-      </svg>
-    ),
-    form: (
-      <svg viewBox="0 0 320 168" style={base}>
-        <rect width="320" height="168" fill="#E9E6DC" />
-        <rect x="34" y="14" width="252" height="140" fill="#FBFAF6" stroke="#CFC9B8" />
-        <rect x="52" y="30" width="120" height="8" rx="2" fill={C.field} opacity=".7" />
-        <rect x="52" y="48" width="80" height="5" rx="2" fill="#B9B3A2" />
-        {Array.from({ length: 7 }).map((_, i) => (
-          <rect key={i} x="52" y={68 + i * 12} width={i % 3 === 0 ? 200 : 152} height="4" rx="2" fill="#D5CFC0" />
-        ))}
-        <rect x="196" y="118" width="60" height="22" rx="2" fill="none" stroke="#B9B3A2" />
-        <path d="M204 134 q12 -14 24 -4 t18 -6" stroke={C.ink} strokeWidth="1.4" fill="none" />
-      </svg>
-    ),
-  };
-  return scenes[kind] || scenes.form;
-}
 
 function EvidenceSection() {
   const grid = useBatchReveal(".evi-card", { stagger: 0.07 });
@@ -2210,17 +2421,17 @@ function EvidenceSection() {
             whileHover="hov"
             variants={{ rest: { y: 0 }, hov: { y: -6 } }}
           >
-              <div className="relative overflow-hidden">
-                <motion.div variants={{ rest: { scale: 1 }, hov: { scale: 1.06 } }} transition={{ duration: 0.6, ease: EASE }}>
-                  <EvidenceScene kind={e.scene} />
-                </motion.div>
+              <div className="relative overflow-hidden" style={{ height: 168, background: e.fit === "contain" ? C.paperDim : undefined }}>
                 <motion.div
-                  className="absolute left-0 right-0 bottom-0 px-3 py-2"
-                  style={{ background: "linear-gradient(transparent, rgba(0,0,0,.78))" }}
-                  variants={{ rest: { y: 0 }, hov: { y: -2 } }}
-                  transition={{ duration: 0.35, ease: EASE }}
+                  variants={{ rest: { scale: 1 }, hov: { scale: e.fit === "contain" ? 1 : 1.06 } }}
+                  transition={{ duration: 0.6, ease: EASE }}
+                  style={{ width: "100%", height: "100%" }}
                 >
-                  <GeoStamp place={e.place} coords={e.coords} when={e.when} />
+                  <img
+                    src={e.img}
+                    alt={e.title}
+                    style={{ width: "100%", height: "100%", objectFit: e.fit, objectPosition: e.position || "center", display: "block" }}
+                  />
                 </motion.div>
               </div>
               <div className="p-5">
@@ -2242,14 +2453,14 @@ function EvidenceSection() {
    and it renders the image instead of the frame, keeping the geotag bar,
    aspect ratio and hover behaviour identical.
 ---------------------------------------------------------------------------- */
-function PhotoSlot({ label, ratio = "4 / 3", stamp, src, alt, className = "", tall = false }) {
+function PhotoSlot({ label, ratio = "4 / 3", stamp, src, alt, className = "", tall = false, objectPosition = "center", fit = "cover" }) {
   return (
     <div
       className={`relative overflow-hidden rounded ${className}`}
       style={{ aspectRatio: tall ? "3 / 4" : ratio, background: C.paperDim, border: `1px dashed ${C.line}` }}
     >
       {src ? (
-        <img src={src} alt={alt || label} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        <img src={src} alt={alt || label} style={{ width: "100%", height: "100%", objectFit: fit, objectPosition }} />
       ) : (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 px-4 text-center">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke={C.mute} strokeWidth="1.4" opacity="0.65">
@@ -2273,82 +2484,86 @@ function PhotoSlot({ label, ratio = "4 / 3", stamp, src, alt, className = "", ta
 
 /* ----------------------------------------------------------------------------
    17 · SEQUENCE OF EVENTS
-   The operational spine of the programme, kick-off to reporting. The rail
+   The operational spine of the program, kick-off to reporting. The rail
    draws itself against the scrollbar (scrubbed ScrollTrigger) and each node
    pops as the rail reaches it, so the reader watches the season assemble.
 ---------------------------------------------------------------------------- */
 const SEQUENCE = [
   {
-    n: "01", title: "Programme kick-off", tag: "Mobilisation", color: C.field,
-    body: "ClearHarvest and Grow Indigo aligned on scope, geography and reporting obligations, then stood up the delivery team - PMU, RBM/Agronomist, TBM and the Kisan Advisors who would carry the programme village to village.",
+    n: "01", title: "Program kick-off", tag: "Mobilisation", color: C.field,
+    body: "Nestlé and Grow Indigo aligned on scope, geography and deliverables",
     meta: "Varni & Chandur blocks · 11 villages identified",
     photo: photoKickoff,
   },
   {
-    n: "02", title: "First village-level meeting", tag: "VLM 1", color: C.water,
-    body: "Farmers were introduced to the programme in their own villages: what AWD is, why continuous flooding drives methane, and what taking part would and would not require of them. Enrolment was voluntary throughout.",
+    n: "02", title: "First village-level meeting", tag: "VLM 1", hideTag: true, color: C.water,
+    body: "The session introduced the project and explained how AWD and improved water management can reduce methane emissions, irrigation costs and resource use. It also covered biological inputs, INM, safe pesticide use and crop-residue management, followed by an open farmer Q&A.",
     meta: "Telugu-language sessions · leaflets distributed",
     photo: photoVlm1,
   },
   {
-    n: "03", title: "Distribution of biologicals", tag: "Inputs", color: C.leaf,
-    body: "Every enrolled farmer received a 6 kg bag of Oorjit granules and a 20 kg bag of Grow Phos - one acre's worth - free of cost, alongside an AWD field pipe. Each handover was photographed and logged against the farmer's record.",
-    meta: "6 kg Oorjit + 20 kg Grow Phos + 1 AWD pipe per acre",
-    photo: photoDobs,
+    n: "03", title: "Farmer enrollment", tag: "Inputs", color: C.leaf,
+    body: "Every program farmer received a 6 kg bag of Oorjit granules and a 20 kg bag of Grow Phos for one acre - free of cost. Farmers signed written consent covering participation, field data capture and use of their geo-tagged boundary in program reporting",
+    meta: "6 kg of Oorjit and 20 kg of Grow Phos",
+    photo: photoBd2,
+    ratio: "3 / 4",
+    objectPosition: "center 20%",
   },
   {
-    n: "04", title: "Second village-level meeting", tag: "VLM 2", color: C.water,
-    body: "A working session rather than an introduction: live demonstration of AWD pipe installation, correct placement in the bund, and how to read the fall in water depth. Biological-team members walked through application timing.",
-    meta: "Hands-on demonstration · pipe installation",
+    n: "04", title: "Second village-level meeting", tag: "VLM 2", hideTag: true, color: C.water,
+    body: "The meeting focused on AWD, Scope-3 emissions, biological products, INM, safe pesticide use, farm records and residue management. Farmers shared positive field results such as reduced input costs and improved soil health, while the biological-products stall generated enquiries and sales of Gullack K.",
+    meta: "Hands-on demonstration",
     photo: photoVlm2,
+    fit: "scale-down",
   },
   {
-    n: "05", title: "Consent letter signing", tag: "Governance", color: C.clay,
-    body: "Farmers signed written consent covering participation, field data capture and use of their geo-tagged boundary in programme reporting. Consent is what makes the traceability claim defensible - and it stayed revocable.",
-    meta: "Signed consent retained in the audit pack",
-    photo: photoCls,
-  },
-  {
-    n: "06", title: "Third village-level meeting", tag: "VLM 3", color: C.water,
-    body: "Mid-season review at crop stage: nutrient splits, weed and pest pressure, and troubleshooting for farmers whose fields were drying faster or slower than the schedule expected.",
+    n: "05", title: "Third village-level meeting", tag: "VLM 3", hideTag: true, color: C.water,
+    body: "Participants were trained on sustainable agriculture, AWD, accurate documentation, INM, safe pesticide use and crop-residue management. The session also highlighted beneficial microorganisms and biological inputs, while encouraging farmer-to-farmer knowledge sharing; the biological-products stall received positive interest.",
     meta: "Crop-stage review · nutrient split guidance",
     photo: photoVlm3,
   },
   {
-    n: "07", title: "Fourth village-level meeting", tag: "VLM 4", color: C.water,
-    body: "Pre-harvest planning: residue handling, baling logistics, and what would be required at procurement. Farmers who had not previously baled were connected to balers and to local gaushalas as buyers.",
+    n: "06", title: "Fourth village-level meeting", tag: "VLM 4", hideTag: true, color: C.water,
+    body: "The meeting covered climate-smart rice farming, including AWD irrigation, greenhouse-gas reduction, Integrated Nutrient Management, Leaf Colour Chart use and proper farm record-keeping. Farmers were also encouraged to adopt crop-residue baling, avoid residue burning, use biological products correctly and share field experiences.",
     meta: "Residue planning · procurement briefing",
     photo: photoMedia11,
   },
   {
-    n: "08", title: "Regular water-level monitoring", tag: "Continuous", color: C.waterDeep,
-    body: "The spine of the whole intervention. Kisan Advisors measured water depth in the AWD tube through the season and farmers maintained dated diaries - irrigation date, method, source and re-irrigation interval for every single event.",
-    meta: "Manual measurement · farmer diaries · FieldKhata",
-    photo: photoAwdMonitoring,
+    n: "07", title: "Water level monitoring", tag: "Continuous", color: C.waterDeep,
+    body: "The spine of the whole intervention. Kisan Advisors measured water depth in the AWD tube through the season and farmers maintained dated diaries - irrigation date, method, source and re-irrigation interval for every single event. Water level data was taken for 30 program farmers on a daily basis.",
+    meta: "Manual measurement · farmer diaries",
+    photo: photoWaterLevel,
+    ratio: "3 / 4",
+    objectPosition: "top",
   },
   {
-    n: "09", title: "Delivery to Aishwarya Rice Mills", tag: "Procurement", color: C.husk,
-    body: "Low-emission paddy moved from farm to Nestle's empanelled miller under a documented chain: weighbridge slip, Form of Certificate (X) countersigned by the village officer, and the miller's payment voucher - all captured in S3 Sutra.",
+    n: "08", title: "Low-Emission Paddy", tag: "Procurement", color: C.husk,
+    body: "Through this program, we facilitated the procurement of over 3,200 metric tonnes of low-emission paddy through Aishwarya Rice Mills. The entire transaction was recorded in our in-house S3 Sutra application, enabling end-to-end traceability and transparent documentation.",
     meta: "Farm-to-mill audit trail in S3 Sutra",
-    photo: photoPaddyLoading,
+    photo: photoLep,
+    fit: "scale-down",
   },
   {
-    n: "10", title: "Residue baled, not burnt", tag: "CRM", color: C.husk,
-    body: "Farmers baled and bundled paddy straw immediately after harvest instead of burning it, then sold it to nearby cowsheds and gaushalas. 833 acres were baled against an original target of 300 - a 178% overshoot.",
+    n: "09", title: "Residue baled, not burnt", tag: "CRM", color: C.husk,
+    body: "Farmers baled and bundled paddy straw immediately after harvest instead of burning it. 833 acres were baled against an original target of 300 - nearly 3x the target.",
     meta: "833 acres baled · zero open field burning",
     photo: photoBailing,
+    objectPosition: "center 20%",
   },
   {
-    n: "11", title: "Third-party audit", tag: "Assurance", color: C.field,
-    body: "One Peterson independently reviewed the field evidence and digital records - geo-tagged boundaries, farmer diaries, practice verification and the procurement trail - testing whether the reductions claimed are attributable to the fields that produced them.",
-    meta: "Independent verification · One Peterson",
-    icon: <><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinejoin="round" /><path d="M8.5 12.5l2.5 2.5 4.5-5" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" /></>,
+    n: "10", title: "Third-party audit", tag: "Assurance", color: C.field,
+    body: "OnePeterson independently reviewed the field evidence and digital records - geo-tagged boundaries, farmer diaries, practice verification and the procurement trail - testing whether the reductions claimed are attributable to the fields that produced them.",
+    meta: "Independent verification · OnePeterson",
+    photo: photoTpa,
+    fit: "scale-down",
   },
   {
-    n: "12", title: "Quantification & reporting", tag: "Delivery", color: C.leaf,
-    body: "Grow Indigo quantified emissions on the Cool Farm Platform V3.0 using the square-root sample, then compiled this report: 771.47 kg CO₂e/MT reduced, 58% against Nestle's baseline, with the methodology and its caveats stated in full.",
-    meta: "Cool Farm Platform V3.0 · 16 farmers sampled",
-    icon: <path d="M4 20V10M10 20V4M16 20v-7M4 20h16" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />,
+    n: "11", title: "Quantification & reporting", tag: "Delivery", color: C.leaf,
+    body: "Grow Indigo quantified emissions on the Cool Farm Platform v3.0 using the square-root sample, then compiled this report: ~771 kg CO₂e/MT of paddy reduced, 58% against Nestlé's baseline, with the methodology and its caveats stated in full.",
+    meta: "Cool Farm Platform v3.0 · 5 farmers sampled",
+    photo: photoSsimp,
+    ratio: "3 / 4",
+    fit: "contain",
   },
 ];
 
@@ -2380,9 +2595,11 @@ function SequenceNode({ item, i }) {
         transition={{ duration: 0.3, ease: EASE }}
       >
         <div className="p-6 rounded-lg" style={{ background: "#fff", border: `1px solid ${C.line}`, borderLeft: flip ? `3px solid ${item.color}` : undefined, borderRight: flip ? undefined : `3px solid ${item.color}` }}>
-          <div className={`flex items-center gap-3 ${flip ? "" : "md:justify-end"}`}>
-            <Eyebrow color={item.color}>{item.tag}</Eyebrow>
-          </div>
+          {!item.hideTag && (
+            <div className={`flex items-center gap-3 ${flip ? "" : "md:justify-end"}`}>
+              <Eyebrow color={item.color}>{item.tag}</Eyebrow>
+            </div>
+          )}
           <h4 className="ch-display mt-3 text-xl" style={{ color: C.field, fontWeight: 700 }}>{item.title}</h4>
           <p className="mt-3" style={{ fontSize: 13.5, lineHeight: 1.7, color: C.mute }}>{item.body}</p>
           <div className="ch-data mt-4 pt-3" style={{ fontSize: 10.5, color: item.color, lineHeight: 1.6, borderTop: `1px solid ${C.line}` }}>
@@ -2394,7 +2611,14 @@ function SequenceNode({ item, i }) {
       {/* photo slot opposite the card - a themed icon panel when no photograph is on file */}
       <div className={flip ? "md:col-start-1 md:row-start-1" : "md:col-start-2"}>
         {item.photo ? (
-          <PhotoSlot label={`Photo · ${item.title}`} ratio="16 / 10" src={item.photo} alt={item.title} />
+          <PhotoSlot
+            label={`Photo · ${item.title}`}
+            ratio={item.ratio || "16 / 10"}
+            src={item.photo}
+            alt={item.title}
+            objectPosition={item.objectPosition || "center"}
+            fit={item.fit || "cover"}
+          />
         ) : (
           <IconPanel icon={item.icon} color={item.color} label={item.tag} />
         )}
@@ -2447,8 +2671,8 @@ function SequenceSection() {
     <Section id="sequence" tone="tint">
       <SectionHead
         index="05"
-        title="How the season ran, start to finish"
-        lede="Twelve steps from kick-off to audited report. Each one produced a record - a photograph, a signed form, a diary entry or a digital log - and those records are what the quantification ultimately rests on."
+        title="Program journey"
+        lede="From program kick-off to the final audit, each stage generates a verifiable record - such as a photograph, signed form, diary entry, or digital log. Together, these records form the evidence base for the final quantification"
       />
       <div ref={scope} className="relative">
         {/* the rail */}
@@ -2474,30 +2698,35 @@ function SequenceSection() {
 const TESTIMONIALS = [
   {
     id: "t1",
-    farmer: "Kolluri Gangaram",
+    farmer: "Dasari Sai Kumar",
     village: "Ghanpur",
-    acres: "9.1 acres",
-    te: "నీటి పైపు వాడటం వల్ల ఎప్పుడు నీరు పెట్టాలో స్పష్టంగా తెలుస్తుంది. కరెంటు ఖర్చు తగ్గింది.",
-    en: "With the water pipe I can see exactly when the field needs irrigating. My electricity cost has come down.",
+    te: "ఊర్జిత్ మరియు గ్రో ఫాస్ కలిపి వాడటం వల్ల నా నేల మెరుగుపడింది, ఎరువుల ఖర్చు తగ్గింది.",
+    en: "Using Oorjit and Grow Phos together has improved my soil and cut down how much fertiliser I need to buy.",
     src: videoTestimonial1,
   },
   {
     id: "t2",
-    farmer: "Mekala Narsimha",
-    village: "Kunipoor",
-    acres: "6.4 acres",
-    te: "గ్రో ఫాస్ మరియు ఊర్జిత్ బాగా పనిచేశాయి. యూరియా తక్కువ వాడినా పంట బాగుంది.",
-    en: "Grow Phos and Oorjit worked well. Even with less urea, the crop was good.",
+    farmer: "Md. Abid Pasha",
+    village: "Sangam",
+    te: "పానీ పైప్ వల్ల ఎప్పుడు నీరు పెట్టాలో ఖచ్చితంగా తెలుస్తుంది, ఊర్జిత్ నేలను ఆరోగ్యంగా ఉంచింది.",
+    en: "The pani pipe tells me exactly when to irrigate, and Oorjit has kept my soil healthy.",
     src: videoTestimonial2,
   },
   {
     id: "t3",
-    farmer: "Bandari Ashok",
-    village: "Srinagar",
-    acres: "11.2 acres",
-    te: "గడ్డిని కాల్చకుండా బేల్ చేసి గోశాలకు అమ్మాము. పొలం శుభ్రంగా ఉంది, కొంత ఆదాయం కూడా వచ్చింది.",
-    en: "Instead of burning the straw we baled it and sold it to the gaushala. The field stayed clean and we earned something too.",
+    farmer: "Kothola Ashok Reddy",
+    village: "Ghanpur",
+    te: "ఊర్జిత్ మరియు గ్రో ఫాస్ వాడటం మొదలుపెట్టినప్పటి నుండి పంట బాగా పెరిగింది, రసాయన ఎరువులు తక్కువ వాడాను.",
+    en: "Since I started using Oorjit and Grow Phos, my crop has grown well while using far less chemical fertiliser.",
     src: videoTestimonial3,
+  },
+  {
+    id: "t4",
+    farmer: "Gunnam Krishna",
+    village: "Humnapur",
+    te: "నేనే పానీ పైప్ అమర్చాను, ఇప్పుడు పొలానికి ఎప్పుడు నీరు కావాలో ఖచ్చితంగా తెలుస్తుంది.",
+    en: "I installed the pani pipe myself, and now I know exactly when my field needs water.",
+    src: videoTestimonial4,
   },
 ];
 
@@ -2553,7 +2782,7 @@ function TestimonialCard({ t, index }) {
         <div>
           <div style={{ fontWeight: 600, fontSize: 15, color: C.field }}>{t.farmer}</div>
           <div className="ch-data mt-1" style={{ fontSize: 10.5, color: C.mute }}>
-            {t.village.toUpperCase()} · {t.acres.toUpperCase()}
+            VILLAGE - {t.village.toUpperCase()}
           </div>
         </div>
         <div className="ch-data" style={{ fontSize: 26, color: C.paperDim, fontWeight: 600, lineHeight: 1 }}>
@@ -2571,46 +2800,39 @@ function TestimonialsSection() {
       <SectionHead
         index="06"
         title="In the farmers' words"
-        lede="Recorded on-field in Telugu during the season. English translation runs in the subtitle bar so the original stays first and the translation supports it, rather than replacing it."
       />
-      <div ref={grid} className="grid gap-5 md:grid-cols-3">
+      <div ref={grid} className="grid gap-5 sm:grid-cols-2">
         {TESTIMONIALS.map((t, i) => <TestimonialCard key={t.id} t={t} index={i} />)}
       </div>
-      <Reveal delay={0.1} className="mt-5">
-        <div className="ch-data p-4 rounded" style={{ fontSize: 11, color: C.mute, background: C.paperDim, lineHeight: 1.7 }}>
-          Translations were checked against the recordings by the field team. Where a farmer used a local term with no
-          direct English equivalent, the subtitle keeps the sense rather than the literal words.
-        </div>
-      </Reveal>
     </Section>
   );
 }
 
 /* ----------------------------------------------------------------------------
    19 · FIELD PHOTOGRAPHY
-   Three sets the programme documented continuously: village meetings, the
+   Three sets the program documented continuously: village meetings, the
    biologicals handover, and the farmer diaries. Filter chips switch sets with
    a framer layout animation so the grid reflows instead of cutting.
 ---------------------------------------------------------------------------- */
 const GALLERY = {
   vlm: {
     label: "Village-level meetings",
-    blurb: "Four VLMs across the project period. Demonstrations on AWD pipe installation, Oorjit and Grow Phos application, and residue management - with biological-team members present at every session to answer product questions directly.",
+    blurb: "Four VLMs across the project period. Demonstrations on pani pipe installation, Oorjit and Grow Phos application, and residue management - with biological-team members present at every session to answer product questions directly.",
     shots: [
-      { label: "VLM in progress - Kunipoor", stamp: { place: "Kunipoor, Telangana, India", coords: "18.511113°N 77.940613°E", when: "Tue, 16/12/2025 10:27 AM" }, src: photoVlm1 },
-      { label: "Field team presenting to farmers, Jalalpur", stamp: null, src: photoKickoff },
+      { label: "VLM in progress - Kunipoor", stamp: { place: "Kunipoor, Telangana, India", coords: "18.511113°N 77.940613°E", when: "Tue, 16/12/2025 10:27 AM" }, src: photoVlmKuni },
+      { label: "Field team presenting to farmers, Jalalpur", stamp: null, src: photoFtmp },
       { label: "Farmers assembled for VLM, Jalalpur", stamp: null, src: photoMedia9 },
-      { label: "Farmer Q&A session, Varni block", stamp: { place: "Varni, Nizamabad, Telangana, India", coords: "18.509574°N 77.966003°E", when: "Tue, 17/03/2026 10:16 AM" }, src: photoMedia13 },
+      { label: "Farmers Q&A session, Varni block", stamp: { place: "Varni, Nizamabad, Telangana, India", coords: "18.509574°N 77.966003°E", when: "Tue, 17/03/2026 10:16 AM" }, src: photoMedia13 },
     ],
   },
   bio: {
     label: "Distribution of biologicals",
-    blurb: "Each enrolled farmer received 6 kg of Oorjit granules and 20 kg of Grow Phos - adequate for one acre - plus an AWD field pipe, all free of cost. Every handover was photographed and logged against the farmer's record.",
+    blurb: "Each enrolled farmer received 6 kg of Oorjit granules and 20 kg of Grow Phos - adequate for one acre - plus a pani pipe, all free of cost. Every handover was photographed and logged against the farmer's record.",
     shots: [
       { label: "Oorjit and Grow Phos handover, Ghanpur", stamp: { place: "Ghanpur, Telangana, India", coords: "18.57334°N 77.930693°E", when: "Thu, 18/12/2025 10:49 AM" }, src: photoDobs3 },
-      { label: "Input bags at village collection point, Ghanpur", stamp: { place: "Ghanpur, Telangana, India", coords: "18.573345°N 77.930688°E", when: "Thu, 18/12/2025 9:56 AM" }, src: photoDobs },
+      { label: "Oorjit and Grow Phos handover, Ghanpur", stamp: { place: "Ghanpur, Telangana, India", coords: "18.573345°N 77.930688°E", when: "Thu, 18/12/2025 9:56 AM" }, src: photoDobs },
       { label: "Oorjit and Grow Phos handover, Jalalpur", stamp: { place: "Jalalpur, Telangana, India", coords: "18.509155°N 77.968163°E", when: "Tue, 16/12/2025 12:11 PM" }, src: photoDob2 },
-      { label: "Input handover, Sangam", stamp: { place: "Nizamabad, Telangana, India", coords: "18.602126°N 77.914212°E", when: "Wed, 24/12/2025 10:37 AM" }, src: photoDobs4 },
+      { label: "Oorjit and Grow Phos handover, Sangam", stamp: { place: "Nizamabad, Telangana, India", coords: "18.602126°N 77.914212°E", when: "Wed, 24/12/2025 10:37 AM" }, src: photoDobs4 },
     ],
   },
   diary: {
@@ -2619,10 +2841,10 @@ const GALLERY = {
     shots: [
       { label: "Socio-economic profile page", stamp: null, tall: true, src: diarySocioEconomic },
       { label: "Water management log - irrigation dates", stamp: null, tall: true, src: diaryWaterLogA },
-      { label: "Re-irrigation interval entries", stamp: null, tall: true, src: diaryWaterLogB },
-      { label: "Stakeholder feedback form", stamp: null, tall: true, src: diaryFeedback },
-      { label: "Signed consent letter", stamp: null, tall: true, src: photoCls },
-      { label: "Procurement receipt", stamp: null, tall: true },
+      { label: "Re-irrigation interval entries", stamp: null, tall: true, src: diaryFeedback },
+      { label: "Stakeholder feedback form", stamp: null, tall: true, src: a2 },
+      { label: "Farmer assembled for consent letter signing", stamp: null, tall: true, src: photoCls },
+      { label: "Procurement receipt", stamp: null, tall: true, src: a10 },
     ],
   },
 };
@@ -2636,7 +2858,7 @@ function PhotographySection() {
       <SectionHead
         index="07"
         title="What the field team documented"
-        lede="Photographic and paper evidence collected through the season, geo-tagged and dated at capture. These sit alongside the digital records in FieldKhata and S3 Sutra."
+        lede="Photographic and paper evidence is collected throughout the season, geo-tagged and dated at the time of capture. These sit alongside the digital records in FieldKhatta app and S3 Sutra."
       />
 
       <LayoutGroup id="gallery">
@@ -2670,10 +2892,10 @@ function PhotographySection() {
         >
           <p className="mb-6" style={{ fontSize: 14.5, lineHeight: 1.75, color: C.mute, maxWidth: "76ch" }}>{active.blurb}</p>
           <motion.div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" variants={vStagger(0.06)} initial="hidden" animate="show">
-            {active.shots.map((s) => (
-              <motion.div key={s.label} variants={vFadeUp} whileHover={{ y: -4 }} transition={{ duration: 0.3, ease: EASE }}>
-                <PhotoSlot label={s.label} stamp={s.stamp} tall={s.tall} src={s.src} alt={s.label} />
-                <div className="ch-data mt-2" style={{ fontSize: 10.5, color: C.mute, lineHeight: 1.5 }}>{s.label}</div>
+            {active.shots.map((s, i) => (
+              <motion.div key={`${s.label}-${i}`} variants={vFadeUp} whileHover={{ y: -4 }} transition={{ duration: 0.3, ease: EASE }}>
+                <PhotoSlot label={s.label} tall={s.tall} src={s.src} alt={s.label} fit="scale-down" />
+                <div className="ch-data mt-2" style={{ fontSize: 10.5, color: C.mute, lineHeight: 1.5, textAlign: "center" }}>{s.label}</div>
               </motion.div>
             ))}
           </motion.div>
@@ -2726,70 +2948,13 @@ function LogoLockup({ light = false, height = 34, rule = true }) {
 }
 
 /* ----------------------------------------------------------------------------
-   20b · ABOUT GROW INDIGO + CONTACT
+   20b · CONTACT
 ---------------------------------------------------------------------------- */
 const CONTACT = {
+  name: "Mr. Amit Kumar",
   email: "clearharvest@growindigo.co.in",
   phone: "+91 8329049612",
 };
-
-function AboutSection() {
-  return (
-    <Section id="about" tone="tint">
-      <SectionHead
-        index="14"
-        title="About Grow Indigo"
-        lede="Grow Indigo works with farming communities across India to make regenerative practices measurable, financeable and easy to adopt at scale. ClearHarvest is its programme delivery and MRV arm - the same Kisan Advisor network, FieldKhata geofencing and Cool Farm Platform quantification used throughout this report."
-      />
-
-      <div className="grid gap-6 lg:grid-cols-5 items-start">
-        <Reveal className="lg:col-span-3">
-          <div className="p-7 md:p-8 rounded-lg" style={{ background: "#fff", border: `1px solid ${C.line}` }}>
-            <Eyebrow color={C.husk}>Who we are</Eyebrow>
-            <p className="mt-4" style={{ fontSize: 15, lineHeight: 1.75, color: C.ink }}>
-              Grow Indigo partners with rice, cotton and other row-crop farmers to deploy water-saving irrigation,
-              biological soil inputs and residue management practices that cut greenhouse gas emissions without
-              cutting yield. Field teams and Kisan Advisors work season to season with growers on the ground, while
-              every intervention is logged, geofenced and independently quantified - so the outcomes a partner like
-              Nestle sees in a report like this one are traceable back to a specific farmer, field and season.
-            </p>
-            <p className="mt-4" style={{ fontSize: 15, lineHeight: 1.75, color: C.ink }}>
-              This project ran across the Varni and Chandur blocks of Nizamabad district, Telangana, over Rabi 2026,
-              delivering the results set out in the sections above.
-            </p>
-          </div>
-        </Reveal>
-
-        <Reveal delay={0.1} className="lg:col-span-2">
-          <div className="p-7 md:p-8 rounded-lg h-full" style={{ background: C.ink }}>
-            <Eyebrow color={C.husk}>Get in touch</Eyebrow>
-            <h3 className="ch-display mt-3 text-2xl" style={{ color: "#fff", fontWeight: 700 }}>
-              ClearHarvest, Grow Indigo
-            </h3>
-            <div className="mt-6">
-              <a
-                href={`mailto:${CONTACT.email}`}
-                className="flex items-baseline justify-between gap-4 py-3"
-                style={{ borderBottom: "1px solid rgba(255,255,255,.15)", textDecoration: "none" }}
-              >
-                <span className="ch-data" style={{ fontSize: 10.5, color: "rgba(255,255,255,.5)", letterSpacing: ".14em" }}>EMAIL</span>
-                <span style={{ fontSize: 15, color: C.leaf, fontWeight: 700, textAlign: "right" }}>{CONTACT.email}</span>
-              </a>
-              <a
-                href={`tel:${CONTACT.phone.replace(/\s+/g, "")}`}
-                className="flex items-baseline justify-between gap-4 py-3"
-                style={{ textDecoration: "none" }}
-              >
-                <span className="ch-data" style={{ fontSize: 10.5, color: "rgba(255,255,255,.5)", letterSpacing: ".14em" }}>PHONE</span>
-                <span style={{ fontSize: 15, color: "#fff", fontWeight: 700, textAlign: "right" }}>{CONTACT.phone}</span>
-              </a>
-            </div>
-          </div>
-        </Reveal>
-      </div>
-    </Section>
-  );
-}
 
 /* ----------------------------------------------------------------------------
    21 · CLOSING - bibliography, data notes, sign-off
@@ -2799,14 +2964,14 @@ const BIBLIOGRAPHY = [
   ["Ma et al. (2012). Greenhouse gas emissions during the rice seedling stage as affected by cultivar type and crop density.", "ResearchGate", "https://www.researchgate.net/publication/230563682"],
   ["Megha, P. V., Salimath, S. B., Biradar, G. S., Kuri, S., & Anjali, M. C. (2025). Farmer's response under conventional system and alternate wetting and drying method of paddy cultivation in Karnataka. International Journal of Research in Agronomy, 8(10S), 275–278.", "DOI", "https://doi.org/10.33545/2618060X.2025.v8.i10Sd.4098"],
   ["Professor Jayashankar Telangana State Agricultural University. (2017–18). Rice [PDF].", "PJTSAU", "https://www.pjtau.edu.in/pdf2/rice.pdf"],
-  ["Patel Vedant, C., & Vekariya, P. B. (2018). Performance evaluation of pressure head loads and pumping efficiency on electrical pump sets. Indian Journal of Agricultural Research, 52(4), 374–379.", "DOI", "https://doi.org/10.18805/IJARe.A-501"],
 ];
 
 const DATA_NOTES = [
-  "Headline GHG reduction of 771.47 kg CO₂e/MT (58%) is measured against Nestle's baseline of 1,325 kg CO₂e/MT and includes the corrected nursery emission of 13.40 kg CO₂e/MT.",
-  "Quantification also yields 784.87 kg CO₂e/MT (~59%) excluding nursery emissions and 764.78 kg CO₂e/MT (~58%) using gross nursery emissions - all three appear in Chart 1 rather than being collapsed into one number.",
+  "Headline GHG reduction of ~771 kg CO₂e/MT of paddy (58%) is measured against Nestlé's baseline of 1,325 kg CO₂e/MT of paddy and includes the corrected nursery emission of ~13 kg CO₂e/MT of paddy.",
+  "Quantification also yields ~785 kg CO₂e/MT of paddy (~59%) excluding nursery emissions and ~765 kg CO₂e/MT of paddy (~58%) using gross nursery emissions - all three appear in the emissions intensity chart rather than being collapsed into one number.",
   "Water use of ~1,073 litres/kg is derived from the ~67% saving against the stated ~3,250 litres/kg baseline.",
-  "Farmer counts differ by stage: 419 enrolled, 326 fields mapped and geofenced, 249 completing procurement, of whom 16 were sampled for quantification.",
+  "Farmer counts differ by stage: 300 enrolled, 326 fields mapped and geofenced, 139 completing procurement, of whom 5 were sampled for quantification.",
+  "The program delivered a 29% reduction in nitrogen application compared with Nestlé's established baseline.",
 ];
 
 function Closing() {
@@ -2844,13 +3009,18 @@ function Closing() {
               ))}
             </Stagger>
 
-            <div className="mt-10 grid grid-cols-3 gap-4">
-              {[["326", "fields mapped"], ["11", "villages"], ["12", "programme milestones"]].map(([v, l]) => (
-                <div key={l}>
+            <div className="mt-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+              {[
+                { value: 300, label: "farmers" },
+                { value: 326, label: "fields mapped" },
+                { value: 11, label: "villages" },
+                { value: 3200, suffix: "+", label: "MT procured" },
+              ].map(({ value, prefix, suffix, label }) => (
+                <div key={label}>
                   <div className="ch-display" style={{ color: "#fff", fontWeight: 800, fontSize: "1.6rem" }}>
-                    <Counter value={parseInt(v, 10)} />
+                    <Counter value={value} prefix={prefix || ""} suffix={suffix || ""} />
                   </div>
-                  <div className="ch-data mt-1" style={{ fontSize: 10, color: "rgba(255,255,255,.5)" }}>{l.toUpperCase()}</div>
+                  <div className="ch-data mt-1" style={{ fontSize: 10, color: "rgba(255,255,255,.5)" }}>{label.toUpperCase()}</div>
                 </div>
               ))}
             </div>
@@ -2859,8 +3029,8 @@ function Closing() {
 
         <div className="mt-16 pt-10" style={{ borderTop: "1px solid rgba(255,255,255,.15)" }}>
           <LogoLockup light height={40} />
-          <div className="ch-data mt-8 text-center" style={{ fontSize: 10.5, color: "rgba(255,255,255,.4)", letterSpacing: ".1em" }}>
-            LOW-EMISSION RICE OFFTAKE · NIZAMABAD, TELANGANA · RABI 2026
+          <div className="ch-data mt-3" style={{ fontSize: 10.5, color: "rgba(255,255,255,.4)", letterSpacing: ".1em", textAlign: "left" }}>
+            © 2026 Grow Indigo. All rights reserved.
           </div>
         </div>
       </div>
@@ -2902,7 +3072,7 @@ export default function ClearHarvestReport() {
         <EconomicsSection />
         <SourcingSection />
         <EvidenceSection />
-        <AboutSection />
+        <CompanyIntro />
       </main>
 
       <Closing />

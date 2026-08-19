@@ -28,6 +28,7 @@ import {
 } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, LabelList, ResponsiveContainer } from "recharts";
 import { WheatFieldsMapBlock } from "./WheatHarvestMap.jsx";
 
 /* ----------------------------------------------------------------------------
@@ -39,8 +40,6 @@ import { WheatFieldsMapBlock } from "./WheatHarvestMap.jsx";
 import wheatPartnerLogo from "./src/assets/wheat/brand/gilogo1.png";
 import wheatProgrammeLogo from "./src/assets/wheat/brand/chnlogo-fixed.png";
 
-import enrolledFieldsMap from "./src/assets/wheat/docx/enrolled-fields-map.jpg";
-import identityPreservationAerial from "./src/assets/wheat/docx/identity-preservation-aerial.png";
 import monitoringApp1 from "./src/assets/wheat/docx/monitoring-app-1.jpeg";
 import monitoringApp2 from "./src/assets/wheat/docx/monitoring-app-2.jpeg";
 import monitoringApp3 from "./src/assets/wheat/docx/monitoring-app-3.jpeg";
@@ -48,14 +47,17 @@ import monitoringApp4 from "./src/assets/wheat/docx/monitoring-app-4.jpeg";
 import monitoringApp5 from "./src/assets/wheat/docx/mm5.jpeg";
 import traceabilityFlow from "./src/assets/wheat/docx/trace.jpg";
 import journeyKickoff from "./src/assets/wheat/docx/pko.jpg";
+import journeyKickoff2 from "./src/assets/wheat/docx/pko2.jpg";
 import journeyVlm1 from "./src/assets/wheat/docx/journey-02-vlm1-khasikalan.jpg";
 import journeyVlm2 from "./src/assets/wheat/docx/journey-03-vlm2-kotkapura.jpeg";
 import journeyVlm3 from "./src/assets/wheat/docx/journey-04-vlm3-bisafarm.jpeg";
 import journeyVlm4 from "./src/assets/wheat/docx/journey-05-vlm4-aulakh.jpeg";
 import journeyVlm5 from "./src/assets/wheat/docx/journey-06-vlm5-nurpurbet.jpeg";
 import journeyVlm6 from "./src/assets/wheat/docx/journey-07-vlm6-dhanansu.jpeg";
-import journeyLowCarbonWheat from "./src/assets/wheat/docx/lewp.jpg";
-import journeyThirdPartyAudit from "./src/assets/wheat/docx/itpa.jpg";
+import journeyLowCarbonWheat from "./src/assets/wheat/docx/journey-08-lowcarbon-wheat.jpeg";
+import journeyLowCarbonWheat2 from "./src/assets/wheat/docx/lewp.jpg";
+import journeyThirdPartyAudit from "./src/assets/wheat/docx/journey-09-thirdparty-audit.jpeg";
+import journeyThirdPartyAudit2 from "./src/assets/wheat/docx/itpa.jpg";
 import farmerDiarySocioeconomic from "./src/assets/wheat/docx/farmer-diary-socioeconomic.png";
 import annexureVlm from "./src/assets/wheat/docx/annexure-01-vlm.jpeg";
 import annexureZtField from "./src/assets/wheat/docx/annexure-02-zt-field.jpeg";
@@ -650,8 +652,9 @@ function Hero() {
         </h1>
 
         <p className="hero-lede mt-7 text-lg md:text-xl" style={{ color: "rgba(255,255,255,.78)", maxWidth: "60ch", lineHeight: 1.6 }}>
-          Across 2,390 hectares in Ludhiana and Faridkot, low-emission wheat built around sustainable practices
-          like Zero Tillage, residue management, optimum fertiliser and digitally traceable farm to processor.
+          Across 2,390 ha in Ludhiana and Faridkot, wheat cultivation advances regenerative agricultural practices
+          through Zero/Reduced tillage (ZT/RT), responsible residue management, optimised fertiliser use and
+          digitally traceable from farm to processor.
         </p>
 
         <div className="hero-meta mt-10 flex flex-wrap gap-x-10 gap-y-5">
@@ -789,8 +792,13 @@ function StatRow({ stats }) {
 }
 
 const HEADLINE_RESULTS = [
-  ["~34%", "Nitrogen reduction", "187 to 123 kg N/ha of wheat"],
+  ["~34%", "Nitrogen reduction", "187 to 123 kg N/ha"],
   ["~15%", "GHG reduction", "vs. Nestlé baseline"],
+];
+
+const SEASON_EXTRA_HEADLINES = [
+  ["7,261", "Procurement quantity (MT)", null],
+  ["~46%", "Water saved", "1,410.03 → 760.78 m³/ha"],
 ];
 
 /* ----------------------------------------------------------------------------
@@ -802,7 +810,7 @@ function SeasonSection() {
       <SectionHead
         index="01"
         title="What the Season Delivered?"
-        lede="The Low-emission Wheat Programme promoted sustainable practices like Zero/Reduced Tillage (ZT/RT) as the central practice for wheat sown after the preceding crop. The programme recorded farmer registration, field-level agronomic data including optimised fertilizer uses, crop residue management (CRM) and irrigation water use followed by an independent third-party audit."
+        lede="The Low Emission Wheat Offtake promoted sustainable practices like Zero/Reduced Tillage (ZT/RT) as the central practice for wheat sown after the preceding crop. The programme recorded farmer registration, field-level agronomic data including optimised fertilizer uses, crop residue management (CRM) and irrigation water use followed by an independent third-party audit."
       />
 
       <Reveal>
@@ -813,7 +821,7 @@ function SeasonSection() {
       </Reveal>
 
       <Reveal delay={0.1} className="mt-6">
-        <StatRow stats={HEADLINE_RESULTS} />
+        <StatRow stats={[...HEADLINE_RESULTS, ...SEASON_EXTRA_HEADLINES]} />
       </Reveal>
 
       <Reveal delay={0.1} className="mt-14">
@@ -868,16 +876,7 @@ function FieldsSection() {
         title="Every Field on the Map"
         lede="The programme covered registered wheat farms in Punjab. Farmer identities, field boundaries and agronomic information were digitally recorded to support field-level monitoring and traceability. Field-level records were organised across four processors: Gillco Agro, Golden Wheat & Allied Mills, Kohinoor Agro Foods and Ludhiana Flour Mills. The final map shows the confirmed programme fields and distinguishes fields where practice-level data are available."
       />
-      <div className="grid gap-8 lg:grid-cols-2">
-        <Reveal>
-          <PhotoSlot ratio="4 / 3" src={enrolledFieldsMap} alt="Enrolled fields grouped by processor, Ludhiana District" caption="Enrolled fields grouped by processor, Ludhiana District" />
-        </Reveal>
-        <Reveal delay={0.1}>
-          <PhotoSlot ratio="4 / 3" src={identityPreservationAerial} alt="Identity-Preservation of Low-Emission Wheat Grown at Enrolled Farms in Ludhiana" caption="Identity-Preservation of Low-Emission Wheat Grown at Enrolled Farms in Ludhiana" />
-        </Reveal>
-      </div>
-
-      <Reveal delay={0.15} className="mt-12">
+      <Reveal delay={0.15}>
         <Eyebrow>Explore every enrolled field</Eyebrow>
         <p className="mt-4" style={{ fontSize: 15, lineHeight: 1.75, color: C.mute }}>
           Drill from India down to Punjab, the project districts and an individual village to see every mapped
@@ -946,14 +945,14 @@ const THEMES = [
     n: "Theme 02", category: "Residue", title: "Crop Residue Management", icon: ICON_NO_BURN, color: C.leaf,
     stat: "Zero open-field burning · white PP bag segregation",
     paragraphs: [
-      "The Low-emission wheat Programme promoted no open-field burning of crop residue as a key principle of responsible residue management. Farmers were encouraged to manage wheat residue through appropriate alternatives such as incorporation in the soil or baling and sending it to a third party.",
+      "The Low Emission Wheat Offtake promoted no open-field burning of crop residue as a key principle of responsible residue management. Farmers were encouraged to manage wheat residue through appropriate alternatives such as incorporation in the soil or baling and sending it to a third party.",
       "Sustainable practices such as Zero/Reduced Tillage provided farmers with a practical pathway to establish wheat through in-situ crop residue management, avoiding the need for open-field burning before sowing.",
     ],
     bullets: THEME_2_BULLETS,
   },
   {
     n: "Theme 03", category: "Program Competencies", title: "A High-touch, Phygital Extension Model", icon: ICON_EXTENSION, color: C.husk,
-    stat: "Six Village-Level Meetings across the season",
+    stat: "Several Village-Level Meetings across the season",
     paragraphs: [
       "Kisan Advisors (KAs) conducted regular field visits throughout the wheat season, from field establishment to harvest, enabling one-on-one farmer support, field-level troubleshooting and verification of zero/reduced tillage practices, fertiliser application, crop protection and residue management.",
       "Grow Indigo's digital learning platform on YouTube (@growindigoindia) featured simple, vernacular videos on regenerative agriculture, water-saving methods, soil health and climate-smart practices, giving farmers continuous learning support.",
@@ -1425,7 +1424,7 @@ function GovernanceSection() {
 ---------------------------------------------------------------------------- */
 const JOURNEY_STEPS = [
   {
-    n: "01", title: "Programme Kick-off", img: journeyKickoff,
+    n: "01", title: "Programme Kick-off", gallery: [journeyKickoff, journeyKickoff2],
     body: "The programme began with alignment on scope, geography and implementation requirements. Field identification and deployment of the programme team followed, establishing the operational base for farmer engagement and seasonal monitoring.",
   },
   {
@@ -1441,11 +1440,11 @@ const JOURNEY_STEPS = [
     body: "Prior to harvest, the Nestlé team collected representative wheat samples directly from programme fields and conducted pre-harvest quality and food-safety testing for pesticide residues, aflatoxins and other specified contaminants to assess compliance with applicable quality requirements.",
   },
   {
-    n: "05", title: "Low-Emission Wheat Procurement", img: journeyLowCarbonWheat,
-    body: "Following farmer engagement, field teams continued to record establishment practices, fertiliser use and crop-stage information through the season from the farm to aarthiya to mills. During procurement, 7,261 metric tonnes of programme wheat was procured, segregated and packed separately in clearly identifiable white PP bags. This controlled handling maintained the identity of the wheat throughout procurement and processing. The process strengthened traceability and preserved the link between participating farms and the final programme volume.",
+    n: "05", title: "Low-Emission Wheat Procurement", gallery: [journeyLowCarbonWheat, journeyLowCarbonWheat2],
+    body: "Following farmer engagement, field teams continued to record establishment practices, fertiliser use and crop-stage information through the season from the farm to processor.",
   },
   {
-    n: "06", title: "Independent Third-Party Audit", img: journeyThirdPartyAudit,
+    n: "06", title: "Independent Third-Party Audit", gallery: [journeyThirdPartyAudit, journeyThirdPartyAudit2],
     body: "OnePeterson independently reviewed the field evidence and digital records - geo-tagged boundaries, farmer diaries, practice verification and the procurement trail - testing whether the reductions claimed are attributable to the fields that produced them.",
   },
   {
@@ -1455,7 +1454,6 @@ const JOURNEY_STEPS = [
 ];
 
 function JourneySection() {
-  const grid = useBatchReveal(".journey-step", { stagger: 0.06 });
   const spineRef = useRef(null);
   const { scrollYProgress: spineProgress } = useScroll({ target: spineRef, offset: ["start 0.7", "end 0.3"] });
   return (
@@ -1476,12 +1474,19 @@ function JourneySection() {
           style={{ left: -28, width: 2, height: "100%", background: C.field, scaleY: spineProgress, transformOrigin: "top" }}
           aria-hidden="true"
         />
-        <div ref={grid} className="space-y-8">
+        <div className="space-y-8">
         {JOURNEY_STEPS.map((step, i) => {
           const hasMedia = Boolean(step.img || step.gallery);
           const reverse = hasMedia && i % 2 === 1;
           return (
-            <div key={step.n} className="journey-step grid gap-6 md:grid-cols-5 items-start">
+            <motion.div
+              key={step.n}
+              className="journey-step grid gap-6 md:grid-cols-5 items-start"
+              initial={{ opacity: 0, y: 22 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.35 }}
+              transition={{ duration: 0.8, ease: EASE }}
+            >
               <div
                 className={hasMedia ? "md:col-span-3 p-7 rounded-lg" : "md:col-span-5 p-7 rounded-lg"}
                 style={{ background: "#fff", border: `1px solid ${C.line}`, order: reverse ? 2 : 1 }}
@@ -1503,13 +1508,16 @@ function JourneySection() {
                 </div>
               )}
               {step.gallery && (
-                <div className="md:col-span-2 grid grid-cols-3 gap-2" style={{ order: reverse ? 1 : 2 }}>
+                <div
+                  className={`md:col-span-2 grid gap-2 ${step.gallery.length <= 2 ? "grid-cols-2" : "grid-cols-3"}`}
+                  style={{ order: reverse ? 1 : 2 }}
+                >
                   {step.gallery.map((src, gi) => (
                     <PhotoSlot key={gi} ratio="4 / 3" src={src} alt={step.title} />
                   ))}
                 </div>
               )}
-            </div>
+            </motion.div>
           );
         })}
         </div>
@@ -1656,202 +1664,204 @@ function PipelineSteps() {
   );
 }
 
-/** Three-bar (Baseline / Reduction / Project) comparison chart - same role
- *  encoding as the docx's own emissions/nitrogen/water charts, redrawn
- *  natively in the report's own type and colour system so it isn't a
- *  screenshot in a different font. Every value is direct-labelled, so the
- *  muted "Baseline" bar reads fine even at low chroma. */
-const BAR_ROLE_COLOR = { Baseline: C.mute, Reduction: C.husk, Project: C.field, "Removals (Net Sink)": C.clay };
+/** Waterfall bar charts - Recharts, mounted on viewport entry so their own
+ *  draw animation doubles as the scroll reveal. Ported from ClearHarvest.jsx
+ *  (the rice report) so both reports render this figure in the same visual
+ *  language; only the underlying wheat data and copy changed. */
+/** Turns a sequence of "total" (absolute) and "delta" (change from the
+ *  running total) steps into floating-bar rows: `base`/`top` mark where the
+ *  segment starts and ends, `height` is its span - so a delta bar hangs
+ *  between the two totals it connects instead of rising from zero. */
+function buildWaterfall(steps) {
+  let cumulative = 0;
+  return steps.map((s) => {
+    if (s.type === "total") {
+      cumulative = s.value;
+      return { ...s, base: 0, height: s.value, top: s.value };
+    }
+    const start = cumulative;
+    cumulative += s.value;
+    const base = Math.min(start, cumulative);
+    const top = Math.max(start, cumulative);
+    return { ...s, base, top, height: top - base };
+  });
+}
 
-/** Plain-language gloss for each bar role, surfaced as a hover tooltip so a
- *  reader can point at any bar and see what it represents without having to
- *  cross-reference the caption paragraph. */
-const BAR_ROLE_EXPLAIN = {
-  Baseline: "Nestlé's pre-programme reference value for this metric.",
-  Reduction: "The amount cut through programme practices, measured against the baseline.",
-  Project: "The value actually measured under the programme this season.",
-  "Removals (Net Sink)": "Additional CO₂e drawn down and stored via soil organic carbon, on top of the emission reduction.",
-};
+function waterfallLabel(row) {
+  if (row.type === "delta") {
+    const n = Math.abs(row.value).toLocaleString("en-IN");
+    return row.value > 0 ? `+${n}` : n;
+  }
+  return row.value.toLocaleString("en-IN");
+}
 
-/** Value formatter: rounded to the nearest whole number with Indian digit
- *  grouping, so "-363.7" reads as "-364" per the report's no-decimals rule. */
-const fmtBarValue = (v) => Math.round(v).toLocaleString("en-IN");
-
-function MetricBarChart({ eyebrow, headline, unit, bars }) {
-  const [hovered, setHovered] = useState(null);
-  // Positive bars grow up from a shared zero-line; any negative ("Removals")
-  // bar grows down from the same line, sized on its own scale so a small
-  // removals figure doesn't get lost next to a much larger baseline value.
-  const posMax = Math.max(1, ...bars.filter((b) => b.value >= 0).map((b) => b.value));
-  const negValues = bars.filter((b) => b.value < 0).map((b) => Math.abs(b.value));
-  const negMax = negValues.length ? Math.max(...negValues) : 0;
-  const barH = 130;
-  const negH = negMax > 0 ? Math.max(60, (negMax / posMax) * barH) : 0;
-  const totalH = barH + negH;
-  return (
-    <div className="p-6 rounded-lg" style={{ background: "#fff", border: `1px solid ${C.line}` }}>
-      <Eyebrow>{eyebrow}</Eyebrow>
-      <div className="wh-display mt-2" style={{ fontWeight: 800, fontSize: "1.4rem", color: C.field }}><RollingNumber value={headline} /></div>
-      <div className="wh-data mt-0.5" style={{ fontSize: 11, color: C.mute }}>{unit}</div>
-      <div className="flex items-stretch justify-between gap-4 mt-6" style={{ height: totalH, position: "relative" }}>
-        {negH > 0 && (
-          <div style={{ position: "absolute", left: 0, right: 0, top: barH, borderTop: `1px dashed ${C.line}` }} />
-        )}
-        {bars.map(({ label, value }, i) => {
-          const color = BAR_ROLE_COLOR[label] || C.field;
-          const isNeg = value < 0;
-          const magnitude = Math.abs(value);
-          const scale = isNeg ? (negMax > 0 ? negH / negMax : 0) : barH / posMax;
-          const barPx = Math.max(6, magnitude * scale);
-          const isHovered = hovered === label;
-          // Anchor the tooltip to whichever edge keeps it inside this card -
-          // centering on every bar pushed the ones near the left/right edge
-          // out over the neighbouring chart card.
-          const isFirst = i === 0;
-          const isLast = i === bars.length - 1;
-          const tooltipAnchor = isFirst
-            ? { left: 0, transform: "none" }
-            : isLast
-              ? { right: 0, left: "auto", transform: "none" }
-              : { left: "50%", transform: "translateX(-50%)" };
-          return (
-            <div
-              key={label}
-              className="flex-1"
-              style={{ position: "relative", height: totalH, cursor: "default" }}
-              onMouseEnter={() => setHovered(label)}
-              onMouseLeave={() => setHovered((h) => (h === label ? null : h))}
-            >
-              {isHovered && BAR_ROLE_EXPLAIN[label] && (
-                <motion.div
-                  initial={{ opacity: 0, y: 4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.18 }}
-                  className="absolute"
-                  style={{
-                    bottom: "100%",
-                    marginBottom: 10,
-                    width: 176,
-                    padding: "10px 12px",
-                    borderRadius: 8,
-                    background: C.ink,
-                    color: "rgba(255,255,255,.92)",
-                    fontSize: 11.5,
-                    lineHeight: 1.5,
-                    boxShadow: "0 12px 28px rgba(0,0,0,.22)",
-                    zIndex: 10,
-                    pointerEvents: "none",
-                    ...tooltipAnchor,
-                  }}
-                >
-                  <div className="wh-data" style={{ color: color, fontWeight: 700, fontSize: 10.5, letterSpacing: ".06em", marginBottom: 3 }}>
-                    {label.toUpperCase()}
-                  </div>
-                  {BAR_ROLE_EXPLAIN[label]}
-                </motion.div>
-              )}
-              <motion.div
-                className="absolute left-1/2"
-                style={{
-                  background: color,
-                  width: "100%",
-                  maxWidth: 46,
-                  transform: "translateX(-50%) scale(1)",
-                  transformOrigin: isNeg ? "top center" : "bottom center",
-                  borderRadius: isNeg ? "0 0 4px 4px" : "4px 4px 0 0",
-                  boxShadow: isHovered ? "0 6px 16px rgba(0,0,0,.28)" : "0 0 0 rgba(0,0,0,0)",
-                  ...(isNeg ? { top: barH } : { bottom: negH }),
-                }}
-                initial={{ height: 0 }}
-                whileInView={{ height: barPx }}
-                animate={{ scaleX: isHovered ? 1.12 : 1 }}
-                viewport={{ once: true, amount: 0.6 }}
-                transition={{ height: { duration: 0.9, ease: EASE }, scaleX: { duration: 0.22, ease: EASE }, boxShadow: { duration: 0.22 } }}
-              />
-              <div
-                className="wh-data absolute left-1/2"
-                style={{
-                  fontSize: 12,
-                  fontWeight: 700,
-                  color: C.ink,
-                  transform: "translateX(-50%)",
-                  whiteSpace: "nowrap",
-                  ...(isNeg ? { top: barH + barPx + 6 } : { bottom: negH + barPx + 4 }),
-                }}
-              >
-                <RollingNumber value={fmtBarValue(value)} />
-              </div>
-            </div>
-          );
-        })}
-      </div>
-      <div className="flex items-stretch justify-between gap-4 mt-2" style={{ borderTop: `1px solid ${C.line}` }}>
-        {bars.map(({ label }) => (
-          <div key={label} className="flex-1 text-center pt-2" style={{ fontSize: 11, color: C.mute, fontWeight: 600 }}>
-            {label}
-          </div>
-        ))}
-      </div>
-    </div>
+function waterfallLabelContent(data) {
+  return ({ x, y, width, index }) => (
+    <text x={x + width / 2} y={y - 6} textAnchor="middle" style={{ fontSize: 12, fontFamily: FONT_DATA, fill: C.ink, fontWeight: 600 }}>
+      {waterfallLabel(data[index])}
+    </text>
   );
 }
 
-const METRIC_CHARTS = [
+/** Custom XAxis tick factory: renders the rotated category label as usual, and for
+ *  categories present in the given pct map, circles a percentage callout beneath it -
+ *  sits under the axis so it reads as an annotation, not a chart value. Each chart
+ *  gets its own map since bar names ("Reduction", "Project") repeat across charts. */
+function makeWaterfallAxisTick(pctMap) {
+  return function waterfallAxisTick({ x, y, payload }) {
+    const pct = pctMap[payload.value];
+    return (
+      <g>
+        <text x={x} y={y + 9} textAnchor="end" transform={`rotate(-12, ${x}, ${y + 9})`} style={{ fontSize: 11, fill: C.mute, fontFamily: FONT_DATA }}>
+          {payload.value}
+        </text>
+        {pct && (
+          <g transform={`translate(${x}, ${y + 40})`}>
+            <circle r={16} fill="none" stroke={C.field} strokeWidth={1.6} />
+            <text textAnchor="middle" dy={4} style={{ fontSize: 11.5, fontWeight: 700, fill: C.field, fontFamily: FONT_DATA }}>
+              {pct}
+            </text>
+          </g>
+        )}
+      </g>
+    );
+  };
+}
+
+const EMISSIONS_AXIS_TICK = makeWaterfallAxisTick({ "Reduction": "15%" });
+const NITROGEN_AXIS_TICK = makeWaterfallAxisTick({ "Reduction": "34%" });
+const WATER_AXIS_TICK = makeWaterfallAxisTick({ "Saving": "46%" });
+
+/** Draws only the [base, top] slice of the bar - recharts positions this
+ *  shape as if it were a full bar for `top`, so we shorten it from the same
+ *  top edge down to `height` px instead of letting it run to the axis. */
+function WaterfallBarShape({ x, y, width, height, payload }) {
+  const pxPerUnit = payload.top > 0 ? height / payload.top : 0;
+  const segHeight = Math.max(payload.height * pxPerUnit, 1);
+  const r = Math.min(4, segHeight / 2, width / 2);
+  return (
+    <path
+      d={`M${x},${y + segHeight} L${x},${y + r} Q${x},${y} ${x + r},${y} L${x + width - r},${y} Q${x + width},${y} ${x + width},${y + r} L${x + width},${y + segHeight} Z`}
+      fill={payload.fill}
+    />
+  );
+}
+
+const EMISSIONS_WATERFALL = buildWaterfall([
+  { name: "Baseline", type: "total", value: 425, fill: C.mute, note: "Nestlé's declared baseline, kg CO₂e per MT of wheat" },
+  { name: "Reduction", type: "delta", value: -65, fill: C.leaf, note: "65 kg CO₂e/MT of wheat lower - a ~15% reduction" },
+  { name: "Project", type: "total", value: 360, fill: C.field, note: "Modelled programme emissions intensity - the 15% headline result. Removals of -364 kg CO₂e/MT of wheat via soil organic carbon add to this on top." },
+]);
+
+const NITROGEN_WATERFALL = buildWaterfall([
+  { name: "Baseline", type: "total", value: 187, fill: C.mute, note: "Nestlé's baseline nitrogen application rate" },
+  { name: "Reduction", type: "delta", value: -64, fill: C.leaf, note: "64 kg N/ha lower - a ~34% reduction against baseline" },
+  { name: "Project", type: "total", value: 123, fill: C.field, note: "Average nitrogen application recorded under the programme" },
+]);
+
+const WATER_WATERFALL = buildWaterfall([
+  { name: "Baseline", type: "total", value: 1410, fill: C.mute, note: "Grow Indigo baseline irrigation water use, m³ per ha" },
+  { name: "Saving", type: "delta", value: -649, fill: C.water, note: "649 m³/ha lower - a ~46% reduction against baseline" },
+  { name: "Project", type: "total", value: 761, fill: C.water, note: "Irrigation water use recorded under the programme" },
+]);
+
+function ChartTip({ active, payload, unit }) {
+  return (
+    <AnimatePresence>
+      {active && payload && payload.length && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.94, y: 6 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.96 }}
+          transition={{ duration: 0.18, ease: EASE }}
+          className="rounded p-3"
+          style={{ background: C.ink, maxWidth: 260, boxShadow: "0 20px 40px -24px rgba(0,0,0,.6)" }}
+        >
+          <div style={{ color: "#fff", fontWeight: 600, fontSize: 13 }}>{payload[0].payload.name}</div>
+          <div className="wh-display" style={{ color: payload[0].payload.fill, fontWeight: 800, fontSize: 22, marginTop: 2 }}>
+            {(payload[0].payload.type === "delta" ? Math.abs(payload[0].payload.value) : payload[0].payload.value).toLocaleString("en-IN")}{" "}
+            <span style={{ fontSize: 11, fontWeight: 500 }}>{unit}</span>
+          </div>
+          <div className="wh-data" style={{ color: "rgba(255,255,255,.62)", fontSize: 10.5, lineHeight: 1.6, marginTop: 6 }}>
+            {payload[0].payload.note}
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+function ChartFrame({ title, unit, kicker, children, height = 320, footnote }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, amount: 0.25 });
+  return (
+    <motion.div
+      ref={ref}
+      className="p-6 md:p-7 rounded-lg h-full"
+      style={{ background: "#fff", border: `1px solid ${C.line}` }}
+      initial={{ opacity: 0, y: 30 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.7, ease: EASE }}
+      whileHover={{ boxShadow: "0 24px 48px -32px rgba(10,31,22,.5)" }}
+    >
+      <Eyebrow>{kicker}</Eyebrow>
+      <h4 className="wh-display mt-3 text-xl md:text-2xl" style={{ color: C.field, fontWeight: 700 }}>{title}</h4>
+      <div className="wh-data mt-1" style={{ fontSize: 11, color: C.mute }}>{unit}</div>
+      <div style={{ height, marginTop: 18 }}>
+        {inView && <ResponsiveContainer width="100%" height="100%">{children}</ResponsiveContainer>}
+      </div>
+      {footnote && (
+        <div className="wh-data mt-3 pt-3" style={{ fontSize: 10.5, color: C.mute, lineHeight: 1.6, borderTop: `1px solid ${C.line}` }}>
+          {footnote}
+        </div>
+      )}
+    </motion.div>
+  );
+}
+
+const chartAxisStyle = { fontSize: 11, fill: C.mute, fontFamily: FONT_DATA };
+
+const WHEAT_SEASON_HEADLINE = [
   {
-    eyebrow: "GHG emissions intensity",
-    headline: "~15% lower",
-    unit: "kg CO₂e per MT of wheat",
-    bars: [
-      { label: "Baseline", value: 425 },
-      { label: "Reduction", value: 65 },
-      { label: "Project", value: 360 },
-      { label: "Removals (Net Sink)", value: -364 },
+    label: "GHG reduction", value: 15, prefix: "~ ", suffix: "%", tone: C.field,
+    detail: [
+      ["-364", "kg CO₂e/MT of wheat removed · net sink, on top of the reduction"],
+      ["65", "kg CO₂e/MT of wheat cut · 425 → 360, vs. Nestlé baseline"],
     ],
-    caption: "Modelled GHG emissions intensity decreased from 425 to 360 kg CO₂e per MT of wheat, representing a reduction of 65 kg CO₂e per MT, or approximately 15%, against the baseline. The project achieved a 15% reduction in emissions compared to the baseline, alongside removals of -364 kgCO2e/MT of wheat.",
   },
-  {
-    eyebrow: "Nitrogen application",
-    headline: "~34% lower",
-    unit: "kg N per ha",
-    bars: [
-      { label: "Baseline", value: 187 },
-      { label: "Reduction", value: 64 },
-      { label: "Project", value: 123 },
-    ],
-    caption: "Average nitrogen application decreased from the Nestlé baseline of 187 kg N/ha to 123 kg N/ha under the programme, a reduction of 64 kg N/ha, or approximately 34%.",
-  },
-  {
-    eyebrow: "Irrigation water use",
-    headline: "~46% lower",
-    unit: "m³ per ha",
-    bars: [
-      { label: "Baseline", value: 1410 },
-      { label: "Reduction", value: 649 },
-      { label: "Project", value: 761 },
-    ],
-    caption: "Because of adoption of sustainable practices like ZT/RT, irrigation water use decreased from the Grow Indigo baseline of 1,410 m³/ha to 761 m³/ha under the programme, a reduction of 649 m³/ha, or approximately 46%.",
-  },
+  { label: "Water saved", value: 46, prefix: "~ ", suffix: "%", tone: C.water },
+  { label: "Nitrogen reduction", value: 34, prefix: "~ ", suffix: "%", tone: C.husk },
 ];
 
-function MetricChartsGrid() {
-  const grid = useBatchReveal(".metric-chart-card", { stagger: 0.1 });
+function SeasonHeadlineResults() {
   return (
-    <div>
-      <div className="flex items-center gap-4 mb-4">
-        {Object.entries(BAR_ROLE_COLOR).map(([label, color]) => (
-          <div key={label} className="flex items-center gap-1.5">
-            <span style={{ width: 10, height: 10, borderRadius: 2, background: color, display: "inline-block" }} />
-            <span className="wh-data" style={{ fontSize: 11, color: C.mute }}>{label}</span>
-          </div>
-        ))}
-      </div>
-      <div ref={grid} className="grid gap-5 sm:grid-cols-3">
-        {METRIC_CHARTS.map((m) => (
-          <div key={m.eyebrow} className="metric-chart-card">
-            <MetricBarChart eyebrow={m.eyebrow} headline={m.headline} unit={m.unit} bars={m.bars} />
-            <p className="mt-3" style={{ fontSize: 12.5, lineHeight: 1.6, color: C.mute }}>{m.caption}</p>
-          </div>
+    <div className="mb-10 md:mb-12">
+      <Eyebrow color={C.husk}>Season headline results</Eyebrow>
+      <div className="grid gap-5 sm:grid-cols-3 mt-4">
+        {WHEAT_SEASON_HEADLINE.map((s) => (
+          <motion.div
+            key={s.label}
+            variants={vFadeUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.3 }}
+            className="p-6 rounded-lg h-full"
+            style={{ background: s.detail ? C.ink : "#fff", border: s.detail ? "none" : `1px solid ${C.line}` }}
+          >
+            <div className="wh-display" style={{ color: s.detail ? "#fff" : s.tone, fontWeight: 800, fontSize: "clamp(2rem,4.4vw,2.6rem)" }}>
+              <Counter value={s.value} prefix={s.prefix || ""} suffix={s.suffix || ""} />
+            </div>
+            <div className="mt-1" style={{ fontWeight: 600, fontSize: 14.5, color: s.detail ? "rgba(255,255,255,.85)" : C.ink }}>{s.label}</div>
+            {s.detail && (
+              <div className="mt-4 space-y-2 pt-4" style={{ borderTop: "1px solid rgba(255,255,255,.15)" }}>
+                {s.detail.map(([v, l]) => (
+                  <div key={v} className="wh-data" style={{ fontSize: 10.5, color: "rgba(255,255,255,.6)", lineHeight: 1.5 }}>
+                    <span style={{ color: C.leaf, fontWeight: 700 }}>{v}</span> {l}
+                  </div>
+                ))}
+              </div>
+            )}
+          </motion.div>
         ))}
       </div>
     </div>
@@ -1882,14 +1892,65 @@ function AuditedSection() {
       </Reveal>
 
       <Reveal delay={0.1} className="mt-14">
-        <Eyebrow>Season headline results</Eyebrow>
-        <div className="mt-4"><StatRow stats={HEADLINE_RESULTS} /></div>
+        <SeasonHeadlineResults />
       </Reveal>
 
-      <Reveal delay={0.1} className="mt-10">
-        <Eyebrow>Modelled results, baseline vs programme</Eyebrow>
-        <div className="mt-4"><MetricChartsGrid /></div>
-      </Reveal>
+      <div className="grid gap-5 lg:grid-cols-2">
+        <ChartFrame
+          kicker="Emissions intensity"
+          title="15% less carbon in every tonne"
+          unit="kg CO₂e per MT of wheat"
+          height={360}
+          footnote="The project achieved a 15% reduction in emissions compared to the Nestlé baseline, alongside removals of -364 kg CO₂e/MT of wheat via soil organic carbon (not shown on this chart)."
+        >
+          <BarChart data={EMISSIONS_WATERFALL} margin={{ top: 10, right: 10, left: -12, bottom: 46 }}>
+            <XAxis dataKey="name" tick={EMISSIONS_AXIS_TICK} interval={0} height={66} axisLine={{ stroke: C.line }} tickLine={false} />
+            <YAxis tick={chartAxisStyle} axisLine={false} tickLine={false} domain={[0, 500]} />
+            <Tooltip content={<ChartTip unit="kg CO₂e/MT of wheat" />} cursor={{ fill: "rgba(14,91,51,.06)" }} />
+            <Bar dataKey="top" shape={WaterfallBarShape} animationDuration={1400} animationEasing="ease-out">
+              <LabelList dataKey="top" content={waterfallLabelContent(EMISSIONS_WATERFALL)} />
+            </Bar>
+          </BarChart>
+        </ChartFrame>
+
+        <ChartFrame
+          kicker="Nitrogen use"
+          title="Less fertiliser, same crop"
+          unit="kg nitrogen per ha"
+          height={360}
+          footnote="Average nitrogen application decreased from 187 to 123 kg N/ha under the programme, a reduction of 64 kg N/ha, or approximately 34%."
+        >
+          <BarChart data={NITROGEN_WATERFALL} margin={{ top: 10, right: 10, left: -12, bottom: 46 }}>
+            <XAxis dataKey="name" tick={NITROGEN_AXIS_TICK} interval={0} height={66} axisLine={{ stroke: C.line }} tickLine={false} />
+            <YAxis tick={chartAxisStyle} axisLine={false} tickLine={false} domain={[0, 220]} />
+            <Tooltip content={<ChartTip unit="kg N/ha" />} cursor={{ fill: "rgba(14,91,51,.06)" }} />
+            <Bar dataKey="top" shape={WaterfallBarShape} animationDuration={1400} animationBegin={200}>
+              <LabelList dataKey="top" content={waterfallLabelContent(NITROGEN_WATERFALL)} />
+            </Bar>
+          </BarChart>
+        </ChartFrame>
+      </div>
+
+      <div className="mt-5 flex justify-center">
+        <div className="w-full lg:w-1/2 lg:pl-2.5">
+          <ChartFrame
+            kicker="Irrigation water use"
+            title="46% less water per hectare"
+            unit="m³ per ha"
+            height={320}
+            footnote="Because of adoption of sustainable practices like ZT/RT, irrigation water use decreased from 1,410 to 761 m³/ha under the programme, a reduction of 649 m³/ha, or approximately 46%."
+          >
+            <BarChart data={WATER_WATERFALL} margin={{ top: 10, right: 10, left: -12, bottom: 46 }}>
+              <XAxis dataKey="name" tick={WATER_AXIS_TICK} interval={0} height={66} axisLine={{ stroke: C.line }} tickLine={false} />
+              <YAxis tick={chartAxisStyle} axisLine={false} tickLine={false} domain={[0, 1600]} />
+              <Tooltip content={<ChartTip unit="m³/ha" />} cursor={{ fill: "rgba(30,136,168,.07)" }} />
+              <Bar dataKey="top" shape={WaterfallBarShape} animationDuration={1400}>
+                <LabelList dataKey="top" content={waterfallLabelContent(WATER_WATERFALL)} />
+              </Bar>
+            </BarChart>
+          </ChartFrame>
+        </div>
+      </div>
     </Section>
   );
 }
@@ -2061,7 +2122,7 @@ function TimelineSection() {
    18 · SECTION 11 - WHAT IT MEANT FOR THE FARMER
 ---------------------------------------------------------------------------- */
 const SHORT_TERM = [
-  ["Lower labour and establishment costs", "Zero tillage reduced repeated land-preparation operations, lowering tractor use, fuel consumption, labour requirements, and overall wheat establishment costs."],
+  ["Lower labour and establishment costs", "The ZT/RT practice reduced repeated land-preparation operations, lowering tractor use, fuel consumption, labour requirements, and overall wheat establishment costs."],
   ["Fertiliser savings", "Guided nutrient management reduced nitrogen application from 187 kg N/ha to 123 kg N/ha, saving 64 kg N/ha and lowering fertiliser expenditure without attributing the reduction to biological inputs."],
   ["Water savings", "Direct sowing under retained residue helped conserve soil moisture and reduced the need for irrigation during crop establishment, contributing to lower pumping and irrigation costs."],
   ["Reduced residue-management costs", "Retaining and sowing through crop residue provided an alternative to burning and avoided additional labour and machinery costs associated with residue removal or disposal."],
@@ -2104,22 +2165,13 @@ function FarmerImpactSection() {
       <div className="grid gap-10 lg:grid-cols-2">
         <Reveal>
           <div className="p-7 rounded-lg h-full" style={{ background: "#fff", border: `1px solid ${C.line}`, borderTop: `3px solid ${C.field}` }}>
-            <h4 className="wh-display text-lg" style={{ color: C.field, fontWeight: 700 }}>Short-term impact</h4>
-            <p className="mt-2 mb-6" style={{ fontSize: 13.5, lineHeight: 1.62, color: C.mute }}>
-              In the season of implementation, Zero Tillage gave farmers a more direct route to wheat
-              establishment after the preceding crop, reinforced by guided fertiliser use and closer field-team
-              contact.
-            </p>
+            <h4 className="wh-display text-lg mb-6" style={{ color: C.field, fontWeight: 700 }}>Short-term impact</h4>
             <CheckList items={SHORT_TERM} color={C.field} />
           </div>
         </Reveal>
         <Reveal delay={0.1}>
           <div className="p-7 rounded-lg h-full" style={{ background: "#fff", border: `1px solid ${C.line}`, borderTop: `3px solid ${C.leaf}` }}>
-            <h4 className="wh-display text-lg" style={{ color: C.leaf, fontWeight: 700 }}>Long-term impact</h4>
-            <p className="mt-2 mb-6" style={{ fontSize: 13.5, lineHeight: 1.62, color: C.mute }}>
-              These are expected longer-term benefits of continued Zero/Reduced tillage adoption and should not
-              be described as measured programme outcomes unless follow-up evidence is available.
-            </p>
+            <h4 className="wh-display text-lg mb-6" style={{ color: C.leaf, fontWeight: 700 }}>Long-term impact</h4>
             <CheckList items={LONG_TERM} color={C.leaf} />
           </div>
         </Reveal>
@@ -2290,8 +2342,6 @@ function AboutSection() {
           <Eyebrow color={C.husk}>Get in touch</Eyebrow>
           <div className="wh-display mt-3" style={{ color: "#fff", fontWeight: 700, fontSize: 18 }}>ClearHarvest - Grow Indigo</div>
           <div className="mt-4 flex flex-wrap justify-center gap-x-10 gap-y-2" style={{ color: "rgba(255,255,255,.78)", fontSize: 14 }}>
-            <div><span style={{ color: "rgba(255,255,255,.5)" }}>Name: </span>Mr. Amit Kumar</div>
-            <div><span style={{ color: "rgba(255,255,255,.5)" }}>Phone: </span>+91 8329049612</div>
             <div><span style={{ color: "rgba(255,255,255,.5)" }}>Email: </span>clearharvest@growindigo.co.in</div>
           </div>
         </div>
@@ -2356,7 +2406,7 @@ function Closing() {
       <div className="mx-auto px-5 md:px-10 py-14" style={{ maxWidth: 1180 }}>
         <LogoLockup light height={40} />
         <div className="wh-data mt-8 text-center" style={{ fontSize: 10.5, color: "rgba(255,255,255,.4)", letterSpacing: ".1em" }}>
-          LOW-CARBON WHEAT PROGRAMME · LUDHIANA, PUNJAB · RABI SEASON 2025
+          LOW-EMISSION WHEAT OFFTAKE · LUDHIANA FARIDKOT, PUNJAB · RABI SEASON 2025
         </div>
       </div>
     </footer>

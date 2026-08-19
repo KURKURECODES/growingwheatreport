@@ -664,24 +664,24 @@ export function WheatFieldsMapBlock() {
 
   return (
     <div>
-      <div className="grid gap-6 lg:grid-cols-5 items-start">
-          <div className="lg:col-span-3">
-            <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-              <Crumbs level={level} village={village} onGo={goto} />
-              <AnimatePresence>
-                {level !== "india" && (
-                  <motion.button
-                    initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 8 }}
-                    onClick={zoomOut}
-                    className="px-3 py-1.5 rounded"
-                    style={{ fontFamily: FONT_DATA, fontSize: 10, letterSpacing: ".1em", color: C.mute, border: `1px solid ${C.line}` }}
-                  >
-                    &larr; ZOOM OUT
-                  </motion.button>
-                )}
-              </AnimatePresence>
-            </div>
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <Crumbs level={level} village={village} onGo={goto} />
+        <AnimatePresence>
+          {level !== "india" && (
+            <motion.button
+              initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 8 }}
+              onClick={zoomOut}
+              className="px-3 py-1.5 rounded"
+              style={{ fontFamily: FONT_DATA, fontSize: 10, letterSpacing: ".1em", color: C.mute, border: `1px solid ${C.line}` }}
+            >
+              &larr; ZOOM OUT
+            </motion.button>
+          )}
+        </AnimatePresence>
+      </div>
 
+      <div className="grid gap-6 lg:grid-cols-5 items-stretch">
+          <div className="lg:col-span-3">
             <DrillMap
               level={level}
               village={village}
