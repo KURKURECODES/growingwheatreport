@@ -22,6 +22,8 @@ import {
   useInView,
   useMotionValue,
   useSpring,
+  useScroll,
+  useTransform,
   LayoutGroup,
 } from "framer-motion";
 import { gsap } from "gsap";
@@ -35,7 +37,7 @@ import { WheatFieldsMapBlock } from "./WheatHarvestMap.jsx";
    a placeholder image.
 ---------------------------------------------------------------------------- */
 import wheatPartnerLogo from "./src/assets/wheat/brand/gilogo1.png";
-import wheatProgrammeLogo from "./src/assets/wheat/brand/chnlogo-removebg.png";
+import wheatProgrammeLogo from "./src/assets/wheat/brand/chnlogo-fixed.png";
 
 import heroCoverPhoto from "./src/assets/wheat/docx/hero-cover.jpeg";
 import enrolledFieldsMap from "./src/assets/wheat/docx/enrolled-fields-map.jpg";
@@ -45,9 +47,9 @@ import monitoringApp1 from "./src/assets/wheat/docx/monitoring-app-1.jpeg";
 import monitoringApp2 from "./src/assets/wheat/docx/monitoring-app-2.jpeg";
 import monitoringApp3 from "./src/assets/wheat/docx/monitoring-app-3.jpeg";
 import monitoringApp4 from "./src/assets/wheat/docx/monitoring-app-4.jpeg";
-import monitoringApp5 from "./src/assets/wheat/docx/monitoring-app-5.png";
+import monitoringApp5 from "./src/assets/wheat/docx/mm5.jpeg";
 import sixStepChain from "./src/assets/wheat/docx/six-step-chain.png";
-import traceabilityFlow from "./src/assets/wheat/docx/traceability-flow.jpeg";
+import traceabilityFlow from "./src/assets/wheat/docx/trace.jpg";
 import activityTimeline from "./src/assets/wheat/docx/activity-timeline.png";
 import journeyKickoff from "./src/assets/wheat/docx/journey-01-kickoff.jpeg";
 import journeyVlm1 from "./src/assets/wheat/docx/journey-02-vlm1-khasikalan.jpg";
@@ -71,16 +73,16 @@ import aboutGrowIndigoGraphic from "./src/assets/wheat/docx/about-grow-indigo.pn
 gsap.registerPlugin(ScrollTrigger);
 
 /* ----------------------------------------------------------------------------
-   1 · DESIGN TOKENS (unchanged system, wheat-toned palette)
+   1 · DESIGN TOKENS (wheat-toned palette, deepened for contrast/punch)
 ---------------------------------------------------------------------------- */
 const C = {
-  ink: "#3B2F22",
-  inkSoft: "#5A4632",
-  field: "#B5541F",
-  leaf: "#7C8C4B",
-  water: "#33547A",
-  waterDeep: "#1F3A54",
-  husk: "#D98C3E",
+  ink: "#2E2313",
+  inkSoft: "#4A3A22",
+  field: "#C4470F",
+  leaf: "#6B8C3A",
+  water: "#1E5C82",
+  waterDeep: "#163F5A",
+  husk: "#E0932A",
   clay: "#8B5A2B",
   paper: "#FBF3E7",
   paperDim: "#F0E2CC",
@@ -335,30 +337,53 @@ function Section({ id, children, tone = "light", className = "" }) {
 
 /** Drop-in image frame - give it a `src` and it renders full-bleed with an
  *  optional caption bar. Every use in this file already has a real `src`
- *  extracted from the docx. */
+ *  extracted from the docx. Every photo pops into place as it scrolls into
+ *  view and, where it has a fixed aspect ratio, drifts gently (Ken-Burns
+ *  style) as the page keeps scrolling past it - a small "the report is alive"
+ *  cue that repeats in every section without needing a bespoke effect each. */
 function PhotoSlot({ ratio, src, alt, className = "", caption }) {
+  const reduce = useReducedMotion();
+  const wrapRef = useRef(null);
+  const { scrollYProgress } = useScroll({ target: wrapRef, offset: ["start end", "end start"] });
+  const parallaxY = useTransform(scrollYProgress, [0, 1], ["-6%", "6%"]);
+
   return (
-    <figure className={className}>
+    <motion.figure
+      ref={wrapRef}
+      className={className}
+      initial={{ opacity: 0, scale: 1.06, y: 26 }}
+      whileInView={{ opacity: 1, scale: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ duration: 0.9, ease: EASE }}
+    >
       <div
         className="relative overflow-hidden rounded-lg"
         style={ratio
           ? { aspectRatio: ratio, background: C.paperDim, border: `1px solid ${C.line}` }
           : { background: C.paperDim, border: `1px solid ${C.line}`, lineHeight: 0 }}
       >
-        <img
-          src={src}
-          alt={alt}
-          style={ratio
-            ? { width: "100%", height: "100%", objectFit: "cover" }
-            : { width: "100%", height: "auto", display: "block" }}
-        />
+        {ratio && !reduce ? (
+          <motion.img
+            src={src}
+            alt={alt}
+            style={{ position: "absolute", top: "-10%", left: 0, width: "100%", height: "120%", objectFit: "cover", y: parallaxY }}
+          />
+        ) : (
+          <img
+            src={src}
+            alt={alt}
+            style={ratio
+              ? { width: "100%", height: "100%", objectFit: "cover" }
+              : { width: "100%", height: "auto", display: "block" }}
+          />
+        )}
       </div>
       {caption && (
         <figcaption className="wh-data mt-2" style={{ fontSize: 11, color: C.mute, lineHeight: 1.6, fontStyle: "italic" }}>
           {caption}
         </figcaption>
       )}
-    </figure>
+    </motion.figure>
   );
 }
 
@@ -627,6 +652,56 @@ function Hero() {
 }
 
 /* ----------------------------------------------------------------------------
+   5b · ROLLING NUMBER - every headline stat/figure counts up from 0 the first
+   time it scrolls into view, instead of appearing as static text.
+---------------------------------------------------------------------------- */
+function RollingNumber({ value, duration = 1.4 }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "0px 0px -10% 0px" });
+  const reduceMotion = useReducedMotion();
+
+  const str = String(value);
+  const m = str.match(/^(.*?)(-?\d[\d,]*(?:\.\d+)?)(.*)$/s);
+  const prefix = m?.[1] ?? "";
+  const numStr = m?.[2] ?? "";
+  const suffix = m?.[3] ?? "";
+  const decimals = numStr.includes(".") ? numStr.split(".")[1].length : 0;
+  const target = m ? parseFloat(numStr.replace(/,/g, "")) : 0;
+
+  const mv = useMotionValue(0);
+  const spring = useSpring(mv, { duration: duration * 1000, bounce: 0 });
+  const [display, setDisplay] = useState(
+    (0).toLocaleString("en-IN", { minimumFractionDigits: decimals, maximumFractionDigits: decimals })
+  );
+
+  useEffect(() => {
+    if (!m) return;
+    if (inView) mv.set(reduceMotion ? target : target);
+  }, [inView, target, m, reduceMotion]);
+
+  useEffect(() => {
+    if (!m) return;
+    if (reduceMotion) {
+      setDisplay(target.toLocaleString("en-IN", { minimumFractionDigits: decimals, maximumFractionDigits: decimals }));
+      return;
+    }
+    return spring.on("change", (v) => {
+      setDisplay(v.toLocaleString("en-IN", { minimumFractionDigits: decimals, maximumFractionDigits: decimals }));
+    });
+  }, [spring, decimals, m, reduceMotion, target]);
+
+  if (!m) return <span>{value}</span>;
+
+  return (
+    <span ref={ref}>
+      {prefix}
+      {display}
+      {suffix}
+    </span>
+  );
+}
+
+/* ----------------------------------------------------------------------------
    6 · SHARED STAT ROW - reused for the two identical "season headline"
    result trios (Section 01 and Section 09).
 ---------------------------------------------------------------------------- */
@@ -636,7 +711,7 @@ function StatRow({ stats }) {
     <div className={`grid gap-4 ${colsClass}`}>
       {stats.map(([value, label, sub]) => (
         <div key={label} className="p-6 rounded-lg text-center" style={{ background: "#fff", border: `1px solid ${C.line}` }}>
-          <div className="wh-display" style={{ fontWeight: 800, fontSize: "2rem", color: C.field }}>{value}</div>
+          <div className="wh-display" style={{ fontWeight: 800, fontSize: "2rem", color: C.field }}><RollingNumber value={value} /></div>
           <div className="mt-2" style={{ fontWeight: 700, fontSize: 14, color: C.ink }}>{label}</div>
           {sub && <div className="wh-data mt-1" style={{ fontSize: 11.5, color: C.mute }}>{sub}</div>}
         </div>
@@ -1034,6 +1109,8 @@ const JOURNEY_STEPS = [
 
 function JourneySection() {
   const grid = useBatchReveal(".journey-step", { stagger: 0.06 });
+  const spineRef = useRef(null);
+  const { scrollYProgress: spineProgress } = useScroll({ target: spineRef, offset: ["start 0.7", "end 0.3"] });
   return (
     <Section id="journey" tone="tint">
       <SectionHead
@@ -1041,35 +1118,54 @@ function JourneySection() {
         title="Programme Journey"
         lede="From programme confirmation to the final audit, each stage generates a verifiable record. Together these records form the evidence base for the programme's monitoring and quantification."
       />
-      <div ref={grid} className="space-y-10">
-        {JOURNEY_STEPS.map((step) => (
-          <div key={step.n} className="journey-step grid gap-6 md:grid-cols-5 items-start">
-            <div className="md:col-span-3">
-              <div className="flex items-baseline gap-3">
-                <span className="wh-data" style={{ color: C.husk, fontWeight: 700, fontSize: 13 }}>{step.n} ·</span>
-                <h4 className="wh-display text-xl" style={{ color: C.ink, fontWeight: 700 }}>{step.title}</h4>
+      <div ref={spineRef} className="relative">
+        <div
+          className="hidden md:block absolute top-0 bottom-0"
+          style={{ left: -28, width: 2, background: C.line }}
+          aria-hidden="true"
+        />
+        <motion.div
+          className="hidden md:block absolute top-0"
+          style={{ left: -28, width: 2, height: "100%", background: C.field, scaleY: spineProgress, transformOrigin: "top" }}
+          aria-hidden="true"
+        />
+        <div ref={grid} className="space-y-8">
+        {JOURNEY_STEPS.map((step, i) => {
+          const hasMedia = Boolean(step.img || step.gallery);
+          const reverse = hasMedia && i % 2 === 1;
+          return (
+            <div key={step.n} className="journey-step grid gap-6 md:grid-cols-5 items-stretch">
+              <div
+                className={hasMedia ? "md:col-span-3 p-7 rounded-lg" : "md:col-span-5 p-7 rounded-lg"}
+                style={{ background: "#fff", border: `1px solid ${C.line}`, order: reverse ? 2 : 1 }}
+              >
+                <div className="flex items-baseline gap-3">
+                  <span className="wh-data" style={{ color: C.husk, fontWeight: 700, fontSize: 13 }}>{step.n} ·</span>
+                  <h4 className="wh-display text-xl" style={{ color: C.ink, fontWeight: 700 }}>{step.title}</h4>
+                </div>
+                {step.place && (
+                  <div className="wh-data mt-1.5" style={{ fontSize: 12.5, color: C.field, fontWeight: 600 }}>{step.place}</div>
+                )}
+                {step.body && (
+                  <p className="mt-3" style={{ fontSize: 14, lineHeight: 1.72, color: C.mute }}>{step.body}</p>
+                )}
               </div>
-              {step.place && (
-                <div className="wh-data mt-1.5" style={{ fontSize: 12.5, color: C.field, fontWeight: 600 }}>{step.place}</div>
+              {step.img && (
+                <div className="md:col-span-2" style={{ order: reverse ? 1 : 2 }}>
+                  <PhotoSlot ratio="4 / 3" src={step.img} alt={step.title} />
+                </div>
               )}
-              {step.body && (
-                <p className="mt-3" style={{ fontSize: 14, lineHeight: 1.72, color: C.mute }}>{step.body}</p>
+              {step.gallery && (
+                <div className="md:col-span-2 grid grid-cols-3 gap-2" style={{ order: reverse ? 1 : 2 }}>
+                  {step.gallery.map((src, gi) => (
+                    <PhotoSlot key={gi} ratio="4 / 3" src={src} alt={step.title} />
+                  ))}
+                </div>
               )}
             </div>
-            {step.img && (
-              <div className="md:col-span-2">
-                <PhotoSlot ratio="4 / 3" src={step.img} alt={step.title} />
-              </div>
-            )}
-            {step.gallery && (
-              <div className="md:col-span-2 grid grid-cols-3 gap-2">
-                {step.gallery.map((src, i) => (
-                  <PhotoSlot key={i} ratio="4 / 3" src={src} alt={step.title} />
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
+          );
+        })}
+        </div>
       </div>
     </Section>
   );
@@ -1115,10 +1211,19 @@ function PracticeSection() {
       />
       <div ref={grid} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {RETURNS_GRID.map(([n, title, body]) => (
-          <div key={n} className="returns-card p-6 rounded-lg" style={{ background: C.paperDim, border: `1px solid ${C.line}` }}>
+          <div
+            key={n}
+            className="returns-card group relative p-6 rounded-lg transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl hover:z-10"
+            style={{ background: C.paperDim, border: `1px solid ${C.line}` }}
+          >
             <div className="wh-display" style={{ color: C.husk, fontWeight: 800, fontSize: "1.6rem" }}>{n}</div>
             <h4 className="wh-display mt-2" style={{ fontSize: 15.5, fontWeight: 700, color: C.ink }}>{title}</h4>
-            <p className="mt-2" style={{ fontSize: 13, lineHeight: 1.6, color: C.mute }}>{body}</p>
+            <p
+              className="mt-2 line-clamp-3 group-hover:line-clamp-none transition-all duration-300"
+              style={{ fontSize: 13, lineHeight: 1.6, color: C.mute }}
+            >
+              {body}
+            </p>
           </div>
         ))}
       </div>
@@ -1211,11 +1316,22 @@ function PipelineSteps() {
  *  muted "Baseline" bar reads fine even at low chroma. */
 const BAR_ROLE_COLOR = { Baseline: C.mute, Reduction: C.husk, Project: C.field, "Removals (Net Sink)": C.clay };
 
+/** Plain-language gloss for each bar role, surfaced as a hover tooltip so a
+ *  reader can point at any bar and see what it represents without having to
+ *  cross-reference the caption paragraph. */
+const BAR_ROLE_EXPLAIN = {
+  Baseline: "Nestlé's pre-programme reference value for this metric.",
+  Reduction: "The amount cut through programme practices, measured against the baseline.",
+  Project: "The value actually measured under the programme this season.",
+  "Removals (Net Sink)": "Additional CO₂e drawn down and stored via soil organic carbon, on top of the emission reduction.",
+};
+
 /** Value formatter: rounded to the nearest whole number with Indian digit
  *  grouping, so "-363.7" reads as "-364" per the report's no-decimals rule. */
 const fmtBarValue = (v) => Math.round(v).toLocaleString("en-IN");
 
 function MetricBarChart({ eyebrow, headline, unit, bars }) {
+  const [hovered, setHovered] = useState(null);
   // Positive bars grow up from a shared zero-line; any negative ("Removals")
   // bar grows down from the same line, sized on its own scale so a small
   // removals figure doesn't get lost next to a much larger baseline value.
@@ -1228,7 +1344,7 @@ function MetricBarChart({ eyebrow, headline, unit, bars }) {
   return (
     <div className="p-6 rounded-lg" style={{ background: "#fff", border: `1px solid ${C.line}` }}>
       <Eyebrow>{eyebrow}</Eyebrow>
-      <div className="wh-display mt-2" style={{ fontWeight: 800, fontSize: "1.4rem", color: C.field }}>{headline}</div>
+      <div className="wh-display mt-2" style={{ fontWeight: 800, fontSize: "1.4rem", color: C.field }}><RollingNumber value={headline} /></div>
       <div className="wh-data mt-0.5" style={{ fontSize: 11, color: C.mute }}>{unit}</div>
       <div className="flex items-stretch justify-between gap-4 mt-6" style={{ height: totalH, position: "relative" }}>
         {negH > 0 && (
@@ -1240,22 +1356,61 @@ function MetricBarChart({ eyebrow, headline, unit, bars }) {
           const magnitude = Math.abs(value);
           const scale = isNeg ? (negMax > 0 ? negH / negMax : 0) : barH / posMax;
           const barPx = Math.max(6, magnitude * scale);
+          const isHovered = hovered === label;
           return (
-            <div key={label} className="flex-1" style={{ position: "relative", height: totalH }}>
+            <div
+              key={label}
+              className="flex-1"
+              style={{ position: "relative", height: totalH, cursor: "default" }}
+              onMouseEnter={() => setHovered(label)}
+              onMouseLeave={() => setHovered((h) => (h === label ? null : h))}
+            >
+              {isHovered && BAR_ROLE_EXPLAIN[label] && (
+                <motion.div
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.18 }}
+                  className="absolute left-1/2"
+                  style={{
+                    bottom: "100%",
+                    marginBottom: 10,
+                    transform: "translateX(-50%)",
+                    width: 176,
+                    padding: "10px 12px",
+                    borderRadius: 8,
+                    background: C.ink,
+                    color: "rgba(255,255,255,.92)",
+                    fontSize: 11.5,
+                    lineHeight: 1.5,
+                    boxShadow: "0 12px 28px rgba(0,0,0,.22)",
+                    zIndex: 10,
+                    pointerEvents: "none",
+                  }}
+                >
+                  <div className="wh-data" style={{ color: color, fontWeight: 700, fontSize: 10.5, letterSpacing: ".06em", marginBottom: 3 }}>
+                    {label.toUpperCase()}
+                  </div>
+                  {BAR_ROLE_EXPLAIN[label]}
+                </motion.div>
+              )}
               <motion.div
                 className="absolute left-1/2"
                 style={{
                   background: color,
                   width: "100%",
                   maxWidth: 46,
-                  transform: "translateX(-50%)",
+                  transform: "translateX(-50%) scale(1)",
+                  transformOrigin: isNeg ? "top center" : "bottom center",
                   borderRadius: isNeg ? "0 0 4px 4px" : "4px 4px 0 0",
+                  boxShadow: isHovered ? "0 6px 16px rgba(0,0,0,.28)" : "0 0 0 rgba(0,0,0,0)",
                   ...(isNeg ? { top: barH } : { bottom: negH }),
                 }}
                 initial={{ height: 0 }}
                 whileInView={{ height: barPx }}
+                animate={{ scaleX: isHovered ? 1.12 : 1 }}
                 viewport={{ once: true, amount: 0.6 }}
-                transition={{ duration: 0.9, ease: EASE }}
+                transition={{ height: { duration: 0.9, ease: EASE }, scaleX: { duration: 0.22, ease: EASE }, boxShadow: { duration: 0.22 } }}
               />
               <div
                 className="wh-data absolute left-1/2"
@@ -1268,7 +1423,7 @@ function MetricBarChart({ eyebrow, headline, unit, bars }) {
                   ...(isNeg ? { top: barH + barPx + 6 } : { bottom: negH + barPx + 4 }),
                 }}
               >
-                {fmtBarValue(value)}
+                <RollingNumber value={fmtBarValue(value)} />
               </div>
             </div>
           );
@@ -1499,6 +1654,7 @@ const SOURCING_PILLARS = [
 
 function SourcingSection() {
   const grid = useBatchReveal(".pillar-card", { stagger: 0.08 });
+  const [hovered, setHovered] = useState(null);
   return (
     <Section id="sourcing" tone="dark">
       <SectionHead
@@ -1508,13 +1664,41 @@ function SourcingSection() {
         lede="The standard sets out how the supply chain is expected to operate - environmental performance, human-rights protection, traceability and farmer livelihoods. Every intervention deployed in Ludhiana and Faridkot maps onto a pillar, and every metric here supports Nestlé's Responsible Sourcing."
       />
       <div ref={grid} className="grid gap-4 sm:grid-cols-2">
-        {SOURCING_PILLARS.map(([pillar, name, body, color]) => (
-          <div key={pillar} className="pillar-card p-6 rounded-lg" style={{ background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.12)", borderTop: `3px solid ${color}` }}>
-            <div className="wh-data" style={{ color, fontWeight: 700, fontSize: 12, letterSpacing: ".1em" }}>{pillar.toUpperCase()}</div>
-            <h4 className="wh-display mt-1.5 text-lg" style={{ color: "#fff", fontWeight: 700 }}>{name}</h4>
-            <p className="mt-3" style={{ fontSize: 13.5, lineHeight: 1.65, color: "rgba(255,255,255,.72)" }}>{body}</p>
-          </div>
-        ))}
+        {SOURCING_PILLARS.map(([pillar, name, body, color]) => {
+          const isHovered = hovered === pillar;
+          return (
+            <motion.div
+              key={pillar}
+              className="pillar-card relative p-6 rounded-lg"
+              onMouseEnter={() => setHovered(pillar)}
+              onMouseLeave={() => setHovered((h) => (h === pillar ? null : h))}
+              animate={{ y: isHovered ? -10 : 0, scale: isHovered ? 1.035 : 1 }}
+              transition={{ duration: 0.3, ease: EASE }}
+              style={{
+                background: isHovered ? `linear-gradient(rgba(20,15,8,.32), rgba(20,15,8,.32)), ${color}` : "rgba(255,255,255,.05)",
+                border: `1px solid ${isHovered ? color : "rgba(255,255,255,.12)"}`,
+                borderTop: `3px solid ${color}`,
+                boxShadow: isHovered ? `0 24px 46px -14px ${color}99` : "0 0 0 rgba(0,0,0,0)",
+                zIndex: isHovered ? 10 : 1,
+                transition: "background .3s ease, border-color .3s ease, box-shadow .3s ease",
+              }}
+            >
+              <div
+                className="wh-data"
+                style={{ color: isHovered ? "#fff" : color, fontWeight: 700, fontSize: 12, letterSpacing: ".1em", transition: "color .3s ease" }}
+              >
+                {pillar.toUpperCase()}
+              </div>
+              <h4 className="wh-display mt-1.5 text-lg" style={{ color: "#fff", fontWeight: 700 }}>{name}</h4>
+              <p
+                className={isHovered ? "mt-3" : "mt-3 line-clamp-2"}
+                style={{ fontSize: 13.5, lineHeight: 1.65, color: "rgba(255,255,255,.85)", transition: "color .3s ease" }}
+              >
+                {body}
+              </p>
+            </motion.div>
+          );
+        })}
       </div>
       <Reveal delay={0.15} className="mt-10">
         <div className="p-6 rounded-lg" style={{ background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.12)" }}>
@@ -1597,10 +1781,19 @@ function AboutSection() {
         <Eyebrow>Our four core verticals</Eyebrow>
         <div ref={grid} className="grid gap-4 sm:grid-cols-2 mt-4">
           {VERTICALS.map(([n, label, name, body, color]) => (
-            <div key={n} className="vertical-card p-6 rounded-lg" style={{ background: "#fff", border: `1px solid ${C.line}`, borderTop: `3px solid ${color}` }}>
+            <div
+              key={n}
+              className="vertical-card group relative p-6 rounded-lg transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl hover:z-10"
+              style={{ background: "#fff", border: `1px solid ${C.line}`, borderTop: `3px solid ${color}` }}
+            >
               <div className="wh-data" style={{ color, fontWeight: 700, fontSize: 11.5, letterSpacing: ".1em" }}>{n} {label}</div>
               <h4 className="wh-display mt-1.5 text-lg" style={{ color: C.ink, fontWeight: 700 }}>{name}</h4>
-              <p className="mt-2" style={{ fontSize: 13.5, lineHeight: 1.62, color: C.mute }}>{body}</p>
+              <p
+                className="mt-2 line-clamp-3 group-hover:line-clamp-none transition-all duration-300"
+                style={{ fontSize: 13.5, lineHeight: 1.62, color: C.mute }}
+              >
+                {body}
+              </p>
             </div>
           ))}
         </div>
@@ -1630,7 +1823,18 @@ function LogoSlot({ name, src, align = "left", light = false, height = 34 }) {
   return (
     <div style={{ display: "flex", justifyContent: align === "right" ? "flex-end" : "flex-start" }}>
       {src ? (
-        <img src={src} alt={`${name} logo`} style={{ height, width: "auto", display: "block" }} />
+        <img
+          src={src}
+          alt={`${name} logo`}
+          style={{
+            height,
+            width: "auto",
+            display: "block",
+            filter: light
+              ? "drop-shadow(0 1px 3px rgba(0,0,0,.55)) drop-shadow(0 0 10px rgba(0,0,0,.25))"
+              : "none",
+          }}
+        />
       ) : (
         <div
           className="flex items-center justify-center rounded"
