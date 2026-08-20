@@ -1134,7 +1134,7 @@ const THEMES = [
   },
   {
     n: "Theme 02", category: "Residue", title: "Crop Residue Management", icon: ICON_NO_BURN, color: C.leaf,
-    stat: "Zero open-field burning · white PP bag segregation",
+    stat: "Zero open-field burning · residue incorporated or baled for third-party use",
     paragraphs: [
       "The Low Emission Wheat Offtake promoted no open-field burning of crop residue as a key principle of responsible residue management. Farmers were encouraged to manage wheat residue through appropriate alternatives such as incorporation in the soil or baling and sending it to a third party.",
       "Sustainable practices such as Zero/Reduced Tillage provided farmers with a practical pathway to establish wheat through in-situ crop residue management, avoiding the need for open-field burning before sowing.",
@@ -1521,17 +1521,7 @@ function GovernanceSection() {
         lede="Delivery ran through a layered implementation architecture. Strategic oversight sat with Grow Indigo's ClearHarvest Business team, keeping the programme aligned to Nestlé's sustainability objectives and reporting requirements."
       />
 
-      <Reveal>
-        <p style={{ fontSize: 15, lineHeight: 1.75, color: C.mute }}>
-          Field execution was led by the Regional Business Manager / Agronomist, who oversaw technical
-          implementation and agronomic fidelity across the project area, supported by the Territory Business
-          Manager on day-to-day oversight, farmer coordination and operational planning. At ground level, Kisan
-          Advisors worked directly with farmers to drive adoption, monitor fields and protect the integrity of
-          data collection.
-        </p>
-      </Reveal>
-
-      <Reveal delay={0.08} className="mt-8">
+      <Reveal className="mt-8">
         <OrgChart />
       </Reveal>
 

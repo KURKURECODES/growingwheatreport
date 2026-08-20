@@ -81,6 +81,12 @@ const VILLAGES = VILLAGES_DATA;
    millers beyond the 5 named tokens cycle through a generated hue ramp so
    the map never silently drops a category if the roster grows. */
 const MILLER_PALETTE = [C.field, C.leaf, C.husk, C.clay, C.water];
+/* Hover/selected feature-state colours must never coincide with a miller's
+   own colour - reusing C.leaf/C.husk here used to make "Golden" fields look
+   identical to any hovered field, and "Kohinoor" fields identical to any
+   selected field. Kept as two dedicated hues outside the miller ramp. */
+const HOVER_COLOR = "#2F9E77";
+const SELECTED_COLOR = "#D6336C";
 const MILLER_COLORS = Object.fromEntries(
   MILLERS.map((name, i) => [
     name,
@@ -134,7 +140,21 @@ const villageFC = (key) => ({
 const villageCount = (key) => FIELDS_FC.features.filter((f) => f.properties.village === key).length;
 const TOTAL_FIELDS = FIELDS_FC.features.length;
 const BLOCKS = [...new Set(VILLAGES.map((v) => v.block))];
-const TOTAL_ACRES = Math.round(FIELDS_FC.features.reduce((s, f) => s + f.properties.acres, 0));
+/* Use acresExcel (the source-sheet value) for the aggregate stat, not the
+   drawn-polygon `acres` - that one is a synthetic geometry measurement (with
+   headroom for gaps/canals baked in) and drifts above the real total. */
+const TOTAL_ACRES = Math.round(FIELDS_FC.features.reduce((s, f) => s + f.properties.acresExcel, 0));
+const ACRE_TO_HA = 0.404686;
+
+/* Procurement (MT) per miller, in a fixed display order - LFM, Gillco,
+   Golden, Kohinoor - independent of MILLERS' own (alphabetical) order. */
+const MILLER_ORDER = ["LFM", "Gillco", "Golden", "Kohinoor"];
+const MILLER_PROCUREMENT_MT = Object.fromEntries(
+  MILLERS.map((n) => [
+    n,
+    FIELDS_FC.features.filter((f) => f.properties.millerName === n).reduce((s, f) => s + f.properties.procurementMt, 0),
+  ])
+);
 
 /** Bounding box of a FeatureCollection, for fitBounds. */
 function fcBounds(fc) {
@@ -266,8 +286,8 @@ function DrillMap({ level, village, focusedDistrict, selected, onPickState, onPi
         paint: {
           "fill-color": [
             "case",
-            ["boolean", ["feature-state", "selected"], false], C.husk,
-            ["boolean", ["feature-state", "hover"], false], C.leaf,
+            ["boolean", ["feature-state", "selected"], false], SELECTED_COLOR,
+            ["boolean", ["feature-state", "hover"], false], HOVER_COLOR,
             ["match", ["get", "millerName"], ...MILLERS.flatMap((n) => [n, millerColor(n)]), C.mute],
           ],
           "fill-opacity": [
@@ -350,7 +370,7 @@ function DrillMap({ level, village, focusedDistrict, selected, onPickState, onPi
           .setHTML(
             `<div style="font-family:${FONT_DATA};font-size:11px;line-height:1.6">
                <div style="font-weight:700;font-size:13px;color:${C.ink}">ID ${f.properties.id}</div>
-               <div style="color:${C.mute}">${f.properties.villageName} - ${f.properties.acres} acres - ${f.properties.millerName}</div>
+               <div style="color:${C.mute}">${f.properties.villageName} - ${(f.properties.acresExcel * ACRE_TO_HA).toFixed(2)} ha - ${f.properties.millerName}</div>
              </div>`
           )
           .addTo(m);
@@ -552,7 +572,7 @@ function Panel({ level, village, field, hoverField }) {
         </div>
         <h3 className="mt-4" style={{ color: "#fff", fontWeight: 700, fontSize: "1.75rem", lineHeight: 1.1 }}>ID {p.id}</h3>
         <div className="mt-5">
-          <Row k="Area" v={`${p.acres} acres`} accent={C.leaf} />
+          <Row k="Area" v={`${(p.acresExcel * ACRE_TO_HA).toFixed(2)} ha`} accent={C.leaf} />
           <Row k="Village" v={p.villageName} />
           <Row k="Block / Taluka" v={p.block} />
           <Row k="District" v={p.district} />
@@ -597,7 +617,7 @@ function Panel({ level, village, field, hoverField }) {
           <Row k="Mapped fields" v={TOTAL_FIELDS} accent={C.leaf} />
           <Row k="Villages" v={`${VILLAGES.length} shown`} />
           <Row k="Blocks / talukas" v={BLOCKS.length} />
-          <Row k="Total acreage" v={`${TOTAL_ACRES.toLocaleString("en-IN")} acres`} accent={C.leaf} />
+          <Row k="Total acreage" v={`${TOTAL_ACRES.toLocaleString("en-IN")} acres / ${Math.round(TOTAL_ACRES * ACRE_TO_HA).toLocaleString("en-IN")} ha`} accent={C.leaf} />
         </div>
         <p className="mt-5" style={{ fontSize: 13.5, lineHeight: 1.7, color: "rgba(255,255,255,.7)" }}>
           {level === "india"
@@ -658,7 +678,7 @@ export function WheatFieldsMapBlock() {
   }, [level, focusedDistrict, goto]);
 
   const legend = level === "village"
-    ? [...MILLERS.map((n) => [millerColor(n), n]), [C.leaf, "Hovered"], [C.husk, "Selected"]]
+    ? [...MILLERS.map((n) => [millerColor(n), n]), [HOVER_COLOR, "Hovered"], [SELECTED_COLOR, "Selected"]]
     : null;
 
   return (
@@ -694,28 +714,34 @@ export function WheatFieldsMapBlock() {
               onFocusDistrict={focusDistrict}
             />
 
-            <div
-              className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2"
-              style={legend ? undefined : { maxHeight: 96, overflowY: "auto", paddingRight: 4 }}
-            >
-              {legend
-                ? legend.map(([c, l]) => (
-                    <span key={l} className="flex items-center gap-2" style={{ fontFamily: FONT_DATA, fontSize: 10, color: C.mute }}>
-                      <span style={{ width: 10, height: 10, background: c, borderRadius: 2 }} />
-                      {l.toUpperCase()}
-                    </span>
-                  ))
-                : VILLAGES.map((v) => (
-                    <motion.button
-                      key={v.key}
-                      onClick={() => pickVillage(v.key)}
-                      whileHover={{ y: -2 }}
-                      style={{ fontFamily: FONT_DATA, fontSize: 10.5, color: C.field, fontWeight: 600, letterSpacing: ".05em" }}
-                    >
-                      {v.name.toUpperCase()} <span style={{ color: C.mute }}>{villageCount(v.key)}</span>
-                    </motion.button>
-                  ))}
-            </div>
+            {legend ? (
+              <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
+                {legend.map(([c, l]) => (
+                  <span key={l} className="flex items-center gap-2" style={{ fontFamily: FONT_DATA, fontSize: 10, color: C.mute }}>
+                    <span style={{ width: 10, height: 10, background: c, borderRadius: 2 }} />
+                    {l.toUpperCase()}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <div className="mt-4 rounded-lg overflow-hidden" style={{ border: `1px solid ${C.line}` }}>
+                <div className="grid grid-cols-2" style={{ background: C.field }}>
+                  <div className="px-4 py-2" style={{ fontFamily: FONT_DATA, fontSize: 10.5, color: "#fff", fontWeight: 700, letterSpacing: ".08em" }}>MILLER</div>
+                  <div className="px-4 py-2 text-right" style={{ fontFamily: FONT_DATA, fontSize: 10.5, color: "#fff", fontWeight: 700, letterSpacing: ".08em" }}>IN MT</div>
+                </div>
+                {MILLER_ORDER.map((n, i) => (
+                  <div key={n} className="grid grid-cols-2" style={{ borderTop: i ? `1px solid ${C.line}` : "none", background: i % 2 ? C.paperDim : "#fff" }}>
+                    <div className="px-4 py-2.5 flex items-center gap-2" style={{ fontFamily: FONT_DATA, fontSize: 12, color: C.ink, fontWeight: 600 }}>
+                      <span style={{ width: 9, height: 9, background: millerColor(n), borderRadius: 2, flexShrink: 0 }} />
+                      {n}
+                    </div>
+                    <div className="px-4 py-2.5 text-right" style={{ fontFamily: FONT_DATA, fontSize: 12, color: C.mute }}>
+                      {MILLER_PROCUREMENT_MT[n].toLocaleString("en-IN", { maximumFractionDigits: 2 })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="lg:col-span-2">
