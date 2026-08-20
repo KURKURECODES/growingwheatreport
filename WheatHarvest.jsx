@@ -628,7 +628,7 @@ function TopBar() {
       <div className="flex items-center gap-4 px-5 md:px-10" style={{ height: 58 }}>
         <Magnetic strength={0.2}>
           <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} aria-label="Back to top">
-            <LogoSlot name="Grow Indigo" src={wheatPartnerLogo} light height={26} />
+            <LogoSlot name="Grow Indigo" src={wheatPartnerLogo} light height={33} />
           </button>
         </Magnetic>
 
@@ -656,7 +656,7 @@ function TopBar() {
         </LayoutGroup>
 
         <div className="ml-auto md:ml-0">
-          <LogoSlot name="ClearHarvest" src={wheatProgrammeLogo} align="right" light height={26} />
+          <LogoSlot name="ClearHarvest" src={wheatProgrammeLogo} align="right" light height={33} />
         </div>
       </div>
       <div style={{ height: 2, background: "rgba(255,255,255,.12)" }}>
@@ -999,8 +999,8 @@ function SeasonSection() {
 
       <Reveal>
         <StatRow stats={[
-          ["273", "Wheat farmers participated", null],
-          ["2390", "Hectares under ZT/RT", null],
+          ["273", "Farmers participated", null],
+          ["2390", "Hectares", null],
         ]} />
       </Reveal>
 
@@ -1041,7 +1041,7 @@ function SeasonSection() {
             transparent field records, independent assurance and traceable procurement.
           </p>
           <div className="wh-data mt-5" style={{ fontSize: 13, color: "rgba(255,255,255,.65)", letterSpacing: ".02em" }}>
-            273 farmers enrolled · 2,390 hectares covered · 17 farmers audited · 7,261 MT of wheat procured
+            273 farmers enrolled · 2,390 hectares covered · 17 sample farmers audited · 7,261 MT of wheat procured
           </div>
         </div>
       </Reveal>
@@ -1422,7 +1422,7 @@ const WORKFLOW_WHEAT = [
   ["Capability building on interventions", "Training on sustainable practices"],
   ["Data capture on agronomic practices", "Digitally captured the agronomy data from sowing to harvest"],
   ["QC of field-reported data by scientists", "Methodological review and validation"],
-  ["Procurement audit trail", "Farm to processor"],
+  ["Procurement audit trail", "End-to-end record captured in S3 Sutra"],
   ["3rd-party audit & report submission", "Independent field verification, GHG quantification and final reporting"],
 ];
 
