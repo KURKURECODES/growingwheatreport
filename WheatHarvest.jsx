@@ -291,9 +291,12 @@ function useBatchReveal(selector, opts = {}) {
 }
 
 /* ---- shared chrome ----------------------------------------------------- */
-function Eyebrow({ children, color = C.husk, className = "" }) {
+function Eyebrow({ children, color = C.husk, className = "", big = false }) {
   return (
-    <div className={`wh-data text-xs uppercase ${className}`} style={{ color, letterSpacing: "0.18em", fontWeight: 600 }}>
+    <div
+      className={`wh-data uppercase ${big ? "text-base" : "text-xs"} ${className}`}
+      style={{ color, letterSpacing: big ? "0.1em" : "0.18em", fontWeight: big ? 700 : 600 }}
+    >
       {children}
     </div>
   );
@@ -975,14 +978,16 @@ function StatRow({ stats }) {
   );
 }
 
-const HEADLINE_RESULTS = [
-  ["~34%", "Nitrogen reduction", "187 to 123 kg N/ha"],
-  ["~15%", "GHG reduction", "vs. Nestlé baseline"],
+const ENROLMENT_HEADLINES = [
+  ["273", "Farmers participated", null],
+  ["2390", "Hectares", null],
+  ["7,261", "Procurement quantity (MT)", null],
 ];
 
-const SEASON_EXTRA_HEADLINES = [
-  ["7,261", "Procurement quantity (MT)", null],
-  ["~46%", "Water saved", "1,410.03 → 760.78 m³/ha"],
+const HEADLINE_RESULTS = [
+  ["~34%", "Nitrogen reduction", "187 to 123 kg N/ha **"],
+  ["~46%", "Water saved", "1,410.03 → 760.78 m³/ha *"],
+  ["~15%", "GHG reduction", "vs. Nestlé baseline **"],
 ];
 
 /* ----------------------------------------------------------------------------
@@ -998,19 +1003,21 @@ function SeasonSection() {
       />
 
       <Reveal>
-        <StatRow stats={[
-          ["273", "Farmers participated", null],
-          ["2390", "Hectares", null],
-        ]} />
+        <StatRow stats={ENROLMENT_HEADLINES} />
       </Reveal>
 
       <Reveal delay={0.1} className="mt-6">
-        <StatRow stats={[...HEADLINE_RESULTS, ...SEASON_EXTRA_HEADLINES]} />
+        <StatRow stats={HEADLINE_RESULTS} />
       </Reveal>
 
       <Reveal delay={0.1} className="mt-14">
-        <Eyebrow>Why This Programme Exists?</Eyebrow>
-        <div className="mt-4 space-y-5" style={{ fontSize: 15, lineHeight: 1.75, color: C.mute }}>
+        <p className="wh-data" style={{ fontSize: 12, color: C.mute, letterSpacing: ".01em" }}>
+          * Baseline established by Grow Indigo.
+          <br />
+          ** Baseline provided by Nestlé.
+        </p>
+        <Eyebrow big className="mt-5">Why This Programme Exists?</Eyebrow>
+        <div className="mt-4 space-y-5" style={{ fontSize: 16, lineHeight: 1.75, color: C.mute }}>
           <p>
             Wheat sown after paddy in Punjab is usually established through repeated tillage, with the previous
             crop's residue often burnt to clear fields fast. Tillage adds diesel use and soil disturbance at every
@@ -1035,7 +1042,7 @@ function SeasonSection() {
 
       <Reveal delay={0.12} className="mt-12">
         <div className="p-7 rounded-lg" style={{ background: C.ink }}>
-          <Eyebrow color={C.husk}>The claim, in one line?</Eyebrow>
+          <Eyebrow color={C.husk} big>The claim, in one line?</Eyebrow>
           <p className="mt-4" style={{ fontFamily: FONT_QUOTE, fontStyle: "italic", color: "#fff", fontWeight: 500, fontSize: "clamp(1.3rem,2.6vw,1.75rem)", lineHeight: 1.42 }}>
             A farmer-led model for lower-emission wheat, centred on sustainable practices and supported by
             transparent field records, independent assurance and traceable procurement.
@@ -1061,8 +1068,8 @@ function FieldsSection() {
         lede="The programme covered registered wheat farms in Punjab. Farmer identities, field boundaries and agronomic information were digitally recorded to support field-level monitoring and traceability. Field-level records were organised across four processors: Gillco Agro, Golden Wheat & Allied Mills, Kohinoor Agro Foods and Ludhiana Flour Mills. The final map shows the confirmed programme fields and distinguishes fields where practice-level data are available."
       />
       <Reveal delay={0.15}>
-        <Eyebrow>Explore every enrolled field</Eyebrow>
-        <p className="mt-4" style={{ fontSize: 15, lineHeight: 1.75, color: C.mute }}>
+        <Eyebrow big>Explore every enrolled field</Eyebrow>
+        <p className="mt-4" style={{ fontSize: 16, lineHeight: 1.75, color: C.mute }}>
           Drill from India down to Punjab, the project districts and an individual village to see every mapped
           farmer field, coloured by procuring miller. Hover a field for its ID; click to pin its full record in
           the panel.
@@ -1299,7 +1306,7 @@ function OrgChart() {
 
   return (
     <div ref={scope} className="p-6 md:p-8 rounded-lg" style={{ background: "#fff", border: `1px solid ${C.line}` }}>
-      <Eyebrow>ClearHarvest team structure</Eyebrow>
+      <Eyebrow big>ClearHarvest team structure</Eyebrow>
       <div className="mt-6 flex flex-col items-center">
         {node("PMU", "Project Management Unit · timely execution against milestones", C.field, "#fff", "org-root")}
         <div className="org-stem" style={{ width: 1, height: 22, background: C.line }} />
@@ -1338,7 +1345,7 @@ function RoleAccordion() {
   return (
     <div className="rounded-lg overflow-hidden" style={{ border: `1px solid ${C.line}`, background: "#fff" }}>
       <div className="px-6 py-4" style={{ background: C.field }}>
-        <Eyebrow color="rgba(255,255,255,.7)">Functional responsibility mapping</Eyebrow>
+        <Eyebrow color="rgba(255,255,255,.7)" big>Functional responsibility mapping</Eyebrow>
       </div>
       {GOVERNANCE_TABLE.map(([role, duties], i) => {
         const isOpen = open === i;
@@ -1533,11 +1540,11 @@ function GovernanceSection() {
       </Reveal>
 
       <div className="mt-16">
-        <Eyebrow>Monitoring, Reporting and Verification</Eyebrow>
+        <Eyebrow big>Monitoring, Reporting and Verification</Eyebrow>
 
         <div className="mt-8">
           <h4 className="wh-display text-lg" style={{ color: C.field, fontWeight: 700 }}>Monitoring and Measurement</h4>
-          <p className="mt-3" style={{ fontSize: 14.5, lineHeight: 1.72, color: C.mute }}>
+          <p className="mt-3" style={{ fontSize: 16, lineHeight: 1.72, color: C.mute }}>
             Grow Indigo implemented a structured, phygital monitoring system that combined regular field-level
             observations with digital data capture to ensure accuracy, traceability and verification. Throughout
             the season, Kisan Advisors conducted periodic field visits to monitor crop growth, verify sustainable
@@ -1566,7 +1573,7 @@ function GovernanceSection() {
 
         <div className="mt-14">
           <h4 className="wh-display text-lg" style={{ color: C.field, fontWeight: 700 }}>Traceability</h4>
-          <p className="mt-3" style={{ fontSize: 14.5, lineHeight: 1.72, color: C.mute }}>
+          <p className="mt-3" style={{ fontSize: 16, lineHeight: 1.72, color: C.mute }}>
             Post harvest and during procurement, S3 Sutra enabled traceability of low-emission paddy from farm to
             processor. It captured the complete audit trail, documenting farmer validation, produce quantities, and
             movement of low-emission paddy. This integrated approach created a robust monitoring and verification
@@ -1580,7 +1587,7 @@ function GovernanceSection() {
 
         <div className="mt-14">
           <h4 className="wh-display text-lg" style={{ color: C.field, fontWeight: 700 }}>Verification</h4>
-          <div className="mt-3 space-y-4" style={{ fontSize: 14.5, lineHeight: 1.72, color: C.mute }}>
+          <div className="mt-3 space-y-4" style={{ fontSize: 16, lineHeight: 1.72, color: C.mute }}>
             <p>
               The program delivered measurable reductions in greenhouse gas emissions, water consumption, and
               fertilizer use through farmers' adoption of regenerative agricultural practices, including
@@ -1806,7 +1813,7 @@ function PinnedStatement({ text }) {
   return (
     <div ref={scope} className="flex items-center justify-center px-5" style={{ minHeight: "60vh", background: C.field }}>
       <div className="mx-auto text-center" style={{ maxWidth: 900 }}>
-        <Eyebrow color={C.husk}>The big picture</Eyebrow>
+        <Eyebrow color={C.husk} big>The big picture</Eyebrow>
         <p className="mt-6" style={{ fontFamily: FONT_QUOTE, fontStyle: "italic", color: "#fff", fontWeight: 500, fontSize: "clamp(1.4rem,3vw,2.4rem)", lineHeight: 1.35 }}>
           {text.split(" ").map((w, i) => (
             <span key={i} className="pin-word" style={{ display: "inline-block", marginRight: "0.28em" }}>{w}</span>
@@ -2040,7 +2047,7 @@ const WHEAT_SEASON_HEADLINE = [
 function SeasonHeadlineResults() {
   return (
     <div className="mb-10 md:mb-12">
-      <Eyebrow color={C.husk}>Season headline results</Eyebrow>
+      <Eyebrow color={C.husk} big>Season headline results</Eyebrow>
       <div className="grid gap-5 sm:grid-cols-3 mt-4">
         {WHEAT_SEASON_HEADLINE.map((s) => (
           <motion.div
@@ -2244,7 +2251,7 @@ function ActivityTimelineScroller() {
   return (
     <div ref={scope} className="rounded-lg overflow-hidden" style={{ background: C.paperDim, border: `1px solid ${C.line}` }}>
       <div className="w-full px-6 md:px-10 py-10 md:py-14" style={{ maxWidth: 1040, margin: "0 auto" }}>
-        <Eyebrow>Scroll to grow the season, October to April</Eyebrow>
+        <Eyebrow big>Scroll to grow the season, October to April</Eyebrow>
 
         {/* events row - each badge sits at its month's x position */}
         <div className="relative mt-8" style={{ height: 64 }}>
@@ -2538,7 +2545,7 @@ function AboutSection() {
       </Reveal>
 
       <Reveal delay={0.1} className="mt-14">
-        <Eyebrow>Our four core verticals</Eyebrow>
+        <Eyebrow big>Our four core verticals</Eyebrow>
         <div ref={grid} className="grid gap-4 sm:grid-cols-2 mt-4">
           {VERTICALS.map(([n, label, name, body, color]) => (
             <div
@@ -2561,7 +2568,7 @@ function AboutSection() {
 
       <Reveal delay={0.1} className="mt-14">
         <div className="p-7 rounded-lg text-center" style={{ background: C.ink }}>
-          <Eyebrow color={C.husk}>Get in touch</Eyebrow>
+          <Eyebrow color={C.husk} big>Get in touch</Eyebrow>
           <div className="wh-display mt-3" style={{ color: "#fff", fontWeight: 700, fontSize: 18 }}>ClearHarvest - Grow Indigo</div>
           <div className="mt-4 flex flex-wrap justify-center gap-x-10 gap-y-2" style={{ color: "rgba(255,255,255,.78)", fontSize: 14 }}>
             <div><span style={{ color: "rgba(255,255,255,.5)" }}>Email: </span>clearharvest@growindigo.co.in</div>
