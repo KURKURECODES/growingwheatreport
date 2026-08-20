@@ -734,10 +734,15 @@ function Hero() {
         {Array.from({ length: 46 }).map((_, i) => {
           const x = 20 + i * 26;
           const h = 30 + ((i * 37) % 40);
+          const tipY = 210 - h - 12;
+          const tilt = (i % 5) - 2;
           return (
             <g key={i} className="hero-stalk">
               <path d={`M${x} 210 q3 -${h} 0 -${h + 12}`} stroke={C.husk} strokeWidth="1.6" fill="none" opacity=".8" />
-              <ellipse cx={x} cy={210 - h - 12} rx="3.4" ry="8" fill={C.husk} opacity=".85" transform={`rotate(${(i % 5) - 2} ${x} ${210 - h - 12})`} />
+              {/* plump wheat ear (shared WheatEar shape, scaled down for the hero field) */}
+              <g transform={`translate(${x} ${tipY}) rotate(${tilt})`}>
+                <WheatEar scale={0.5} opacity=".9" />
+              </g>
             </g>
           );
         })}
@@ -1731,10 +1736,10 @@ function VoicesSection() {
    ("Tillage: One Establishment Change, Multiple Returns")
 ---------------------------------------------------------------------------- */
 const RETURNS_GRID = [
-  ["01", "More efficient wheat establishment", "Zero tillage machinery enabled direct sowing through retained residue, reducing conventional preparatory operations."],
+  ["01", "More efficient wheat establishment", "Zero/Reduced tillage machinery enabled direct sowing through retained residue, reducing conventional preparatory operations."],
   ["02", "Responsible residue and soil management", "Residue retention provided an alternative to open-field burning, while avoiding repeated ploughing reduced soil disturbance."],
-  ["03", "More efficient nitrogen application", "Recorded nitrogen use declined from 187 to 123 kg N/ha, a calculated reduction of 34% across the assessed area."],
-  ["04", "Lower modelled emission intensity", "The assessment recorded an average modelled emission reduction of 15% per MT."],
+  ["03", "More efficient nitrogen application", "Recorded nitrogen use declined from 187 to 123 kg N/ha, a calculated reduction of 34% against the nestle baseline."],
+  ["04", "Lower modelled emission intensity", "The assessment recorded an average modelled emission reduction of 15% per MT of wheat."],
   ["05", "Stronger farmer capability and field support", "Several village-level and technical sessions, supported by field advisory, reinforced practice adoption, crop management and record-keeping."],
   ["06", "Traceable and independently assured sourcing", "Digital field records, segregated procurement, audited sample farmers and Cool Farm Platform v3.0 quantification supported credible reporting."],
 ];
@@ -2122,7 +2127,7 @@ function AuditedSection() {
           title="Less fertiliser, same crop"
           unit="kg nitrogen per ha"
           height={360}
-          footnote="Average nitrogen application decreased from 187 to 123 kg N/ha under the programme, a reduction of 64 kg N/ha, or approximately 34%."
+          footnote="Average nitrogen application decreased from 187 to 123 kg N/ha under the programme, a reduction of 64 kg N/ha, or approximately 34% against the nestle baseline."
         >
           <BarChart data={NITROGEN_WATERFALL} margin={{ top: 10, right: 10, left: -12, bottom: 46 }}>
             <XAxis dataKey="name" tick={NITROGEN_AXIS_TICK} interval={0} height={66} axisLine={{ stroke: C.line }} tickLine={false} />
@@ -2143,7 +2148,7 @@ function AuditedSection() {
             title="46% less water per hectare"
             unit="m³ per ha"
             height={320}
-            footnote="Because of adoption of sustainable practices like ZT/RT, irrigation water use decreased from 1,410 to 761 m³/ha under the programme, a reduction of 649 m³/ha, or approximately 46%."
+            footnote="Because of adoption of sustainable practices like ZT/RT, irrigation water use decreased from 1,410 to 761 m³/ha under the programme, a reduction of 649 m³/ha, or approximately 46% Vs Grow Indigo baseline."
           >
             <BarChart data={WATER_WATERFALL} margin={{ top: 10, right: 10, left: -12, bottom: 46 }}>
               <XAxis dataKey="name" tick={WATER_AXIS_TICK} interval={0} height={66} axisLine={{ stroke: C.line }} tickLine={false} />
@@ -2181,6 +2186,34 @@ const ACTIVITY_EVENTS = [
 ];
 const ACTIVITY_STALK_COUNT = 5;
 
+/* A flat, filled wheat ear - plump almond-shaped kernels in facing pairs
+   up a central rachis, tapering to a single tip kernel and a short bristle -
+   instead of the thin line-spike (and, before that, the plain ellipse
+   "grain") this used to be. One shared shape, reused at full scale here in
+   the Activity Timeline and scaled down for the hero field below. */
+const WHEAT_KERNEL_PATH = "M0,0 C-3.4,-1.6 -3.8,-5.6 0,-9.4 C3.8,-5.6 3.4,-1.6 0,0 Z";
+const WHEAT_KERNEL_LEVELS = [
+  { y: 6, x: 6.0, rot: 24 }, { y: 1, x: 6.3, rot: 22 }, { y: -4, x: 6.0, rot: 19 },
+  { y: -9, x: 5.2, rot: 15 }, { y: -14, x: 4.0, rot: 11 }, { y: -18, x: 2.6, rot: 7 },
+];
+function WheatEar({ className, scale = 1, fill = C.husk, stroke = C.clay, opacity }) {
+  return (
+    <g className={className} opacity={opacity}>
+      <g transform={scale !== 1 ? `scale(${scale})` : undefined}>
+        <line x1="0" y1="8" x2="0" y2="-19" stroke={stroke} strokeWidth="1.1" strokeLinecap="round" />
+        <line x1="0" y1="-19" x2="0" y2="-24" stroke={stroke} strokeWidth="0.8" strokeLinecap="round" />
+        {WHEAT_KERNEL_LEVELS.map(({ y, x, rot }, i) => (
+          <g key={i}>
+            <path d={WHEAT_KERNEL_PATH} transform={`translate(${-x}, ${y}) rotate(${-rot})`} fill={fill} stroke={stroke} strokeWidth="0.5" />
+            <path d={WHEAT_KERNEL_PATH} transform={`translate(${x}, ${y}) rotate(${rot})`} fill={fill} stroke={stroke} strokeWidth="0.5" />
+          </g>
+        ))}
+        <path d={WHEAT_KERNEL_PATH} transform="translate(0,-21) scale(0.55)" fill={fill} stroke={stroke} strokeWidth="0.5" />
+      </g>
+    </g>
+  );
+}
+
 function ActivityTimelineScroller() {
   const nMonths = ACTIVITY_MONTHS.length - 1;
 
@@ -2211,7 +2244,7 @@ function ActivityTimelineScroller() {
       ears.forEach((ear, i) => {
         const variance = (i - mid) * 5;
         const hh = Math.max(5, h + variance);
-        ear.setAttribute("cy", -hh - 7);
+        ear.setAttribute("transform", `translate(0, ${-hh - 7})`);
         ear.style.opacity = earOpacity;
       });
 
@@ -2274,7 +2307,7 @@ function ActivityTimelineScroller() {
               {Array.from({ length: ACTIVITY_STALK_COUNT }).map((_, i) => (
                 <g key={i} transform={`translate(${20 + i * 25}, 222)`}>
                   <path className="at-stalk-path" d="M0 0 Q0 0 0 0" stroke={C.leaf} strokeWidth="3" fill="none" strokeLinecap="round" />
-                  <ellipse className="at-ear" cx="0" cy="0" rx="6.5" ry="14" fill={C.husk} opacity="0" />
+                  <WheatEar className="at-ear" opacity="0" />
                 </g>
               ))}
             </svg>
