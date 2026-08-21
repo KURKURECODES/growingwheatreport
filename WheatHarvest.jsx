@@ -72,6 +72,8 @@ import annexureGrains from "./src/assets/wheat/docx/annexure-06-grains.jpeg";
 import annexureReceipt from "./src/assets/wheat/docx/annexure-07-receipt.jpeg";
 import annexureAudit from "./src/assets/wheat/docx/annexure-08-audit.jpeg";
 import aboutGrowIndigoGraphic from "./src/assets/wheat/docx/about-grow-indigo.png";
+import farmerVoice1 from "./src/assets/wheat/testimonials/voice-1.mov";
+import farmerVoice2 from "./src/assets/wheat/testimonials/voice-2.mp4";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -124,6 +126,38 @@ function GlobalStyle() {
 
       .wh-grain { position: fixed; inset: 0; pointer-events: none; z-index: 60; opacity: .035;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+      /* Print / "Download PDF" - the report's scroll-triggered reveals leave
+         anything below the fold at its hidden initial state (opacity 0,
+         translated, pinned) since print never actually scrolls the page.
+         These overrides force every section to its fully-revealed resting
+         state and drop the fixed/decorative chrome that doesn't belong on
+         a printed page. */
+      @media print {
+        .no-print { display: none !important; }
+        .wh-root, .wh-root * {
+          opacity: 1 !important; transform: none !important; filter: none !important;
+          visibility: visible !important; animation: none !important; clip-path: none !important;
+        }
+        .wh-root { overflow: visible !important; }
+        .wh-root section { break-inside: auto; }
+        .wh-root h1, .wh-root h2, .wh-root h3, .wh-root h4 { break-after: avoid; }
+        .wh-root .annexure-card, .wh-root .voice-card, .wh-root .returns-card, .wh-root img, .wh-root figure {
+          break-inside: avoid;
+        }
+        /* Hover-only expansion (line-clamp) can never trigger in print - show
+           the full paragraph instead of the truncated preview. */
+        .wh-root [class*="line-clamp"] {
+          -webkit-line-clamp: unset !important; display: block !important; overflow: visible !important;
+        }
+        /* The hero and pinned-statement blocks reserve a vh-based viewport
+           height and vertically center/bottom-align their content for the
+           on-screen scroll experience - on a print page that reads as a big
+           empty run before the title. Let them size to their content instead. */
+        .wh-root .wh-hero, .wh-root .wh-pin-block {
+          min-height: 0 !important; height: auto !important; display: block !important;
+        }
+      }
     `}</style>
   );
 }
@@ -223,13 +257,14 @@ function MaskedHeading({ text, className = "", style, delay = 0, as: Tag = "h2" 
 }
 
 function Counter({ value, decimals = 0, duration = 1.8, className = "", style, prefix = "", suffix = "" }) {
+  const tweenRef = useRef(null);
   const scope = useGsapContext((self, node) => {
     if (!node) return;
     const obj = { v: 0 };
     const fmt = (n) =>
       decimals ? n.toFixed(decimals) : Math.round(n).toLocaleString("en-IN");
     node.textContent = `${prefix}0${suffix}`;
-    gsap.to(obj, {
+    tweenRef.current = gsap.to(obj, {
       v: value,
       duration,
       ease: "power2.out",
@@ -238,6 +273,15 @@ function Counter({ value, decimals = 0, duration = 1.8, className = "", style, p
       scrollTrigger: { trigger: node, start: "top 88%", once: true },
     });
   }, [value]);
+  // The count-up only fires once its ScrollTrigger has actually scrolled into
+  // view - printing never scrolls, so anything below the fold would print
+  // as "0". Snap every counter to its final value right before the browser
+  // hands off to print.
+  useEffect(() => {
+    const finish = () => tweenRef.current?.progress(1);
+    window.addEventListener("beforeprint", finish);
+    return () => window.removeEventListener("beforeprint", finish);
+  }, []);
   return <span ref={scope} className={className} style={style} />;
 }
 
@@ -550,7 +594,7 @@ function MoistureGauge() {
   return (
     <div
       ref={scope}
-      className="fixed z-40 hidden lg:flex flex-col items-center gap-2"
+      className="no-print fixed z-40 hidden lg:flex flex-col items-center gap-2"
       style={{ right: 26, top: "50%", transform: "translateY(-50%)", opacity: 0 }}
       aria-hidden="true"
     >
@@ -618,7 +662,7 @@ function TopBar() {
   return (
     <motion.header
       ref={scope}
-      className="fixed top-0 left-0 right-0 z-50"
+      className="no-print fixed top-0 left-0 right-0 z-50"
       initial={{ y: -70 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.9, ease: EASE, delay: 0.35 }}
@@ -658,7 +702,19 @@ function TopBar() {
           </nav>
         </LayoutGroup>
 
-        <div className="ml-auto md:ml-0">
+        <button
+          onClick={() => window.print()}
+          className="wh-data ml-auto md:ml-2 shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded"
+          style={{ fontSize: 10.5, letterSpacing: ".08em", color: "#fff", background: "rgba(255,255,255,.12)", border: "1px solid rgba(255,255,255,.28)", whiteSpace: "nowrap" }}
+          aria-label="Download this report as a PDF"
+        >
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 3v12" /><path d="M7 10l5 5 5-5" /><path d="M4 19h16" />
+          </svg>
+          <span className="hidden sm:inline">DOWNLOAD PDF</span>
+        </button>
+
+        <div className="hidden lg:block">
           <LogoSlot name="ClearHarvest" src={wheatProgrammeLogo} align="right" light height={33} />
         </div>
       </div>
@@ -710,7 +766,7 @@ function Hero() {
   }, []);
 
   return (
-    <div ref={scope} className="relative flex flex-col justify-end" style={{ minHeight: "100vh", background: C.ink }}>
+    <div ref={scope} className="wh-hero relative flex flex-col justify-end" style={{ minHeight: "100vh", background: C.ink }}>
       {/* Drawn, not photographed - a field of wheat built from code, same
           approach as the rice report's paddy-field hero. Sky is a plain CSS
           gradient covering the whole hero; the wheat itself lives in a fixed-
@@ -880,6 +936,18 @@ function RollingNumber({ value, duration = 1.4 }) {
       setDisplay(v.toLocaleString("en-IN", { minimumFractionDigits: decimals, maximumFractionDigits: decimals }));
     });
   }, [spring, decimals, m, reduceMotion, target]);
+
+  // Same problem as the GSAP-driven Counter: this only counts up once
+  // useInView reports true, which requires the element to have actually
+  // scrolled past. Printing never scrolls, so anything below the fold would
+  // print as "0" - force the final formatted value straight into state
+  // right before the browser hands off to print.
+  useEffect(() => {
+    if (!m) return;
+    const finish = () => setDisplay(target.toLocaleString("en-IN", { minimumFractionDigits: decimals, maximumFractionDigits: decimals }));
+    window.addEventListener("beforeprint", finish);
+    return () => window.removeEventListener("beforeprint", finish);
+  }, [m, target, decimals]);
 
   if (!m) return <span>{value}</span>;
 
@@ -1720,13 +1788,62 @@ function JourneySection() {
 /* ----------------------------------------------------------------------------
    12 · SECTION 06 - FARMER VOICES
 ---------------------------------------------------------------------------- */
+const FARMER_VOICES = [
+  { id: "v1", src: farmerVoice1 },
+  { id: "v2", src: farmerVoice2 },
+  { id: "v3", src: null },
+];
+
+function VoiceCard({ v, index }) {
+  return (
+    <motion.div
+      className="voice-card rounded-lg overflow-hidden"
+      style={{ background: C.paperDim, border: `1px solid ${C.line}` }}
+      whileHover={{ y: -5 }}
+      transition={{ duration: 0.35, ease: EASE }}
+    >
+      <div className="relative" style={{ aspectRatio: "4 / 3", background: C.ink }}>
+        {v.src ? (
+          <video
+            src={v.src}
+            controls
+            playsInline
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        ) : (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+            <div style={{ width: 58, height: 58, borderRadius: 99, background: "rgba(255,255,255,.1)", border: "1px dashed rgba(255,255,255,.3)", display: "grid", placeItems: "center" }}>
+              <svg width="18" height="20" viewBox="0 0 18 20" fill="rgba(255,255,255,.4)"><path d="M0 0l18 10L0 20z" /></svg>
+            </div>
+            <div className="ch-data" style={{ fontSize: 9.5, color: "rgba(255,255,255,.4)", letterSpacing: ".12em" }}>
+              VIDEO TO BE ADDED
+            </div>
+          </div>
+        )}
+      </div>
+      <div className="px-5 py-4 flex items-center justify-between gap-3">
+        <div className="ch-data" style={{ fontSize: 10.5, color: C.mute, letterSpacing: ".1em" }}>
+          FARMER VOICE
+        </div>
+        <div className="ch-data" style={{ fontSize: 22, color: C.line, fontWeight: 600, lineHeight: 1 }}>
+          {String(index + 1).padStart(2, "0")}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 function VoicesSection() {
+  const grid = useBatchReveal(".voice-card", { stagger: 0.08 });
   return (
     <Section id="voices">
       <SectionHead index="06" title="Farmer Voices" />
       <Reveal>
         <p className="italic" style={{ fontSize: 15, color: C.mute }}>Recorded on-field during the season.</p>
       </Reveal>
+      <div ref={grid} className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {FARMER_VOICES.map((v, i) => <VoiceCard key={v.id} v={v} index={i} />)}
+      </div>
     </Section>
   );
 }
@@ -1806,7 +1923,7 @@ function PinnedStatement({ text }) {
   }, []);
 
   return (
-    <div ref={scope} className="flex items-center justify-center px-5" style={{ minHeight: "60vh", background: C.field }}>
+    <div ref={scope} className="wh-pin-block flex items-center justify-center px-5" style={{ minHeight: "60vh", background: C.field }}>
       <div className="mx-auto text-center" style={{ maxWidth: 900 }}>
         <Eyebrow color={C.husk} big>The big picture</Eyebrow>
         <p className="mt-6" style={{ fontFamily: FONT_QUOTE, fontStyle: "italic", color: "#fff", fontWeight: 500, fontSize: "clamp(1.4rem,3vw,2.4rem)", lineHeight: 1.35 }}>
@@ -2678,7 +2795,7 @@ export default function WheatHarvestReport() {
   return (
     <div className="wh-root">
       <GlobalStyle />
-      <div className="wh-grain" aria-hidden="true" />
+      <div className="wh-grain no-print" aria-hidden="true" />
       <TopBar />
       <MoistureGauge />
 
