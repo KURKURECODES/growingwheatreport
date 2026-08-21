@@ -1791,7 +1791,6 @@ function JourneySection() {
 const FARMER_VOICES = [
   { id: "v1", src: farmerVoice1 },
   { id: "v2", src: farmerVoice2 },
-  { id: "v3", src: null },
 ];
 
 function VoiceCard({ v, index }) {
@@ -1841,7 +1840,7 @@ function VoicesSection() {
       <Reveal>
         <p className="italic" style={{ fontSize: 15, color: C.mute }}>Recorded on-field during the season.</p>
       </Reveal>
-      <div ref={grid} className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div ref={grid} className="mt-6 grid gap-5 sm:grid-cols-2">
         {FARMER_VOICES.map((v, i) => <VoiceCard key={v.id} v={v} index={i} />)}
       </div>
     </Section>
